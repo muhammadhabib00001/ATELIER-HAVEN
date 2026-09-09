@@ -5,13 +5,39 @@ import Newsletter from '../components/Newsletter.astro';
 import siteData from '../data/site.json';
 import articles from '../data/articles.json';
 
-const featuredArticles = articles.filter(a => a.featured);
-const heroArticle = featuredArticles[0] || articles[0];
-const subFeatured = featuredArticles.slice(1, 4);
+// Strict Homepage Deduplication Set: No article repeats anywhere on the page
+const usedSlugs = new Set();
 
-const trendingArticles = articles.filter(a => a.trending);
-const latestArticles = [...articles].sort((a, b) => new Date(b.publishedAt).getTime() - new Date(a.publishedAt).getTime());
-const topTenPicks = articles.slice(0, 10);
+// 1. Lead Cover Hero Article
+const heroArticle = articles.find(a => a.featured) || articles[0];
+usedSlugs.add(heroArticle.slug);
+
+// 2. Two Hero Secondary Latest Articles to eliminate hero gaps
+const heroSecondary = articles
+  .filter(a => !usedSlugs.has(a.slug))
+  .slice(0, 2);
+heroSecondary.forEach(a => usedSlugs.add(a.slug));
+
+// 3. Trending Dispatch Articles (Hero Sidebar)
+const trendingCandidates = articles.filter(a => !usedSlugs.has(a.slug) && a.trending);
+const trendingArticles = trendingCandidates.slice(0, 4);
+if (trendingArticles.length < 4) {
+  const extra = articles
+    .filter(a => !usedSlugs.has(a.slug) && !trendingArticles.includes(a))
+    .slice(0, 4 - trendingArticles.length);
+  trendingArticles.push(...extra);
+}
+trendingArticles.forEach(a => usedSlugs.add(a.slug));
+
+// 4. Editor's Essential Reads (3 Curated Cards)
+const subFeatured = articles
+  .filter(a => !usedSlugs.has(a.slug))
+  .slice(0, 3);
+subFeatured.forEach(a => usedSlugs.add(a.slug));
+
+// 5. Latest Published Architecture & Spaces (Remaining Chronological Articles)
+const latestRemaining = articles
+  .filter(a => !usedSlugs.has(a.slug));
 
 const categories = siteData.categories;
 const authors = siteData.authors;
@@ -33,6 +59,15 @@ const authors = siteData.authors;
       <div class="hero-grid">
         <div class="hero-primary">
           <ArticleCard article={heroArticle} variant="hero" priority={true} />
+
+          <!-- Two Latest Supporting Articles to fill all gaps -->
+          {heroSecondary.length > 0 && (
+            <div class="hero-secondary-grid">
+              {heroSecondary.map(art => (
+                <ArticleCard article={art} variant="standard" />
+              ))}
+            </div>
+          )}
         </div>
 
         <aside class="hero-sidebar">
@@ -41,7 +76,7 @@ const authors = siteData.authors;
             <span class="trending-pulse"></span>
           </div>
           <div class="trending-list">
-            {trendingArticles.slice(0, 4).map((art, index) => (
+            {trendingArticles.map((art, index) => (
               <div class="trending-compact-item">
                 <span class="trending-num">{String(index + 1).padStart(2, '0')}</span>
                 <div class="trending-compact-content">
@@ -114,7 +149,7 @@ const authors = siteData.authors;
         </div>
 
         <div class="articles-vertical-stack">
-          {latestArticles.slice(3).map(art => (
+          {latestRemaining.map(art => (
             <ArticleCard article={art} variant="horizontal" />
           ))}
         </div>
@@ -188,6 +223,20 @@ const authors = siteData.authors;
     display: grid;
     grid-template-columns: 2.2fr 1fr;
     gap: 3.5rem;
+  }
+
+  .hero-primary {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .hero-secondary-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2rem;
+    margin-top: 2.5rem;
+    padding-top: 2.5rem;
+    border-top: 1px solid var(--color-border);
   }
 
   .hero-sidebar {
@@ -516,6 +565,10 @@ const authors = siteData.authors;
     }
     .editorial-grid {
       grid-template-columns: 1fr;
+    }
+    .hero-secondary-grid {
+      grid-template-columns: 1fr;
+      gap: 1.75rem;
     }
   }
 </style>
