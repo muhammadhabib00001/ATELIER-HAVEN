@@ -117,74 +117,78 @@ const authors = siteData.authors;
     </div>
   </section>
 
-  <!-- Editor's Curated Stories Grid -->
-  <section class="editorial-picks-section">
-    <div class="container">
-      <div class="section-title-bar">
-        <div>
-          <span class="section-kicker">Curated Curation</span>
-          <h2 class="section-title">Editor's Essential Reads</h2>
-        </div>
-        <div class="title-decor-line"></div>
-      </div>
-
-      <div class="editorial-grid">
-        {subFeatured.map(art => (
-          <ArticleCard article={art} variant="standard" />
-        ))}
-      </div>
-    </div>
-  </section>
-
-  <!-- Dual Layout: Latest Stories + Curated Sidebar -->
-  <section class="latest-section">
-    <div class="container main-content-layout">
-      <!-- Main Column: Latest Articles -->
-      <div class="main-articles-col">
+  <!-- Editor's Curated Stories Grid (Only rendered if articles are allocated) -->
+  {subFeatured.length > 0 && (
+    <section class="editorial-picks-section">
+      <div class="container">
         <div class="section-title-bar">
           <div>
-            <span class="section-kicker">Chronological Archive</span>
-            <h2 class="section-title">Latest Published Architecture & Spaces</h2>
+            <span class="section-kicker">Curated Curation</span>
+            <h2 class="section-title">Editor's Essential Reads</h2>
           </div>
+          <div class="title-decor-line"></div>
         </div>
 
-        <div class="articles-vertical-stack">
-          {latestRemaining.map(art => (
-            <ArticleCard article={art} variant="horizontal" />
+        <div class="editorial-grid">
+          {subFeatured.map(art => (
+            <ArticleCard article={art} variant="standard" />
           ))}
         </div>
       </div>
+    </section>
+  )}
 
-      <!-- Right Column: Sidebar -->
-      <aside class="content-sidebar">
-        <!-- Masthead Lead Spotlight -->
-        <div class="sidebar-card author-spotlight">
-          <span class="sidebar-card-kicker">Masthead Spotlight</span>
-          <div class="author-spotlight-inner">
-            <img src={authors[0].avatar} alt={authors[0].name} width="80" height="80" class="spotlight-avatar" />
-            <h3 class="spotlight-name">{authors[0].name}</h3>
-            <span class="spotlight-role">{authors[0].role}</span>
-            <p class="spotlight-bio">{authors[0].bio}</p>
-            <a href={`/author/${authors[0].slug}`} class="spotlight-link">View Published Folio &rarr;</a>
+  <!-- Dual Layout: Latest Stories + Curated Sidebar -->
+  {latestRemaining.length > 0 && (
+    <section class="latest-section">
+      <div class="container main-content-layout">
+        <!-- Main Column: Latest Articles -->
+        <div class="main-articles-col">
+          <div class="section-title-bar">
+            <div>
+              <span class="section-kicker">Chronological Archive</span>
+              <h2 class="section-title">Latest Published Architecture & Spaces</h2>
+            </div>
+          </div>
+
+          <div class="articles-vertical-stack">
+            {latestRemaining.map(art => (
+              <ArticleCard article={art} variant="horizontal" />
+            ))}
           </div>
         </div>
 
-        <!-- E-E-A-T Architectural Trust Guarantee -->
-        <div class="sidebar-card eeat-card">
-          <div class="eeat-badge-icon">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
-            </svg>
+        <!-- Right Column: Sidebar -->
+        <aside class="content-sidebar">
+          <!-- Masthead Lead Spotlight -->
+          <div class="sidebar-card author-spotlight">
+            <span class="sidebar-card-kicker">Masthead Spotlight</span>
+            <div class="author-spotlight-inner">
+              <img src={authors[0].avatar} alt={authors[0].name} width="80" height="80" class="spotlight-avatar" />
+              <h3 class="spotlight-name">{authors[0].name}</h3>
+              <span class="spotlight-role">{authors[0].role}</span>
+              <p class="spotlight-bio">{authors[0].bio}</p>
+              <a href={`/author/${authors[0].slug}`} class="spotlight-link">View Published Folio &rarr;</a>
+            </div>
           </div>
-          <h3 class="eeat-title">Architect-Verified Standards</h3>
-          <p class="eeat-desc">
-            Every specification, clearance dimension, and structural renovation guide published in Atrium Livings is reviewed by certified architects and historic preservation specialists.
-          </p>
-          <a href="/editorial-policy" class="eeat-link">Read our Editorial Policy & Fact-Checking &rarr;</a>
-        </div>
-      </aside>
-    </div>
-  </section>
+
+          <!-- E-E-A-T Architectural Trust Guarantee -->
+          <div class="sidebar-card eeat-card">
+            <div class="eeat-badge-icon">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+              </svg>
+            </div>
+            <h3 class="eeat-title">Architect-Verified Standards</h3>
+            <p class="eeat-desc">
+              Every specification, clearance dimension, and structural renovation guide published in Atrium Livings is reviewed by certified architects and historic preservation specialists.
+            </p>
+            <a href="/editorial-policy" class="eeat-link">Read our Editorial Policy & Fact-Checking &rarr;</a>
+          </div>
+        </aside>
+      </div>
+    </section>
+  )}
 
   <!-- Newsletter Section -->
   <div class="container">
