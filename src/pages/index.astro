@@ -114,7 +114,7 @@ const authors = siteData.authors;
         </div>
 
         <div class="articles-vertical-stack">
-          {latestArticles.slice(3, 9).map(art => (
+          {latestArticles.slice(3).map(art => (
             <ArticleCard article={art} variant="horizontal" />
           ))}
         </div>
