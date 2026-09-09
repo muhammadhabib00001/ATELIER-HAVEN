@@ -1,12 +1,12 @@
 ---
-import BaseLayout from '../../layouts/BaseLayout.astro';
-import Breadcrumbs from '../../components/Breadcrumbs.astro';
-import TableOfContents from '../../components/TableOfContents.astro';
-import SocialShare from '../../components/SocialShare.astro';
-import AdSlot from '../../components/AdSlot.astro';
-import Newsletter from '../../components/Newsletter.astro';
-import siteData from '../../data/site.json';
-import articles from '../../data/articles.json';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Breadcrumbs from '../components/Breadcrumbs.astro';
+import TableOfContents from '../components/TableOfContents.astro';
+import SocialShare from '../components/SocialShare.astro';
+import AdSlot from '../components/AdSlot.astro';
+import Newsletter from '../components/Newsletter.astro';
+import siteData from '../data/site.json';
+import articles from '../data/articles.json';
 
 export function getStaticPaths() {
   return articles.map(article => ({
@@ -218,12 +218,12 @@ const formattedUpdatedDate = article.updatedAt ? new Date(article.updatedAt).toL
         <div class="related-grid">
           {relatedArticles.map(art => (
             <div class="related-card-item">
-              <a href={`/article/${art.slug}`} class="related-img-link">
+              <a href={`/${art.slug}`} class="related-img-link">
                 <img src={art.coverImage} alt={art.title} loading="lazy" width="400" height="250" class="related-img" />
               </a>
               <a href={`/category/${art.category}`} class="related-cat">{art.category}</a>
               <h3 class="related-card-title">
-                <a href={`/article/${art.slug}`}>{art.title}</a>
+                <a href={`/${art.slug}`}>{art.title}</a>
               </h3>
             </div>
           ))}

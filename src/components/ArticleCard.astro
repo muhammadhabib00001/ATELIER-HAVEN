@@ -24,7 +24,7 @@ const formattedDate = new Date(article.publishedAt).toLocaleDateString('en-US', 
 ---
 
 <article class={`article-card ${variant}`}>
-  <a href={`/article/${article.slug}`} class="card-media-link" tabindex="-1" aria-hidden="true">
+  <a href={`/${article.slug}`} class="card-media-link" tabindex="-1" aria-hidden="true">
     <div class="card-media-wrapper">
       <img 
         src={article.coverImage} 
@@ -50,7 +50,7 @@ const formattedDate = new Date(article.publishedAt).toLocaleDateString('en-US', 
     </div>
 
     <h3 class="card-title">
-      <a href={`/article/${article.slug}`}>
+      <a href={`/${article.slug}`}>
         {article.title}
       </a>
     </h3>

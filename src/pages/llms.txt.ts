@@ -23,7 +23,7 @@ Atelier Haven publishes authoritative, peer-reviewed, long-form editorial guides
 
   body += `\n## Core Editorial Articles & Specifications\n`;
   articles.forEach(art => {
-    body += `- [${art.title}](${siteUrl}/article/${art.slug}): ${art.subtitle}\n`;
+    body += `- [${art.title}](${siteUrl}/${art.slug}): ${art.subtitle}\n`;
   });
 
   body += `\n## Essential Trust & Governance Portals

@@ -49,12 +49,12 @@ const categories = siteData.categories.slice(0, 6);
         <div class="suggested-grid">
           {popularArticles.map(art => (
             <div class="suggested-item">
-              <a href={`/article/${art.slug}`} class="suggested-img-wrap">
+              <a href={`/${art.slug}`} class="suggested-img-wrap">
                 <img src={art.coverImage} alt={art.title} loading="lazy" width="300" height="180" class="suggested-img" />
               </a>
               <a href={`/category/${art.category}`} class="suggested-cat">{art.category}</a>
               <h3 class="suggested-title">
-                <a href={`/article/${art.slug}`}>{art.title}</a>
+                <a href={`/${art.slug}`}>{art.title}</a>
               </h3>
             </div>
           ))}

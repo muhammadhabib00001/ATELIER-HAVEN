@@ -18,8 +18,8 @@ export const GET: APIRoute = async () => {
   articles.forEach(art => {
     xml += `    <item>
       <title><![CDATA[${art.title}]]></title>
-      <link>${siteUrl}/article/${art.slug}</link>
-      <guid isPermaLink="true">${siteUrl}/article/${art.slug}</guid>
+      <link>${siteUrl}/${art.slug}</link>
+      <guid isPermaLink="true">${siteUrl}/${art.slug}</guid>
       <description><![CDATA[${art.subtitle}]]></description>
       <pubDate>${new Date(art.publishedAt).toUTCString()}</pubDate>
       <category><![CDATA[${art.category}]]></category>

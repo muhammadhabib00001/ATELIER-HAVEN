@@ -98,13 +98,13 @@ const searchableData = articles.map(art => ({
 
     grid.innerHTML = items.map(art => `
       <article class="search-result-card">
-        <a href="/article/${art.slug}" class="result-img-link">
+        <a href="/${art.slug}" class="result-img-link">
           <img src="${art.coverImage}" alt="${art.title}" loading="lazy" width="400" height="250" class="result-img" />
         </a>
         <div class="result-body">
           <span class="result-cat">${art.category} &bull; ${art.readTime}</span>
           <h3 class="result-title">
-            <a href="/article/${art.slug}">${art.title}</a>
+            <a href="/${art.slug}">${art.title}</a>
           </h3>
           <p class="result-excerpt">${art.subtitle}</p>
         </div>
