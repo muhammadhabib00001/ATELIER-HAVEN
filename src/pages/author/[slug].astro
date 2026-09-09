@@ -1,0 +1,224 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import ArticleCard from '../../components/ArticleCard.astro';
+import Breadcrumbs from '../../components/Breadcrumbs.astro';
+import Newsletter from '../../components/Newsletter.astro';
+import siteData from '../../data/site.json';
+import articles from '../../data/articles.json';
+
+export function getStaticPaths() {
+  return siteData.authors.map(author => ({
+    params: { slug: author.slug },
+    props: { author }
+  }));
+}
+
+const { author } = Astro.props;
+
+const authorArticles = articles.filter(a => a.author === author.slug);
+
+const breadcrumbItems = [
+  { name: 'Editorial Board', url: '/about' },
+  { name: author.name }
+];
+---
+
+<BaseLayout
+  title={`${author.name} | Editorial Masthead | Atelier Haven`}
+  description={author.bio}
+  image={author.avatar}
+  breadcrumbs={breadcrumbItems}
+  jsonLdType="website"
+>
+  <Breadcrumbs items={breadcrumbItems} />
+
+  <section class="author-profile-header">
+    <div class="container author-profile-container">
+      <div class="author-profile-card">
+        <img src={author.avatar} alt={author.name} width="140" height="140" class="profile-avatar" />
+        <div class="profile-info">
+          <span class="profile-kicker">Masthead &bull; Architectural Author</span>
+          <h1 class="profile-name">{author.name}</h1>
+          <span class="profile-role">{author.role}</span>
+          <div class="profile-credentials">
+            <strong>Certified Credentials:</strong> {author.credentials}
+          </div>
+          <p class="profile-bio">{author.bio}</p>
+
+          <div class="profile-social">
+            {author.social.twitter && (
+              <a href={author.social.twitter} target="_blank" rel="noopener noreferrer" class="social-chip">
+                Twitter / X
+              </a>
+            )}
+            {author.social.linkedin && (
+              <a href={author.social.linkedin} target="_blank" rel="noopener noreferrer" class="social-chip">
+                LinkedIn
+              </a>
+            )}
+            {author.social.instagram && (
+              <a href={author.social.instagram} target="_blank" rel="noopener noreferrer" class="social-chip">
+                Instagram
+              </a>
+            )}
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="author-articles-section">
+    <div class="container">
+      <div class="section-title-bar">
+        <div>
+          <span class="section-kicker">Published Archive</span>
+          <h2 class="section-title">Articles & Guides by {author.name}</h2>
+        </div>
+      </div>
+
+      <div class="author-articles-grid">
+        {authorArticles.map(art => (
+          <ArticleCard article={art} variant="standard" />
+        ))}
+      </div>
+
+      {authorArticles.length === 0 && (
+        <p class="empty-state">No articles currently published under this byline.</p>
+      )}
+    </div>
+  </section>
+
+  <div class="container">
+    <Newsletter />
+  </div>
+</BaseLayout>
+
+<style>
+  .author-profile-header {
+    background-color: var(--color-surface-subtle);
+    border-bottom: 1px solid var(--color-border);
+    padding: 4rem 0;
+  }
+
+  .author-profile-container {
+    max-width: 900px;
+  }
+
+  .author-profile-card {
+    display: flex;
+    gap: 3rem;
+    align-items: flex-start;
+  }
+
+  .profile-avatar {
+    border-radius: 50%;
+    object-fit: cover;
+    border: 3px solid var(--color-border);
+    flex-shrink: 0;
+  }
+
+  .profile-kicker {
+    font-size: 0.6875rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--color-accent);
+    display: block;
+    margin-bottom: 0.5rem;
+  }
+
+  .profile-name {
+    font-family: var(--font-serif);
+    font-size: 2.4rem;
+    font-weight: 800;
+    line-height: 1.15;
+    margin-bottom: 0.35rem;
+  }
+
+  .profile-role {
+    font-size: 0.9375rem;
+    color: var(--color-text-muted);
+    display: block;
+    margin-bottom: 0.85rem;
+    font-weight: 600;
+  }
+
+  .profile-credentials {
+    font-size: 0.8125rem;
+    color: var(--color-accent);
+    background-color: #FFFFFF;
+    padding: 0.4rem 0.85rem;
+    border-radius: 4px;
+    border: 1px solid var(--color-border);
+    display: inline-block;
+    margin-bottom: 1.25rem;
+  }
+
+  .profile-bio {
+    font-size: 0.9375rem;
+    line-height: 1.65;
+    color: var(--color-text-main);
+    margin-bottom: 1.5rem;
+  }
+
+  .profile-social {
+    display: flex;
+    gap: 0.75rem;
+  }
+
+  .social-chip {
+    font-size: 0.75rem;
+    font-weight: 600;
+    padding: 0.35rem 0.85rem;
+    border-radius: 4px;
+    border: 1px solid var(--color-border-dark);
+    color: var(--color-text-main);
+  }
+
+  .social-chip:hover {
+    background-color: var(--color-dark);
+    color: #FAF9F5;
+    border-color: var(--color-dark);
+  }
+
+  .author-articles-section {
+    padding: 4rem 0;
+  }
+
+  .section-title-bar {
+    margin-bottom: 2.5rem;
+  }
+
+  .section-kicker {
+    font-size: 0.6875rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.14em;
+    color: var(--color-accent);
+    display: block;
+    margin-bottom: 0.25rem;
+  }
+
+  .section-title {
+    font-family: var(--font-serif);
+    font-size: 1.85rem;
+    font-weight: 700;
+  }
+
+  .author-articles-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2.5rem;
+  }
+
+  @media (max-width: 800px) {
+    .author-profile-card {
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+    }
+    .author-articles-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

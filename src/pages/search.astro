@@ -1,0 +1,362 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Breadcrumbs from '../components/Breadcrumbs.astro';
+import articles from '../data/articles.json';
+import siteData from '../data/site.json';
+
+const breadcrumbItems = [
+  { name: 'Search Archive' }
+];
+
+const searchableData = articles.map(art => ({
+  slug: art.slug,
+  title: art.title,
+  subtitle: art.subtitle,
+  category: art.category,
+  author: art.author,
+  publishedAt: art.publishedAt,
+  coverImage: art.coverImage,
+  readTime: art.readTime,
+  keywords: art.keywords || []
+}));
+---
+
+<BaseLayout
+  title="Search Architectural Archive | Atelier Haven"
+  description="Search across our comprehensive editorial index of luxury kitchen designs, small bathroom tile plans, Japandi living spaces, and renovation guides."
+  breadcrumbs={breadcrumbItems}
+  noindex={true}
+>
+  <Breadcrumbs items={breadcrumbItems} />
+
+  <section class="search-page-section">
+    <div class="container search-container">
+      <header class="search-header">
+        <span class="search-kicker">Magazine Index</span>
+        <h1 class="search-title">Search Architectural Folios</h1>
+        <p class="search-lead">Explore specifications, bathroom tile dimensions, floor plans, and material guides.</p>
+
+        <!-- Search Input Form -->
+        <div class="search-input-wrapper">
+          <svg class="search-icon" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="11" cy="11" r="8"></circle>
+            <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+          </svg>
+          <input 
+            type="search" 
+            id="searchInput" 
+            placeholder="Search e.g. 'bathroom floor tile', 'kitchen marble', 'renovation budget', 'japandi'..." 
+            autocomplete="off"
+            class="search-input-box"
+          />
+          <button id="clearSearchBtn" class="clear-btn" aria-label="Clear query">&times;</button>
+        </div>
+
+        <!-- Keyword Quick Chips -->
+        <div class="quick-chips">
+          <span class="chips-label">Popular Searches:</span>
+          <button class="chip-btn" data-query="bathroom tile">bathroom tile</button>
+          <button class="chip-btn" data-query="kitchen">kitchen cabinetry</button>
+          <button class="chip-btn" data-query="small space">small spaces</button>
+          <button class="chip-btn" data-query="budget">renovation budget</button>
+          <button class="chip-btn" data-query="limewash">limewash DIY</button>
+        </div>
+      </header>
+
+      <!-- Results Count & Container -->
+      <div class="results-header">
+        <span id="resultsCount">Showing all {articles.length} articles</span>
+      </div>
+
+      <div class="search-results-grid" id="resultsGrid">
+        <!-- Rendered client-side dynamically -->
+      </div>
+    </div>
+  </section>
+</BaseLayout>
+
+<script define:vars={{ searchableData }}>
+  const input = document.getElementById('searchInput');
+  const clearBtn = document.getElementById('clearSearchBtn');
+  const grid = document.getElementById('resultsGrid');
+  const countEl = document.getElementById('resultsCount');
+  const chipBtns = document.querySelectorAll('.chip-btn');
+
+  function renderArticles(items) {
+    if (!grid || !countEl) return;
+    
+    countEl.textContent = `Found ${items.length} ${items.length === 1 ? 'article' : 'articles'}`;
+
+    if (items.length === 0) {
+      grid.innerHTML = `
+        <div class="no-results">
+          <p>No matching architectural guides found. Try searching for "bathroom", "kitchen", "lighting", or "renovation".</p>
+        </div>
+      `;
+      return;
+    }
+
+    grid.innerHTML = items.map(art => `
+      <article class="search-result-card">
+        <a href="/article/${art.slug}" class="result-img-link">
+          <img src="${art.coverImage}" alt="${art.title}" loading="lazy" width="400" height="250" class="result-img" />
+        </a>
+        <div class="result-body">
+          <span class="result-cat">${art.category} &bull; ${art.readTime}</span>
+          <h3 class="result-title">
+            <a href="/article/${art.slug}">${art.title}</a>
+          </h3>
+          <p class="result-excerpt">${art.subtitle}</p>
+        </div>
+      </article>
+    `).join('');
+  }
+
+  function filterData(query) {
+    const q = query.toLowerCase().trim();
+    if (!q) {
+      renderArticles(searchableData);
+      return;
+    }
+
+    const filtered = searchableData.filter(art => {
+      const titleMatch = art.title.toLowerCase().includes(q);
+      const subMatch = art.subtitle.toLowerCase().includes(q);
+      const catMatch = art.category.toLowerCase().includes(q);
+      const kwMatch = art.keywords.some(k => k.toLowerCase().includes(q));
+      return titleMatch || subMatch || catMatch || kwMatch;
+    });
+
+    renderArticles(filtered);
+  }
+
+  // Parse URL query parameter if present
+  const params = new URLSearchParams(window.location.search);
+  const initialQuery = params.get('q') || '';
+  if (input) {
+    input.value = initialQuery;
+    filterData(initialQuery);
+
+    input.addEventListener('input', (e) => {
+      filterData(e.target.value);
+    });
+  }
+
+  if (clearBtn && input) {
+    clearBtn.addEventListener('click', () => {
+      input.value = '';
+      input.focus();
+      filterData('');
+    });
+  }
+
+  chipBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      const q = btn.getAttribute('data-query') || '';
+      if (input) {
+        input.value = q;
+        filterData(q);
+      }
+    });
+  });
+</script>
+
+<style>
+  .search-page-section {
+    padding: 3.5rem 0 5rem;
+  }
+
+  .search-container {
+    max-width: 1000px;
+  }
+
+  .search-header {
+    text-align: center;
+    margin-bottom: 3.5rem;
+  }
+
+  .search-kicker {
+    font-size: 0.6875rem;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--color-accent);
+    display: block;
+    margin-bottom: 0.5rem;
+  }
+
+  .search-title {
+    font-family: var(--font-serif);
+    font-size: 2.75rem;
+    font-weight: 800;
+    margin-bottom: 0.75rem;
+  }
+
+  .search-lead {
+    font-size: 1.05rem;
+    color: var(--color-text-muted);
+    max-width: 600px;
+    margin: 0 auto 2rem;
+  }
+
+  .search-input-wrapper {
+    position: relative;
+    max-width: 680px;
+    margin: 0 auto 1.5rem;
+  }
+
+  .search-icon {
+    position: absolute;
+    left: 1.25rem;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--color-text-light);
+  }
+
+  .search-input-box {
+    width: 100%;
+    padding: 1.15rem 3.5rem 1.15rem 3.5rem;
+    font-size: 1.05rem;
+    border: 2px solid var(--color-border-dark);
+    border-radius: 9999px;
+    background-color: var(--color-surface);
+    color: var(--color-text-main);
+    outline: none;
+    transition: border-color 0.2s ease;
+  }
+
+  .search-input-box:focus {
+    border-color: var(--color-dark);
+  }
+
+  .clear-btn {
+    position: absolute;
+    right: 1.25rem;
+    top: 50%;
+    transform: translateY(-50%);
+    background: transparent;
+    border: none;
+    font-size: 1.5rem;
+    color: var(--color-text-light);
+    cursor: pointer;
+  }
+
+  .quick-chips {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+
+  .chips-label {
+    font-size: 0.75rem;
+    color: var(--color-text-light);
+    font-weight: 600;
+  }
+
+  .chip-btn {
+    background-color: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: 9999px;
+    padding: 0.3rem 0.75rem;
+    font-size: 0.75rem;
+    color: var(--color-text-muted);
+    cursor: pointer;
+    transition: all 0.15s ease;
+  }
+
+  .chip-btn:hover {
+    border-color: var(--color-dark);
+    color: var(--color-dark);
+  }
+
+  .results-header {
+    border-bottom: 1px solid var(--color-border);
+    padding-bottom: 1rem;
+    margin-bottom: 2rem;
+    font-size: 0.8125rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--color-text-light);
+  }
+
+  .search-results-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 2.5rem;
+  }
+
+  :global(.search-result-card) {
+    display: flex;
+    gap: 1.25rem;
+    align-items: flex-start;
+  }
+
+  :global(.result-img-link) {
+    width: 160px;
+    aspect-ratio: 4 / 3;
+    flex-shrink: 0;
+    border-radius: 4px;
+    overflow: hidden;
+  }
+
+  :global(.result-img) {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  :global(.result-body) {
+    flex: 1;
+  }
+
+  :global(.result-cat) {
+    font-size: 0.6875rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--color-accent);
+    display: block;
+    margin-bottom: 0.35rem;
+  }
+
+  :global(.result-title) {
+    font-family: var(--font-serif);
+    font-size: 1.15rem;
+    font-weight: 700;
+    line-height: 1.35;
+    margin-bottom: 0.5rem;
+  }
+
+  :global(.result-title a:hover) {
+    color: var(--color-accent);
+  }
+
+  :global(.result-excerpt) {
+    font-size: 0.8125rem;
+    color: var(--color-text-muted);
+    line-height: 1.5;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  :global(.no-results) {
+    grid-column: span 2;
+    text-align: center;
+    padding: 3rem;
+    background-color: var(--color-surface);
+    border: 1px dashed var(--color-border);
+    border-radius: 6px;
+    color: var(--color-text-muted);
+  }
+
+  @media (max-width: 700px) {
+    .search-results-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

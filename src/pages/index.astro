@@ -1,0 +1,534 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import ArticleCard from '../components/ArticleCard.astro';
+import AdSlot from '../components/AdSlot.astro';
+import Newsletter from '../components/Newsletter.astro';
+import siteData from '../data/site.json';
+import articles from '../data/articles.json';
+
+const featuredArticles = articles.filter(a => a.featured);
+const heroArticle = featuredArticles[0] || articles[0];
+const subFeatured = featuredArticles.slice(1, 4);
+
+const trendingArticles = articles.filter(a => a.trending);
+const latestArticles = [...articles].sort((a, b) => new Date(b.publishedAt).getTime() - new Date(a.publishedAt).getTime());
+
+const categories = siteData.categories;
+const authors = siteData.authors;
+---
+
+<BaseLayout
+  title="Atelier Haven | Architectural & Interior Design Magazine"
+  description="The definitive digital journal of modern architecture, refined residential interiors, natural materials, and sustainable renovation masterclasses."
+  jsonLdType="website"
+>
+  <!-- Leaderboard Ad Slot Top -->
+  <div class="container">
+    <AdSlot slotType="leaderboard" slotId="at-home-leaderboard" />
+  </div>
+
+  <!-- Editorial Lead Hero Section -->
+  <section class="hero-section">
+    <div class="container">
+      <div class="hero-header-label">
+        <span class="edition-tag">Featured Cover Story &bull; Architecture & Materials</span>
+        <span class="hero-date">Autumn 2026 Edition</span>
+      </div>
+
+      <div class="hero-grid">
+        <div class="hero-primary">
+          <ArticleCard article={heroArticle} variant="hero" priority={true} />
+        </div>
+
+        <aside class="hero-sidebar">
+          <div class="sidebar-header">
+            <h2 class="sidebar-title">Trending Dispatch</h2>
+            <span class="trending-pulse"></span>
+          </div>
+          <div class="trending-list">
+            {trendingArticles.slice(0, 4).map((art, index) => (
+              <div class="trending-compact-item">
+                <span class="trending-num">{String(index + 1).padStart(2, '0')}</span>
+                <div class="trending-compact-content">
+                  <a href={`/category/${art.category}`} class="trending-cat">{art.category}</a>
+                  <h3 class="trending-compact-title">
+                    <a href={`/article/${art.slug}`}>{art.title}</a>
+                  </h3>
+                  <span class="trending-time">{art.readTime}</span>
+                </div>
+              </div>
+            ))}
+          </div>
+        </aside>
+      </div>
+    </div>
+  </section>
+
+  <!-- Curated Category Carousel Bar -->
+  <section class="category-strip">
+    <div class="container">
+      <div class="strip-header">
+        <h2 class="strip-heading">Explore Architectural Spaces</h2>
+        <a href="/category/kitchen" class="strip-all-link">Browse All 12 Categories &rarr;</a>
+      </div>
+      <div class="category-pills">
+        {categories.map(cat => (
+          <a href={`/category/${cat.slug}`} class="cat-card-mini">
+            <div class="cat-mini-img-wrap">
+              <img src={cat.cover} alt={cat.name} loading="lazy" width="80" height="80" class="cat-mini-img" />
+            </div>
+            <div class="cat-mini-info">
+              <span class="cat-mini-name">{cat.name}</span>
+              <span class="cat-mini-sub">{cat.slug}</span>
+            </div>
+          </a>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- Editor's Curated Stories Grid -->
+  <section class="editorial-picks-section">
+    <div class="container">
+      <div class="section-title-bar">
+        <div>
+          <span class="section-kicker">Curated Curation</span>
+          <h2 class="section-title">Editor's Essential Reads</h2>
+        </div>
+        <div class="title-decor-line"></div>
+      </div>
+
+      <div class="editorial-grid">
+        {subFeatured.map(art => (
+          <ArticleCard article={art} variant="standard" />
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- Mid-page Ad Slot -->
+  <div class="container">
+    <AdSlot slotType="in-article" slotId="at-home-mid" />
+  </div>
+
+  <!-- Dual Layout: Latest Stories + Curated Sidebar -->
+  <section class="latest-section">
+    <div class="container main-content-layout">
+      <!-- Main Column: Latest Articles -->
+      <div class="main-articles-col">
+        <div class="section-title-bar">
+          <div>
+            <span class="section-kicker">Chronological Archive</span>
+            <h2 class="section-title">Latest Published Architecture & Spaces</h2>
+          </div>
+        </div>
+
+        <div class="articles-vertical-stack">
+          {latestArticles.slice(3, 9).map(art => (
+            <ArticleCard article={art} variant="horizontal" />
+          ))}
+        </div>
+      </div>
+
+      <!-- Right Column: Sidebar -->
+      <aside class="content-sidebar">
+        <!-- Masthead Lead Spotlight -->
+        <div class="sidebar-card author-spotlight">
+          <span class="sidebar-card-kicker">Masthead Spotlight</span>
+          <div class="author-spotlight-inner">
+            <img src={authors[0].avatar} alt={authors[0].name} width="80" height="80" class="spotlight-avatar" />
+            <h3 class="spotlight-name">{authors[0].name}</h3>
+            <span class="spotlight-role">{authors[0].role}</span>
+            <p class="spotlight-bio">{authors[0].bio}</p>
+            <a href={`/author/${authors[0].slug}`} class="spotlight-link">View Published Folio &rarr;</a>
+          </div>
+        </div>
+
+        <!-- Sidebar Sticky Ad -->
+        <AdSlot slotType="sidebar" slotId="at-home-sidebar" />
+
+        <!-- E-E-A-T Architectural Trust Guarantee -->
+        <div class="sidebar-card eeat-card">
+          <div class="eeat-badge-icon">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+            </svg>
+          </div>
+          <h3 class="eeat-title">Architect-Verified Standards</h3>
+          <p class="eeat-desc">
+            Every specification, clearance dimension, and structural renovation guide published in Atelier Haven is reviewed by certified architects and historic preservation specialists.
+          </p>
+          <a href="/editorial-policy" class="eeat-link">Read our Editorial Policy & Fact-Checking &rarr;</a>
+        </div>
+      </aside>
+    </div>
+  </section>
+
+  <!-- Newsletter Section -->
+  <div class="container">
+    <Newsletter />
+  </div>
+</BaseLayout>
+
+<style>
+  .hero-section {
+    padding-top: 1.5rem;
+    padding-bottom: 3rem;
+  }
+
+  .hero-header-label {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid var(--color-border);
+    padding-bottom: 0.75rem;
+    margin-bottom: 2rem;
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+  }
+
+  .edition-tag {
+    color: var(--color-accent);
+  }
+
+  .hero-date {
+    color: var(--color-text-light);
+  }
+
+  .hero-grid {
+    display: grid;
+    grid-template-columns: 2.2fr 1fr;
+    gap: 3.5rem;
+  }
+
+  .hero-sidebar {
+    background-color: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: 6px;
+    padding: 1.75rem;
+    height: fit-content;
+  }
+
+  .sidebar-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid var(--color-border);
+    margin-bottom: 1.25rem;
+  }
+
+  .sidebar-title {
+    font-family: var(--font-serif);
+    font-size: 1.15rem;
+    font-weight: 700;
+  }
+
+  .trending-pulse {
+    width: 8px;
+    height: 8px;
+    background-color: #E53E3E;
+    border-radius: 50%;
+    animation: pulse 1.8s infinite;
+  }
+
+  @keyframes pulse {
+    0% { transform: scale(0.9); opacity: 0.8; }
+    50% { transform: scale(1.3); opacity: 1; }
+    100% { transform: scale(0.9); opacity: 0.8; }
+  }
+
+  .trending-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1.35rem;
+  }
+
+  .trending-compact-item {
+    display: flex;
+    gap: 1rem;
+    align-items: flex-start;
+  }
+
+  .trending-num {
+    font-family: var(--font-serif);
+    font-size: 1.35rem;
+    font-weight: 800;
+    color: var(--color-border-dark);
+    line-height: 1;
+  }
+
+  .trending-compact-content {
+    flex: 1;
+  }
+
+  .trending-cat {
+    font-size: 0.625rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--color-accent);
+  }
+
+  .trending-compact-title {
+    font-family: var(--font-serif);
+    font-size: 0.9375rem;
+    font-weight: 700;
+    line-height: 1.35;
+    margin: 0.25rem 0 0.35rem;
+  }
+
+  .trending-compact-title a:hover {
+    color: var(--color-accent);
+  }
+
+  .trending-time {
+    font-size: 0.6875rem;
+    color: var(--color-text-light);
+  }
+
+  /* Category Strip */
+  .category-strip {
+    background-color: var(--color-surface-subtle);
+    border-top: 1px solid var(--color-border);
+    border-bottom: 1px solid var(--color-border);
+    padding: 3rem 0;
+    margin: 3rem 0;
+  }
+
+  .strip-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.75rem;
+  }
+
+  .strip-heading {
+    font-family: var(--font-serif);
+    font-size: 1.5rem;
+    font-weight: 700;
+  }
+
+  .strip-all-link {
+    font-size: 0.8125rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--color-accent);
+  }
+
+  .category-pills {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
+    gap: 1rem;
+  }
+
+  .cat-card-mini {
+    display: flex;
+    align-items: center;
+    gap: 0.85rem;
+    background-color: #FFFFFF;
+    border: 1px solid var(--color-border);
+    border-radius: 6px;
+    padding: 0.65rem 0.85rem;
+    transition: all 0.2s ease;
+  }
+
+  .cat-card-mini:hover {
+    border-color: var(--color-text-main);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(0,0,0,0.04);
+  }
+
+  .cat-mini-img-wrap {
+    width: 44px;
+    height: 44px;
+    border-radius: 4px;
+    overflow: hidden;
+    flex-shrink: 0;
+  }
+
+  .cat-mini-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .cat-mini-info {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .cat-mini-name {
+    font-size: 0.8125rem;
+    font-weight: 700;
+    color: var(--color-text-main);
+  }
+
+  .cat-mini-sub {
+    font-size: 0.6875rem;
+    color: var(--color-text-light);
+    text-transform: capitalize;
+  }
+
+  /* Editorial Picks */
+  .editorial-picks-section {
+    padding: 2.5rem 0;
+  }
+
+  .section-title-bar {
+    margin-bottom: 2rem;
+  }
+
+  .section-kicker {
+    display: inline-block;
+    font-size: 0.6875rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.14em;
+    color: var(--color-accent);
+    margin-bottom: 0.25rem;
+  }
+
+  .section-title {
+    font-family: var(--font-serif);
+    font-size: 1.85rem;
+    font-weight: 700;
+    color: var(--color-text-main);
+  }
+
+  .editorial-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2.5rem;
+  }
+
+  /* Main / Sidebar Dual Layout */
+  .latest-section {
+    padding: 3rem 0;
+  }
+
+  .main-content-layout {
+    display: grid;
+    grid-template-columns: 2.2fr 1fr;
+    gap: 3.5rem;
+  }
+
+  .articles-vertical-stack {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+  }
+
+  .content-sidebar {
+    display: flex;
+    flex-direction: column;
+    gap: 2.5rem;
+  }
+
+  .sidebar-card {
+    background-color: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: 6px;
+    padding: 1.75rem;
+  }
+
+  .sidebar-card-kicker {
+    font-size: 0.6875rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--color-text-light);
+    display: block;
+    margin-bottom: 1rem;
+  }
+
+  .author-spotlight-inner {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+
+  .spotlight-avatar {
+    border-radius: 50%;
+    margin-bottom: 1rem;
+    object-fit: cover;
+    border: 2px solid var(--color-border);
+  }
+
+  .spotlight-name {
+    font-family: var(--font-serif);
+    font-size: 1.15rem;
+    font-weight: 700;
+    margin-bottom: 0.25rem;
+  }
+
+  .spotlight-role {
+    font-size: 0.75rem;
+    color: var(--color-accent);
+    font-weight: 600;
+    margin-bottom: 0.75rem;
+  }
+
+  .spotlight-bio {
+    font-size: 0.8125rem;
+    color: var(--color-text-muted);
+    line-height: 1.5;
+    margin-bottom: 1.25rem;
+  }
+
+  .spotlight-link {
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--color-dark);
+  }
+
+  .spotlight-link:hover {
+    color: var(--color-accent);
+  }
+
+  .eeat-card {
+    background-color: #FAF8F2;
+    border-color: #E2DBD0;
+  }
+
+  .eeat-badge-icon {
+    color: var(--color-accent);
+    margin-bottom: 0.75rem;
+  }
+
+  .eeat-title {
+    font-family: var(--font-serif);
+    font-size: 1.1rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+  }
+
+  .eeat-desc {
+    font-size: 0.8125rem;
+    color: var(--color-text-muted);
+    line-height: 1.55;
+    margin-bottom: 1rem;
+  }
+
+  .eeat-link {
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: var(--color-accent);
+  }
+
+  @media (max-width: 992px) {
+    .hero-grid, .main-content-layout {
+      grid-template-columns: 1fr;
+      gap: 2rem;
+    }
+    .editorial-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

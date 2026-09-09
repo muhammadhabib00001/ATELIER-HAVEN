@@ -1,0 +1,126 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Breadcrumbs from '../components/Breadcrumbs.astro';
+
+const breadcrumbItems = [
+  { name: 'Editorial Standards & Fact-Checking' }
+];
+
+const lastUpdated = "September 1, 2026";
+---
+
+<BaseLayout
+  title="Editorial Policy & Fact-Checking Standards | Atelier Haven"
+  description="Discover Atelier Haven's editorial governance, primary source verification protocols, AI transparency standards, and correction policies."
+  breadcrumbs={breadcrumbItems}
+  noindex={true}
+>
+  <Breadcrumbs items={breadcrumbItems} />
+
+  <div class="legal-page-container">
+    <div class="container legal-content-wrapper">
+      <header class="legal-header">
+        <span class="legal-kicker">E-E-A-T Editorial Charter</span>
+        <h1 class="legal-title">Editorial Policy & Fact-Checking Standards</h1>
+        <p class="legal-meta">Effective Date: {lastUpdated} &bull; Atelier Haven Media Group, Inc.</p>
+      </header>
+
+      <div class="legal-prose">
+        <p class="lead">Atelier Haven adheres to the highest journalistic ethics and Google Search Essentials principles regarding Experience, Expertise, Authoritativeness, and Trustworthiness (E-E-A-T). This charter outlines our protocols for verification, author credentials, AI utilization, and corrections.</p>
+
+        <h2>1. Author Qualifications & Technical Oversight</h2>
+        <p>Every article published on Atelier Haven is conceived, written, or technically vetted by seasoned practitioners. Our staff includes licensed architects (AIA), structural engineers, historic preservationists, and credentialed interior designers.</p>
+        <p>Before any layout advice, tile specification, or cost breakdown is approved for publication, it undergoes a dual review to ensure mechanical accuracy, safety, and adherence to international building codes.</p>
+
+        <h2>2. Fact-Checking & Primary Sourcing</h2>
+        <p>We mandate primary source verification for all empirical claims:</p>
+        <ul>
+          <li><strong>Building Codes:</strong> We cite official code bodies (International Residential Code, California Title 24, National Electrical Code).</li>
+          <li><strong>Material Specifications:</strong> We verify testing metrics (such as DCOF slip resistance, U-factor thermal conductance, and FSC chain-of-custody timber certifications) directly with manufacturers and accredited testing laboratories.</li>
+          <li><strong>Renovation Budgets:</strong> Cost data is gathered from actual closed contractor invoices, regional RSMeans construction estimates, and master builder interviews—not inflated or outdated statistical averages.</li>
+        </ul>
+
+        <h2>3. Artificial Intelligence (AI) Policy & Transparency</h2>
+        <p>Atelier Haven is an original, human-driven architectural publication. We do NOT publish automated, bulk AI-generated articles. While our researchers may utilize machine learning tools for statistical indexing or grammar consistency, all editorial prose, design critiques, spatial analyses, and photo curations are created and verified by human specialists.</p>
+
+        <h2>4. Corrections & Updates Protocol</h2>
+        <p>We are committed to swift transparency whenever errors occur. If a factual, typographical, or technical error is identified in an article:</p>
+        <ul>
+          <li>We update the copy immediately with corrected information.</li>
+          <li>We append a dated "Correction Note" at the conclusion of the article explaining the modification.</li>
+          <li>Readers and industry professionals can submit fact-checking alerts directly to our ombudsman at <a href="mailto:corrections@atelierhaven.com">corrections@atelierhaven.com</a>.</li>
+        </ul>
+
+        <h2>5. Commercial Conflicts of Interest</h2>
+        <p>Our writers, photographers, and editors are strictly forbidden from accepting financial kickbacks, gifts exceeding nominal value ($25), or equity stakes in brands covered in our editorial columns. Advertisers and sponsors have zero oversight or advance approval rights over editorial content.</p>
+      </div>
+    </div>
+  </div>
+</BaseLayout>
+
+<style>
+  .legal-page-container {
+    padding: 4rem 0 6rem;
+  }
+  .legal-content-wrapper {
+    max-width: 800px;
+    margin: 0 auto;
+  }
+  .legal-header {
+    border-bottom: 1px solid var(--color-border);
+    padding-bottom: 2rem;
+    margin-bottom: 2.5rem;
+  }
+  .legal-kicker {
+    font-size: 0.6875rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--color-accent);
+    display: block;
+    margin-bottom: 0.5rem;
+  }
+  .legal-title {
+    font-family: var(--font-serif);
+    font-size: 2.75rem;
+    font-weight: 800;
+    line-height: 1.15;
+    margin-bottom: 0.75rem;
+  }
+  .legal-meta {
+    font-size: 0.8125rem;
+    color: var(--color-text-light);
+  }
+  .legal-prose {
+    font-size: 1.05rem;
+    line-height: 1.75;
+    color: #2D2A26;
+  }
+  .legal-prose .lead {
+    font-size: 1.15rem;
+    color: var(--color-text-main);
+    margin-bottom: 2rem;
+  }
+  .legal-prose h2 {
+    font-family: var(--font-serif);
+    font-size: 1.6rem;
+    font-weight: 700;
+    margin-top: 2.5rem;
+    margin-bottom: 1rem;
+    color: var(--color-text-main);
+  }
+  .legal-prose p {
+    margin-bottom: 1.25rem;
+  }
+  .legal-prose ul {
+    margin-bottom: 1.5rem;
+    padding-left: 1.5rem;
+  }
+  .legal-prose li {
+    margin-bottom: 0.5rem;
+  }
+  .legal-prose a {
+    color: var(--color-accent);
+    text-decoration: underline;
+  }
+</style>

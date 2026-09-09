@@ -1,0 +1,105 @@
+---
+interface Props {
+  slotType?: "leaderboard" | "in-article" | "sidebar" | "bilateral";
+  slotId?: string;
+  className?: string;
+}
+
+const {
+  slotType = "in-article",
+  slotId = "at-auto-slot",
+  className = ""
+} = Astro.props;
+
+const labels: Record<string, string> = {
+  leaderboard: "Advertisement &bull; Sponsor Showcase (970x250 or Responsive)",
+  "in-article": "Advertisement &bull; Curated Industry Partner",
+  sidebar: "Advertisement &bull; Sponsor Showcase (300x600)",
+  bilateral: "Advertisement &bull; Editorial Partner"
+};
+
+const label = labels[slotType] || "Advertisement";
+---
+
+<aside class={`ad-slot-wrapper ${slotType} ${className}`} aria-label="Advertisement">
+  <div class="ad-slot-container">
+    <span class="ad-slot-label" set:html={label} />
+    <div class="ad-slot-inner">
+      <!-- Google AdSense Ready Container -->
+      <!-- Replace with actual client & slot IDs when approved -->
+      <ins class="adsbygoogle"
+           style="display:block; text-align:center;"
+           data-ad-layout="in-article"
+           data-ad-format="fluid"
+           data-ad-client="ca-pub-XXXXXXXXXXXXXX"
+           data-ad-slot={slotId}></ins>
+      <div class="ad-placeholder-preview">
+        <span class="preview-tag">AdSense Placement Placeholder</span>
+        <span class="preview-spec">Type: {slotType} &bull; Responsive &bull; Non-Intrusive Layout</span>
+      </div>
+    </div>
+  </div>
+</aside>
+
+<style>
+  .ad-slot-wrapper {
+    margin: 3rem 0;
+    width: 100%;
+    clear: both;
+  }
+
+  .ad-slot-wrapper.leaderboard {
+    margin: 2rem auto;
+    max-width: 970px;
+  }
+
+  .ad-slot-wrapper.sidebar {
+    margin: 2rem 0;
+  }
+
+  .ad-slot-container {
+    background-color: #F6F4EE;
+    border: 1px dashed #D6CFBE;
+    border-radius: 4px;
+    padding: 1.25rem;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .ad-slot-label {
+    display: block;
+    font-size: 0.625rem;
+    text-transform: uppercase;
+    letter-spacing: 0.14em;
+    color: var(--color-text-light);
+    margin-bottom: 0.75rem;
+  }
+
+  .ad-slot-inner {
+    min-height: 90px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .ad-placeholder-preview {
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+    align-items: center;
+  }
+
+  .preview-tag {
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--color-text-muted);
+    letter-spacing: 0.04em;
+  }
+
+  .preview-spec {
+    font-size: 0.6875rem;
+    color: var(--color-text-light);
+    font-family: monospace;
+  }
+</style>

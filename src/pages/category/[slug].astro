@@ -1,0 +1,200 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import ArticleCard from '../../components/ArticleCard.astro';
+import Breadcrumbs from '../../components/Breadcrumbs.astro';
+import AdSlot from '../../components/AdSlot.astro';
+import Newsletter from '../../components/Newsletter.astro';
+import siteData from '../../data/site.json';
+import articles from '../../data/articles.json';
+
+export function getStaticPaths() {
+  return siteData.categories.map(category => ({
+    params: { slug: category.slug },
+    props: { category }
+  }));
+}
+
+const { category } = Astro.props;
+
+const categoryArticles = articles.filter(a => a.category === category.slug);
+const featuredCategoryArticle = categoryArticles[0];
+const otherArticles = categoryArticles.slice(1);
+
+const breadcrumbItems = [
+  { name: 'Categories', url: '/' },
+  { name: category.name }
+];
+---
+
+<BaseLayout
+  title={`${category.title} | Atelier Haven`}
+  description={category.description}
+  image={category.cover}
+  breadcrumbs={breadcrumbItems}
+  jsonLdType="website"
+>
+  <Breadcrumbs items={breadcrumbItems} />
+
+  <!-- Category Hero Header -->
+  <header class="category-header">
+    <div class="container">
+      <div class="category-header-inner">
+        <span class="category-kicker">Architectural Focus</span>
+        <h1 class="category-title">{category.name}</h1>
+        <p class="category-lead">{category.description}</p>
+
+        <div class="category-meta-bar">
+          <span class="article-count">{categoryArticles.length} Curated Guides</span>
+          <span class="meta-dot">&bull;</span>
+          <span class="editorial-status">Peer-Reviewed Specifications</span>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Top Ad Slot -->
+  <div class="container">
+    <AdSlot slotType="leaderboard" slotId={`at-cat-${category.slug}-top`} />
+  </div>
+
+  <!-- Articles Grid -->
+  <section class="category-content-section">
+    <div class="container">
+      {featuredCategoryArticle && (
+        <div class="category-featured-box">
+          <span class="featured-banner-tag">Category Feature Story</span>
+          <ArticleCard article={featuredCategoryArticle} variant="hero" priority={true} />
+        </div>
+      )}
+
+      {otherArticles.length > 0 && (
+        <div class="category-secondary-grid">
+          {otherArticles.map(art => (
+            <ArticleCard article={art} variant="standard" />
+          ))}
+        </div>
+      )}
+
+      {categoryArticles.length === 0 && (
+        <div class="empty-category-notice">
+          <p>Our editorial team is currently drafting the upcoming master volume for {category.name}.</p>
+          <a href="/" class="btn-primary">Return to Magazine Home</a>
+        </div>
+      )}
+    </div>
+  </section>
+
+  <!-- Bottom Ad Slot -->
+  <div class="container">
+    <AdSlot slotType="in-article" slotId={`at-cat-${category.slug}-mid`} />
+  </div>
+
+  <!-- Newsletter -->
+  <div class="container">
+    <Newsletter />
+  </div>
+</BaseLayout>
+
+<style>
+  .category-header {
+    background-color: var(--color-surface-subtle);
+    border-bottom: 1px solid var(--color-border);
+    padding: 3.5rem 0 3rem;
+    text-align: center;
+  }
+
+  .category-header-inner {
+    max-width: 760px;
+    margin: 0 auto;
+  }
+
+  .category-kicker {
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--color-accent);
+    display: block;
+    margin-bottom: 0.5rem;
+  }
+
+  .category-title {
+    font-family: var(--font-serif);
+    font-size: 3rem;
+    font-weight: 700;
+    color: var(--color-text-main);
+    line-height: 1.15;
+    margin-bottom: 1rem;
+  }
+
+  .category-lead {
+    font-size: 1.05rem;
+    color: var(--color-text-muted);
+    line-height: 1.6;
+    margin-bottom: 1.5rem;
+  }
+
+  .category-meta-bar {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--color-text-light);
+    background: #FFFFFF;
+    padding: 0.35rem 1rem;
+    border-radius: 9999px;
+    border: 1px solid var(--color-border);
+  }
+
+  .category-content-section {
+    padding: 3rem 0;
+  }
+
+  .category-featured-box {
+    margin-bottom: 4rem;
+    padding-bottom: 3.5rem;
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  .featured-banner-tag {
+    display: inline-block;
+    font-size: 0.6875rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--color-accent);
+    margin-bottom: 1.25rem;
+  }
+
+  .category-secondary-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2.5rem;
+  }
+
+  .empty-category-notice {
+    text-align: center;
+    padding: 4rem 1rem;
+    background: var(--color-surface);
+    border: 1px dashed var(--color-border);
+    border-radius: 6px;
+  }
+
+  .empty-category-notice p {
+    font-size: 1.1rem;
+    color: var(--color-text-muted);
+    margin-bottom: 1.5rem;
+  }
+
+  @media (max-width: 900px) {
+    .category-title {
+      font-size: 2.25rem;
+    }
+    .category-secondary-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

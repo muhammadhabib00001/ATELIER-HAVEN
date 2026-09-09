@@ -1,0 +1,92 @@
+---
+import SEOHead from '../components/SEOHead.astro';
+import JsonLd from '../components/JsonLd.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import '../styles/global.css';
+
+interface Props {
+  title?: string;
+  description?: string;
+  canonicalURL?: string;
+  image?: string;
+  type?: "website" | "article";
+  publishedTime?: string;
+  modifiedTime?: string;
+  authorName?: string;
+  keywords?: string[];
+  noindex?: boolean;
+  breadcrumbs?: { name: string; url?: string }[];
+  jsonLdType?: "website" | "article" | "breadcrumbs" | "organization";
+  jsonLdData?: any;
+}
+
+const {
+  title,
+  description,
+  canonicalURL,
+  image,
+  type = "website",
+  publishedTime,
+  modifiedTime,
+  authorName,
+  keywords,
+  noindex = false,
+  breadcrumbs,
+  jsonLdType = "website",
+  jsonLdData
+} = Astro.props;
+---
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <SEOHead 
+      title={title}
+      description={description}
+      canonicalURL={canonicalURL}
+      image={image}
+      type={type}
+      publishedTime={publishedTime}
+      modifiedTime={modifiedTime}
+      authorName={authorName}
+      keywords={keywords}
+      noindex={noindex}
+    />
+    <JsonLd type={jsonLdType} data={jsonLdData} />
+    {breadcrumbs && (
+      <JsonLd type="breadcrumbs" data={{ items: breadcrumbs }} />
+    )}
+  </head>
+  <body>
+    <!-- Skip to main content for accessibility -->
+    <a href="#main-content" class="skip-to-content">Skip to editorial content</a>
+
+    <Header />
+
+    <main id="main-content">
+      <slot />
+    </main>
+
+    <Footer />
+
+    <style>
+      .skip-to-content {
+        position: absolute;
+        top: -100px;
+        left: 1rem;
+        background: var(--color-dark);
+        color: #FAF9F5;
+        padding: 0.5rem 1rem;
+        font-size: 0.8125rem;
+        font-weight: 700;
+        z-index: 999;
+        transition: top 0.2s ease;
+        border-radius: 4px;
+      }
+      .skip-to-content:focus {
+        top: 1rem;
+      }
+    </style>
+  </body>
+</html>

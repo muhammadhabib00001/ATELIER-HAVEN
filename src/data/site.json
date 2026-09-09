@@ -1,0 +1,160 @@
+{
+  "title": "Atelier Haven | Architectural & Interior Design Magazine",
+  "tagline": "The Definitive Journal of Modern Architecture, Interior Spaces & Artful Living",
+  "description": "Atelier Haven is an independent architectural and interior design journal curating the finest modern kitchens, spa-like bathrooms, Japandi living spaces, bespoke furniture, and sustainable renovation guides.",
+  "siteUrl": "https://atelierhaven.com",
+  "publisher": {
+    "name": "Atelier Haven Media Group",
+    "logo": "https://atelierhaven.com/images/logo.png",
+    "address": {
+      "streetAddress": "742 Montgomery St, Suite 400",
+      "addressLocality": "San Francisco",
+      "addressRegion": "CA",
+      "postalCode": "94111",
+      "addressCountry": "US"
+    }
+  },
+  "social": {
+    "twitter": "https://twitter.com/atelierhaven",
+    "pinterest": "https://pinterest.com/atelierhaven",
+    "instagram": "https://instagram.com/atelierhaven",
+    "facebook": "https://facebook.com/atelierhaven",
+    "linkedin": "https://linkedin.com/company/atelierhaven"
+  },
+  "categories": [
+    {
+      "slug": "kitchen",
+      "name": "Kitchen",
+      "title": "Kitchen Architecture, Cabinetry & Culinary Design",
+      "description": "Explore high-end kitchen layouts, bespoke fluted cabinetry, marble slab islands, and luxury smart culinary spaces designed for seamless entertaining.",
+      "cover": "https://images.unsplash.com/photo-1556911220-e15b29be8c8f?auto=format&fit=crop&w=1200&q=80",
+      "color": "#8B4513"
+    },
+    {
+      "slug": "bathroom",
+      "name": "Bathroom",
+      "title": "Bathroom Sanctuaries, Tile Architecture & Spa Fixtures",
+      "description": "From space-efficient powder rooms to travertine wet rooms, discover bathroom floor tile patterns, floating stone vanities, and tactile brassware.",
+      "cover": "https://images.unsplash.com/photo-1552321554-5fefe8c9ef14?auto=format&fit=crop&w=1200&q=80",
+      "color": "#2F4F4F"
+    },
+    {
+      "slug": "living-room",
+      "name": "Living Room",
+      "title": "Living Rooms: Organic Modern & Warm Minimalist Lounges",
+      "description": "Curate cohesive living room seating zones, sculptural statement fireplaces, layered 2700K ambient lighting, and bespoke media joinery.",
+      "cover": "https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?auto=format&fit=crop&w=1200&q=80",
+      "color": "#5C4033"
+    },
+    {
+      "slug": "bedroom",
+      "name": "Bedroom",
+      "title": "Primary Bedroom Suites, Acoustic Comfort & Calming Palettes",
+      "description": "Transform restful quarters with upholstered acoustic headboards, pure Belgian linen bedding, recessed mood lighting, and serene plaster finishes.",
+      "cover": "https://images.unsplash.com/photo-1540518614846-7ede433c4ef2?auto=format&fit=crop&w=1200&q=80",
+      "color": "#4A3B32"
+    },
+    {
+      "slug": "home-decor",
+      "name": "Home Decor",
+      "title": "Home Decor, Ceramic Vessels & Textile Styling",
+      "description": "The art of the final layer: artisanal stone accessories, handmade stoneware, gallery wall compositions, and textural woolen throws.",
+      "cover": "https://images.unsplash.com/photo-1513694203232-719a280e022f?auto=format&fit=crop&w=1200&q=80",
+      "color": "#9E5A38"
+    },
+    {
+      "slug": "furniture",
+      "name": "Furniture",
+      "title": "Modern Furniture Classics, Joinery & Sustainable Woodcraft",
+      "description": "In-depth analyses of iconic mid-century silhouettes, curved boucl\u00e9 sofas, solid walnut dining tables, and heirloom custom joinery.",
+      "cover": "https://images.unsplash.com/photo-1586023492125-27b2c045efd7?auto=format&fit=crop&w=1200&q=80",
+      "color": "#704214"
+    },
+    {
+      "slug": "lighting",
+      "name": "Lighting",
+      "title": "Architectural Lighting: Pendants, Sconces & Concealed LEDs",
+      "description": "Mastering the 3 layers of illumination: ambient, task, and accent lighting with dim-to-warm 2700K illumination and alabaster fixtures.",
+      "cover": "https://images.unsplash.com/photo-1513506003901-1e6a229e2d15?auto=format&fit=crop&w=1200&q=80",
+      "color": "#B8860B"
+    },
+    {
+      "slug": "renovation",
+      "name": "Renovation",
+      "title": "Renovation Chronicles: Structural Overhauls & Cost Guides",
+      "description": "Authoritative architectural guidelines for load-bearing modifications, permit workflows, realistic cost breakdowns, and general contractor collaboration.",
+      "cover": "https://images.unsplash.com/photo-1503387762-592deb58ef4e?auto=format&fit=crop&w=1200&q=80",
+      "color": "#36454F"
+    },
+    {
+      "slug": "diy",
+      "name": "DIY",
+      "title": "Artisanal DIY: Fluting, Plaster Finishes & Custom Joinery",
+      "description": "Step-by-step masterclasses in limewash application, bespoke slatted acoustic panel fabrication, and custom architectural mouldings.",
+      "cover": "https://images.unsplash.com/photo-1581783342308-f792dbdd27c5?auto=format&fit=crop&w=1200&q=80",
+      "color": "#6B8E23"
+    },
+    {
+      "slug": "garden-outdoor",
+      "name": "Garden & Outdoor",
+      "title": "Courtyards, Pergolas & Architectural Landscape Architecture",
+      "description": "Blur the boundaries between indoors and nature with thermal limestone terraces, cantilevered steel pergolas, and native botanical gardens.",
+      "cover": "https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&w=1200&q=80",
+      "color": "#2E8B57"
+    },
+    {
+      "slug": "small-spaces",
+      "name": "Small Spaces",
+      "title": "Small Space Architecture: Pocket Doors, Mirrors & Built-ins",
+      "description": "Micro-luxury spatial planning: pocket joinery, concealed beds, visual sightline elongation, and multi-functional architectural furniture.",
+      "cover": "https://images.unsplash.com/photo-1505691938895-1758d7feb511?auto=format&fit=crop&w=1200&q=80",
+      "color": "#4682B4"
+    },
+    {
+      "slug": "design-trends",
+      "name": "Design Trends",
+      "title": "Global Design Forecasts, Biophilia & Tactile Textures",
+      "description": "Forecast reports evaluating quiet luxury, fluted surfaces, warm earth minerals, retro chromes, and sustainable biophilic architecture.",
+      "cover": "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1200&q=80",
+      "color": "#800020"
+    }
+  ],
+  "authors": [
+    {
+      "slug": "elena-vance",
+      "name": "Elena Vance, AIA",
+      "role": "Editor-in-Chief & Lead Architect",
+      "bio": "Elena Vance is a licensed architectural designer (AIA) with over 16 years of experience in residential restoration and passive home design across San Francisco and Milan. Her work has been showcased at the Venice Architecture Biennale.",
+      "credentials": "M.Arch Harvard GSD, AIA, LEED AP BD+C",
+      "avatar": "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=400&q=80",
+      "social": {
+        "twitter": "https://twitter.com/elenavance_arch",
+        "linkedin": "https://linkedin.com/in/elenavance-arch"
+      }
+    },
+    {
+      "slug": "marcus-reid",
+      "name": "Marcus Reid",
+      "role": "Senior Materials & Renovation Editor",
+      "bio": "Marcus specializes in heritage joinery, sustainable timber curation, and precision residential renovation budgeting. With a background in structural engineering and architectural preservation, he dissects contractor specifications with rigorous technical clarity.",
+      "credentials": "B.Eng Structural Design, Member of Association for Preservation Technology",
+      "avatar": "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=400&q=80",
+      "social": {
+        "twitter": "https://twitter.com/marcusreid_design",
+        "linkedin": "https://linkedin.com/in/marcusreid-renovation"
+      }
+    },
+    {
+      "slug": "charlotte-dupuis",
+      "name": "Charlotte Dupuis",
+      "role": "Style Director & Fine Arts Curator",
+      "bio": "Based between Paris and New York, Charlotte curates decorative objects, vintage mid-century furniture acquisitions, and contemporary ceramic installations. She regularly consults for premier international boutique hotels.",
+      "credentials": "B.A. Art History Sorbonne Paris IV, Contributing Critic at Milan Furniture Fair",
+      "avatar": "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=400&q=80",
+      "social": {
+        "instagram": "https://instagram.com/charlottedupuis_curates",
+        "pinterest": "https://pinterest.com/charlottedupuis"
+      }
+    }
+  ]
+}

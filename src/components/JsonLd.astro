@@ -1,0 +1,103 @@
+---
+interface Props {
+  type: "website" | "article" | "breadcrumbs" | "organization";
+  data?: any;
+}
+
+const { type, data = {} } = Astro.props;
+const siteUrl = "https://atelierhaven.com";
+
+let schema: any = {};
+
+if (type === "organization" || type === "website") {
+  schema = {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "Organization",
+        "@id": `${siteUrl}/#organization`,
+        "name": "Atelier Haven",
+        "url": siteUrl,
+        "logo": {
+          "@type": "ImageObject",
+          "@id": `${siteUrl}/#logo`,
+          "url": `${siteUrl}/images/logo.png`,
+          "caption": "Atelier Haven Logo"
+        },
+        "sameAs": [
+          "https://twitter.com/atelierhaven",
+          "https://pinterest.com/atelierhaven",
+          "https://instagram.com/atelierhaven"
+        ],
+        "description": "The Definitive Journal of Modern Architecture, Interior Spaces & Artful Living."
+      },
+      {
+        "@type": "WebSite",
+        "@id": `${siteUrl}/#website`,
+        "url": siteUrl,
+        "name": "Atelier Haven",
+        "publisher": {
+          "@id": `${siteUrl}/#organization`
+        },
+        "potentialAction": {
+          "@type": "SearchAction",
+          "target": {
+            "@type": "EntryPoint",
+            "urlTemplate": `${siteUrl}/search?q={search_term_string}`
+          },
+          "query-input": "required name=search_term_string"
+        }
+      }
+    ]
+  };
+} else if (type === "article") {
+  const article = data.article;
+  const author = data.author;
+
+  schema = {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "mainEntityOfPage": {
+      "@type": "WebPage",
+      "@id": `${siteUrl}/article/${article.slug}`
+    },
+    "headline": article.title,
+    "description": article.seoDescription,
+    "image": [article.coverImage],
+    "datePublished": article.publishedAt,
+    "dateModified": article.updatedAt || article.publishedAt,
+    "author": {
+      "@type": "Person",
+      "name": author.name,
+      "jobTitle": author.role,
+      "url": `${siteUrl}/author/${author.slug}`,
+      "knowsAbout": author.credentials
+    },
+    "publisher": {
+      "@type": "Organization",
+      "name": "Atelier Haven",
+      "url": siteUrl,
+      "logo": {
+        "@type": "ImageObject",
+        "url": `${siteUrl}/images/logo.png`
+      }
+    },
+    "articleSection": article.category,
+    "keywords": article.keywords ? article.keywords.join(", ") : undefined
+  };
+} else if (type === "breadcrumbs") {
+  const items = data.items || [];
+  schema = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": items.map((item: any, index: number) => ({
+      "@type": "ListItem",
+      "position": index + 1,
+      "name": item.name,
+      "item": item.url ? (item.url.startsWith("http") ? item.url : `${siteUrl}${item.url}`) : undefined
+    }))
+  };
+}
+---
+
+<script type="application/ld+json" set:html={JSON.stringify(schema)} />

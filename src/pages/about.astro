@@ -1,0 +1,230 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Breadcrumbs from '../components/Breadcrumbs.astro';
+import siteData from '../data/site.json';
+
+const breadcrumbItems = [
+  { name: 'About Atelier Haven' }
+];
+
+const authors = siteData.authors;
+---
+
+<BaseLayout
+  title="About Atelier Haven | Architectural Standards & Masthead"
+  description="Learn about Atelier Haven's editorial standards, licensed architectural advisory board, historic preservation ethics, and commitment to original residential reporting."
+  breadcrumbs={breadcrumbItems}
+  jsonLdType="organization"
+>
+  <Breadcrumbs items={breadcrumbItems} />
+
+  <section class="about-hero">
+    <div class="container about-container">
+      <span class="about-kicker">Our Manifesto</span>
+      <h1 class="about-headline">Architecture as an Enduring Art Form</h1>
+      <p class="about-lead">
+        Atelier Haven was founded on a singular conviction: residential interior design is not an accumulation of fleeting seasonal trends, but the disciplined orchestration of light, acoustics, materiality, and human volume.
+      </p>
+    </div>
+  </section>
+
+  <section class="about-body-section">
+    <div class="container about-container">
+      <div class="about-prose">
+        <h2>The Editorial Mission</h2>
+        <p>
+          In an online publishing landscape inundated by low-quality AI rehashes and superficial affiliate link carousels, Atelier Haven provides an uncompromised sanctuary for discerning architects, interior designers, and passionate homeowners. We treat every room with rigorous architectural critique—evaluating structural wall alterations, plumbing stack logistics, lighting kelvin temperatures, and certified timber species.
+        </p>
+
+        <div class="editorial-highlight-box">
+          <h3>Our Three Foundational Pillars</h3>
+          <ul>
+            <li><strong>Material Honesty:</strong> We champion authentic natural stone, unlacquered living brass, and solid sustainable hardwoods that develop depth through patina rather than synthetic veneers designed to degrade.</li>
+            <li><strong>Technical Rigor:</strong> We publish concrete clearance tolerances, tile grout matrixes, HVAC acoustic considerations, and structural permit realities—empowering our readers to engage general contractors as informed peers.</li>
+            <li><strong>Editorial Independence:</strong> No product placement is ever guaranteed. We never sell positive editorial evaluations. Our specifications reflect rigorous physical testing and verified architectural merit.</li>
+          </ul>
+        </div>
+
+        <h2>The Editorial Masthead</h2>
+        <p>
+          Our senior writers and contributors are licensed architects (AIA), structural designers, and museum curators with advanced degrees from Harvard GSD, Columbia GSAPP, and Sorbonne Paris IV.
+        </p>
+
+        <div class="masthead-grid">
+          {authors.map(author => (
+            <div class="masthead-card">
+              <img src={author.avatar} alt={author.name} width="90" height="90" class="masthead-img" />
+              <div class="masthead-content">
+                <h3 class="masthead-name"><a href={`/author/${author.slug}`}>{author.name}</a></h3>
+                <span class="masthead-role">{author.role}</span>
+                <span class="masthead-creds">{author.credentials}</span>
+                <p class="masthead-bio">{author.bio}</p>
+                <a href={`/author/${author.slug}`} class="masthead-link">View Published Portfolio &rarr;</a>
+              </div>
+            </div>
+          ))}
+        </div>
+
+        <h2>Physical Publishing Headquarters</h2>
+        <p>
+          <strong>Atelier Haven Media Group, Inc.</strong><br />
+          742 Montgomery Street, Suite 400<br />
+          Jackson Square Historic District<br />
+          San Francisco, CA 94111 &bull; United States<br />
+          ISSN: 2984-1184 (Global Architecture Edition)
+        </p>
+      </div>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .about-hero {
+    background-color: var(--color-surface-subtle);
+    border-bottom: 1px solid var(--color-border);
+    padding: 4.5rem 0 3.5rem;
+    text-align: center;
+  }
+
+  .about-container {
+    max-width: 820px;
+    margin: 0 auto;
+  }
+
+  .about-kicker {
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.16em;
+    color: var(--color-accent);
+    display: block;
+    margin-bottom: 0.75rem;
+  }
+
+  .about-headline {
+    font-family: var(--font-serif);
+    font-size: 3rem;
+    font-weight: 800;
+    line-height: 1.15;
+    margin-bottom: 1.25rem;
+  }
+
+  .about-lead {
+    font-size: 1.2rem;
+    color: var(--color-text-muted);
+    line-height: 1.6;
+  }
+
+  .about-body-section {
+    padding: 4rem 0 6rem;
+  }
+
+  .about-prose {
+    font-size: 1.0625rem;
+    line-height: 1.8;
+    color: #2D2A26;
+  }
+
+  .about-prose h2 {
+    font-family: var(--font-serif);
+    font-size: 1.85rem;
+    margin-top: 3rem;
+    margin-bottom: 1rem;
+  }
+
+  .editorial-highlight-box {
+    background-color: var(--color-surface-subtle);
+    border: 1px solid var(--color-border);
+    border-left: 4px solid var(--color-accent);
+    padding: 2rem;
+    border-radius: 4px;
+    margin: 2.5rem 0;
+  }
+
+  .editorial-highlight-box h3 {
+    font-family: var(--font-serif);
+    font-size: 1.25rem;
+    margin-bottom: 1rem;
+  }
+
+  .editorial-highlight-box ul {
+    list-style: square;
+    padding-left: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    font-size: 0.9375rem;
+  }
+
+  .masthead-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+    margin: 2rem 0 3.5rem;
+  }
+
+  .masthead-card {
+    display: flex;
+    gap: 1.75rem;
+    background-color: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: 6px;
+    padding: 1.75rem;
+    align-items: flex-start;
+  }
+
+  .masthead-img {
+    border-radius: 50%;
+    object-fit: cover;
+    flex-shrink: 0;
+  }
+
+  .masthead-name {
+    font-family: var(--font-serif);
+    font-size: 1.35rem;
+    font-weight: 700;
+    margin-bottom: 0.2rem;
+  }
+
+  .masthead-role {
+    font-size: 0.8125rem;
+    color: var(--color-accent);
+    font-weight: 600;
+    display: block;
+    margin-bottom: 0.25rem;
+  }
+
+  .masthead-creds {
+    font-size: 0.75rem;
+    color: var(--color-text-light);
+    display: block;
+    margin-bottom: 0.75rem;
+  }
+
+  .masthead-bio {
+    font-size: 0.875rem;
+    color: var(--color-text-muted);
+    line-height: 1.55;
+    margin-bottom: 0.75rem;
+  }
+
+  .masthead-link {
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--color-dark);
+  }
+
+  .masthead-link:hover {
+    color: var(--color-accent);
+  }
+
+  @media (max-width: 650px) {
+    .masthead-card {
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+    }
+  }
+</style>

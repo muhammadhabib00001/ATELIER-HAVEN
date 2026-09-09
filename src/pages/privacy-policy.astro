@@ -1,0 +1,150 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Breadcrumbs from '../components/Breadcrumbs.astro';
+
+const breadcrumbItems = [
+  { name: 'Privacy Policy' }
+];
+
+const lastUpdated = "September 1, 2026";
+---
+
+<BaseLayout
+  title="Privacy Policy | Atelier Haven"
+  description="Atelier Haven's comprehensive privacy notice detailing data collection, cookie usage, GDPR / CCPA compliance, and user rights."
+  breadcrumbs={breadcrumbItems}
+  noindex={true}
+>
+  <Breadcrumbs items={breadcrumbItems} />
+
+  <div class="legal-page-container">
+    <div class="container legal-content-wrapper">
+      <header class="legal-header">
+        <span class="legal-kicker">Legal Governance</span>
+        <h1 class="legal-title">Privacy Policy</h1>
+        <p class="legal-meta">Effective Date: {lastUpdated} &bull; Atelier Haven Media Group, Inc.</p>
+      </header>
+
+      <div class="legal-prose">
+        <p class="lead">Atelier Haven ("we", "our", or "us") respects your privacy and is dedicated to safeguarding your personal data. This Privacy Policy details how we collect, process, and protect your information when you access our public architectural publication and related digital dispatches.</p>
+
+        <h2>1. Information We Collect</h2>
+        <p>We believe in minimal data footprint architectures. We collect information only where strictly necessary to deliver editorial content, newsletter dispatches, and optimize user experience:</p>
+        <ul>
+          <li><strong>Directly Provided Information:</strong> When you subscribe to our weekly architectural newsletter or contact our editorial desk, we collect your email address, name, and the contents of your inquiry.</li>
+          <li><strong>Automatically Collected Telemetry:</strong> In compliance with Core Web Vitals monitoring, we collect anonymized technical telemetry such as browser type, operating system, page load latencies, referring URLs, and approximate country-level geolocation. We do not store raw IP addresses alongside personal identifiers.</li>
+        </ul>
+
+        <h2>2. Google AdSense & Advertising Cookies</h2>
+        <p>We partner with third-party advertising vendors, including Google AdSense, to display non-intrusive, relevant architectural and design advertisements:</p>
+        <ul>
+          <li>Google uses cookies (such as the DoubleClick DART cookie) to serve ads to users based on their visits to our site and other websites across the Internet.</li>
+          <li>Users may opt out of personalized advertising by visiting <a href="https://www.google.com/settings/ads" target="_blank" rel="noopener noreferrer">Google Ads Settings</a> or through the <a href="https://www.aboutads.info/choices/" target="_blank" rel="noopener noreferrer">Network Advertising Initiative (NAI)</a>.</li>
+          <li>We mandate that third-party ad units on Atelier Haven strictly avoid invasive pop-ups, autoplays with sound, or deceptive layout shifts that impede reading flow.</li>
+        </ul>
+
+        <h2>3. Cookie Management & Local Storage</h2>
+        <p>Our website utilizes strictly essential session cookies and performance telemetry cookies to remember your reader preferences (such as Table of Contents toggle state). You can inspect and alter your tracking choices at any time via our <a href="/cookie-policy">Cookie Policy</a> page.</p>
+
+        <h2>4. GDPR & CCPA/CPRA Compliance (Your Rights)</h2>
+        <p>Under the European Union General Data Protection Regulation (GDPR) and the California Consumer Privacy Act as amended (CCPA/CPRA), you possess the following unalienable statutory rights:</p>
+        <ul>
+          <li><strong>Right to Access:</strong> You may request an export of any personal data we hold regarding your email address.</li>
+          <li><strong>Right to Erasure (To Be Forgotten):</strong> You may instruct us to permanently delete your email and communication history.</li>
+          <li><strong>Right to Opt-Out of Sale / Sharing:</strong> We do NOT sell or rent your personal data to data brokers. We never exchange subscriber lists for monetary consideration.</li>
+        </ul>
+        <p>To exercise any of these privacy rights, email our Data Protection Officer directly at <a href="mailto:privacy@atelierhaven.com">privacy@atelierhaven.com</a>.</p>
+
+        <h2>5. Children's Online Privacy Protection (COPPA)</h2>
+        <p>Atelier Haven is an architectural and interior design journal intended exclusively for adult homeowners, design professionals, and students over the age of 16. We do not knowingly collect personal data from children under 16.</p>
+
+        <h2>6. Contact Our Legal Bureau</h2>
+        <p>
+          Atelier Haven Legal & Privacy Directorate<br />
+          742 Montgomery St, Suite 400<br />
+          San Francisco, CA 94111, USA<br />
+          Email: <a href="mailto:privacy@atelierhaven.com">privacy@atelierhaven.com</a>
+        </p>
+      </div>
+    </div>
+  </div>
+</BaseLayout>
+
+<style>
+  .legal-page-container {
+    padding: 4rem 0 6rem;
+  }
+
+  .legal-content-wrapper {
+    max-width: 800px;
+    margin: 0 auto;
+  }
+
+  .legal-header {
+    border-bottom: 1px solid var(--color-border);
+    padding-bottom: 2rem;
+    margin-bottom: 2.5rem;
+  }
+
+  .legal-kicker {
+    font-size: 0.6875rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--color-accent);
+    display: block;
+    margin-bottom: 0.5rem;
+  }
+
+  .legal-title {
+    font-family: var(--font-serif);
+    font-size: 2.75rem;
+    font-weight: 800;
+    line-height: 1.15;
+    margin-bottom: 0.75rem;
+  }
+
+  .legal-meta {
+    font-size: 0.8125rem;
+    color: var(--color-text-light);
+  }
+
+  .legal-prose {
+    font-size: 1.05rem;
+    line-height: 1.75;
+    color: #2D2A26;
+  }
+
+  .legal-prose .lead {
+    font-size: 1.15rem;
+    color: var(--color-text-main);
+    margin-bottom: 2rem;
+  }
+
+  .legal-prose h2 {
+    font-family: var(--font-serif);
+    font-size: 1.6rem;
+    font-weight: 700;
+    margin-top: 2.5rem;
+    margin-bottom: 1rem;
+    color: var(--color-text-main);
+  }
+
+  .legal-prose p {
+    margin-bottom: 1.25rem;
+  }
+
+  .legal-prose ul {
+    margin-bottom: 1.5rem;
+    padding-left: 1.5rem;
+  }
+
+  .legal-prose li {
+    margin-bottom: 0.5rem;
+  }
+
+  .legal-prose a {
+    color: var(--color-accent);
+    text-decoration: underline;
+  }
+</style>

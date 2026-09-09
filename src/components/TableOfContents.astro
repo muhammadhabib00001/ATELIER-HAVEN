@@ -1,0 +1,116 @@
+---
+interface TocItem {
+  id: string;
+  title: string;
+}
+
+interface Props {
+  toc: TocItem[];
+}
+
+const { toc } = Astro.props;
+---
+
+{toc && toc.length > 0 && (
+  <nav class="toc-container" aria-label="Table of contents">
+    <div class="toc-header">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <line x1="8" y1="6" x2="21" y2="6"></line>
+        <line x1="8" y1="12" x2="21" y2="12"></line>
+        <line x1="8" y1="18" x2="21" y2="18"></line>
+        <line x1="3" y1="6" x2="3.01" y2="6"></line>
+        <line x1="3" y1="12" x2="3.01" y2="12"></line>
+        <line x1="3" y1="18" x2="3.01" y2="18"></line>
+      </svg>
+      <span class="toc-title">Table of Contents</span>
+    </div>
+
+    <ol class="toc-list">
+      {toc.map((item, index) => (
+        <li class="toc-item">
+          <a href={`#${item.id}`} class="toc-link" data-toc-target={item.id}>
+            <span class="toc-num">{String(index + 1).padStart(2, '0')}.</span>
+            <span class="toc-text">{item.title}</span>
+          </a>
+        </li>
+      ))}
+    </ol>
+  </nav>
+)}
+
+<style>
+  .toc-container {
+    background-color: var(--color-surface-subtle);
+    border: 1px solid var(--color-border);
+    border-radius: 6px;
+    padding: 1.5rem;
+    margin: 2.5rem 0;
+  }
+
+  .toc-header {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+    color: var(--color-accent);
+  }
+
+  .toc-title {
+    font-size: 0.8125rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--color-text-main);
+  }
+
+  .toc-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+  }
+
+  .toc-link {
+    display: flex;
+    align-items: baseline;
+    gap: 0.5rem;
+    font-size: 0.875rem;
+    color: var(--color-text-muted);
+    line-height: 1.4;
+    transition: all 0.15s ease;
+  }
+
+  .toc-link:hover, .toc-link.active {
+    color: var(--color-accent);
+    transform: translateX(3px);
+  }
+
+  .toc-num {
+    font-family: monospace;
+    font-size: 0.75rem;
+    color: var(--color-text-light);
+    font-weight: 600;
+  }
+
+  .toc-text {
+    flex: 1;
+  }
+</style>
+
+<script>
+  // Active intersection observer for smooth scroll spy
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        const id = entry.target.getAttribute('id');
+        const activeLink = document.querySelector(`.toc-link[data-toc-target="${id}"]`);
+        document.querySelectorAll('.toc-link').forEach(l => l.classList.remove('active'));
+        if (activeLink) activeLink.classList.add('active');
+      }
+    });
+  }, { rootMargin: '0px 0px -70% 0px' });
+
+  document.querySelectorAll('h2[id], h3[id]').forEach(heading => {
+    observer.observe(heading);
+  });
+</script>

@@ -1,0 +1,85 @@
+---
+interface Props {
+  title?: string;
+  description?: string;
+  canonicalURL?: string;
+  image?: string;
+  type?: "website" | "article";
+  publishedTime?: string;
+  modifiedTime?: string;
+  authorName?: string;
+  keywords?: string[];
+  noindex?: boolean;
+}
+
+const {
+  title = "Atelier Haven | Architectural & Interior Design Magazine",
+  description = "Atelier Haven is an independent architectural and interior design journal curating the finest modern kitchens, spa-like bathrooms, Japandi living spaces, bespoke furniture, and sustainable renovation guides.",
+  canonicalURL = Astro.url.href,
+  image = "https://images.unsplash.com/photo-1552321554-5fefe8c9ef14?auto=format&fit=crop&w=1200&q=80",
+  type = "website",
+  publishedTime,
+  modifiedTime,
+  authorName = "Atelier Haven Editorial Board",
+  keywords = [
+    "interior design magazine",
+    "architectural design",
+    "luxury kitchens",
+    "bathroom floor tile ideas",
+    "japandi living room",
+    "home decor"
+  ],
+  noindex = false
+} = Astro.props;
+
+const siteUrl = "https://atelierhaven.com";
+const fullCanonical = new URL(Astro.url.pathname, siteUrl).href;
+---
+
+<!-- Essential Primary Meta Tags -->
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+<title>{title}</title>
+<meta name="title" content={title} />
+<meta name="description" content={description} />
+<link rel="canonical" href={fullCanonical} />
+{noindex && <meta name="robots" content="noindex, nofollow" />}
+{!noindex && <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />}
+{keywords && keywords.length > 0 && <meta name="keywords" content={keywords.join(", ")} />}
+<meta name="theme-color" content="#FAF9F5" />
+<meta name="generator" content={Astro.generator} />
+
+<!-- Open Graph / Facebook -->
+<meta property="og:type" content={type} />
+<meta property="og:url" content={fullCanonical} />
+<meta property="og:title" content={title} />
+<meta property="og:description" content={description} />
+<meta property="og:image" content={image} />
+<meta property="og:site_name" content="Atelier Haven" />
+<meta property="og:locale" content="en_US" />
+{type === "article" && publishedTime && (
+  <meta property="article:published_time" content={publishedTime} />
+)}
+{type === "article" && modifiedTime && (
+  <meta property="article:modified_time" content={modifiedTime} />
+)}
+{type === "article" && authorName && (
+  <meta property="article:author" content={authorName} />
+)}
+
+<!-- Twitter / X -->
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:site" content="@atelierhaven" />
+<meta name="twitter:creator" content="@atelierhaven" />
+<meta name="twitter:url" content={fullCanonical} />
+<meta name="twitter:title" content={title} />
+<meta name="twitter:description" content={description} />
+<meta name="twitter:image" content={image} />
+
+<!-- Alternate Feeds & Machine Disclosures -->
+<link rel="alternate" type="application/rss+xml" title="Atelier Haven RSS Feed" href="/rss.xml" />
+<link rel="alternate" type="text/plain" title="LLMs.txt" href="/llms.txt" />
+
+<!-- Preload critical serif display font -->
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />

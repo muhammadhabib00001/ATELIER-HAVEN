@@ -1,0 +1,144 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Breadcrumbs from '../components/Breadcrumbs.astro';
+
+const breadcrumbItems = [
+  { name: 'Cookie Policy' }
+];
+
+const lastUpdated = "September 1, 2026";
+---
+
+<BaseLayout
+  title="Cookie Policy & Tracking Preferences | Atelier Haven"
+  description="Learn about the cookies and tracking technologies used on Atelier Haven, their purposes, and how to manage your preferences."
+  breadcrumbs={breadcrumbItems}
+  noindex={true}
+>
+  <Breadcrumbs items={breadcrumbItems} />
+
+  <div class="legal-page-container">
+    <div class="container legal-content-wrapper">
+      <header class="legal-header">
+        <span class="legal-kicker">Legal Governance</span>
+        <h1 class="legal-title">Cookie Policy</h1>
+        <p class="legal-meta">Effective Date: {lastUpdated} &bull; Atelier Haven Media Group, Inc.</p>
+      </header>
+
+      <div class="legal-prose">
+        <p class="lead">This Cookie Policy explains how Atelier Haven uses cookies, web beacons, and similar browser storage mechanisms to recognize you when you visit our publication. It details what these technologies are, why we use them, and your explicit right to control our use of them.</p>
+
+        <h2>1. What Are Cookies?</h2>
+        <p>Cookies are small alphanumeric text files placed on your computer or mobile device when you access a web server. They are widely utilized by online digital publishers to make platforms operate smoothly, record editorial reading preferences, and deliver aggregated telemetry.</p>
+
+        <h2>2. Categories of Cookies Deployed</h2>
+        <div class="cookie-table-wrapper">
+          <table class="editorial-table">
+            <thead>
+              <tr>
+                <th>Category</th>
+                <th>Purpose</th>
+                <th>Lifespan</th>
+                <th>Opt-Out Status</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>Strictly Necessary</strong></td>
+                <td>Remembers core session state, consent choices, and security tokens.</td>
+                <td>Session to 1 Year</td>
+                <td>Mandatory (Required for site operation)</td>
+              </tr>
+              <tr>
+                <td><strong>Performance & Telemetry</strong></td>
+                <td>Measures Core Web Vitals (LCP, CLS, INP) to ensure high-speed page rendering.</td>
+                <td>30 Days</td>
+                <td>Configurable in Browser</td>
+              </tr>
+              <tr>
+                <td><strong>AdSense & Marketing</strong></td>
+                <td>Enables Google AdSense to serve non-intrusive, relevant contextual advertisements.</td>
+                <td>Up to 24 Months</td>
+                <td>Configurable via Google Ads Settings</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h2>3. How to Disable or Purge Cookies</h2>
+        <p>You can adjust your browser settings to decline all cookies or to alert you when a cookie is being transmitted. If you choose to disable cookies, some features of Atelier Haven (such as instant search index caching) may experience minor performance degradation.</p>
+        <p>For more details on managing third-party marketing identifiers, visit <a href="https://youronlinechoices.eu/" target="_blank" rel="noopener noreferrer">Your Online Choices (EU)</a> or <a href="https://optout.aboutads.info/" target="_blank" rel="noopener noreferrer">AboutAds Opt-Out (US)</a>.</p>
+      </div>
+    </div>
+  </div>
+</BaseLayout>
+
+<style>
+  .legal-page-container {
+    padding: 4rem 0 6rem;
+  }
+  .legal-content-wrapper {
+    max-width: 800px;
+    margin: 0 auto;
+  }
+  .legal-header {
+    border-bottom: 1px solid var(--color-border);
+    padding-bottom: 2rem;
+    margin-bottom: 2.5rem;
+  }
+  .legal-kicker {
+    font-size: 0.6875rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--color-accent);
+    display: block;
+    margin-bottom: 0.5rem;
+  }
+  .legal-title {
+    font-family: var(--font-serif);
+    font-size: 2.75rem;
+    font-weight: 800;
+    line-height: 1.15;
+    margin-bottom: 0.75rem;
+  }
+  .legal-meta {
+    font-size: 0.8125rem;
+    color: var(--color-text-light);
+  }
+  .legal-prose {
+    font-size: 1.05rem;
+    line-height: 1.75;
+    color: #2D2A26;
+  }
+  .legal-prose .lead {
+    font-size: 1.15rem;
+    color: var(--color-text-main);
+    margin-bottom: 2rem;
+  }
+  .legal-prose h2 {
+    font-family: var(--font-serif);
+    font-size: 1.6rem;
+    font-weight: 700;
+    margin-top: 2.5rem;
+    margin-bottom: 1rem;
+    color: var(--color-text-main);
+  }
+  .cookie-table-wrapper {
+    margin: 2rem 0;
+    overflow-x: auto;
+  }
+  .editorial-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.875rem;
+  }
+  .editorial-table th, .editorial-table td {
+    padding: 0.85rem 1rem;
+    text-align: left;
+    border-bottom: 1px solid var(--color-border);
+  }
+  .editorial-table th {
+    background-color: var(--color-surface-subtle);
+  }
+</style>

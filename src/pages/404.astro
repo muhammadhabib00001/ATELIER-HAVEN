@@ -1,0 +1,208 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import articles from '../data/articles.json';
+import siteData from '../data/site.json';
+
+const popularArticles = articles.slice(0, 3);
+const categories = siteData.categories.slice(0, 6);
+---
+
+<BaseLayout
+  title="Page Not Located | Atelier Haven"
+  description="The architectural page or specification document you requested could not be located."
+  noindex={true}
+>
+  <section class="not-found-section">
+    <div class="container not-found-container">
+      <span class="error-code">404 Architecture Index</span>
+      <h1 class="error-title">This Space Has Been Redesigned</h1>
+      <p class="error-lead">
+        The floor plan, article, or material guide you are looking for has either relocated to a new wing or no longer exists in our permanent archive.
+      </p>
+
+      <!-- Quick Search Bar -->
+      <form action="/search" method="get" class="error-search-form">
+        <input 
+          type="search" 
+          name="q" 
+          placeholder="Search our complete publication index..." 
+          required 
+          class="error-search-input"
+        />
+        <button type="submit" class="btn-primary">Search</button>
+      </form>
+
+      <!-- Recommended Popular Portals -->
+      <div class="error-nav-section">
+        <h2 class="error-subheading">Or Explore Featured Design Niches</h2>
+        <div class="cat-pill-group">
+          {categories.map(cat => (
+            <a href={`/category/${cat.slug}`} class="cat-pill">{cat.name}</a>
+          ))}
+          <a href="/" class="cat-pill home-pill">Magazine Home &rarr;</a>
+        </div>
+      </div>
+
+      <!-- Suggested Articles -->
+      <div class="suggested-articles-box">
+        <h2 class="error-subheading">Trending Editorial Stories</h2>
+        <div class="suggested-grid">
+          {popularArticles.map(art => (
+            <div class="suggested-item">
+              <a href={`/article/${art.slug}`} class="suggested-img-wrap">
+                <img src={art.coverImage} alt={art.title} loading="lazy" width="300" height="180" class="suggested-img" />
+              </a>
+              <a href={`/category/${art.category}`} class="suggested-cat">{art.category}</a>
+              <h3 class="suggested-title">
+                <a href={`/article/${art.slug}`}>{art.title}</a>
+              </h3>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .not-found-section {
+    padding: 5rem 0 6rem;
+  }
+
+  .not-found-container {
+    max-width: 800px;
+    margin: 0 auto;
+    text-align: center;
+  }
+
+  .error-code {
+    font-size: 0.8125rem;
+    font-weight: 700;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--color-accent);
+    display: block;
+    margin-bottom: 0.75rem;
+  }
+
+  .error-title {
+    font-family: var(--font-serif);
+    font-size: 3rem;
+    font-weight: 800;
+    line-height: 1.15;
+    margin-bottom: 1rem;
+  }
+
+  .error-lead {
+    font-size: 1.15rem;
+    color: var(--color-text-muted);
+    line-height: 1.6;
+    margin-bottom: 2.5rem;
+  }
+
+  .error-search-form {
+    display: flex;
+    gap: 0.5rem;
+    max-width: 550px;
+    margin: 0 auto 3.5rem;
+  }
+
+  .error-search-input {
+    flex: 1;
+    padding: 0.85rem 1.25rem;
+    border: 1px solid var(--color-border-dark);
+    border-radius: 4px;
+    font-size: 0.9375rem;
+    outline: none;
+    background: #FFFFFF;
+  }
+
+  .error-subheading {
+    font-size: 0.8125rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--color-text-light);
+    margin-bottom: 1.25rem;
+  }
+
+  .cat-pill-group {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 0.6rem;
+    margin-bottom: 3.5rem;
+  }
+
+  .cat-pill {
+    font-size: 0.8125rem;
+    font-weight: 600;
+    padding: 0.4rem 1rem;
+    border-radius: 9999px;
+    border: 1px solid var(--color-border);
+    background: var(--color-surface);
+    color: var(--color-text-main);
+  }
+
+  .cat-pill:hover {
+    border-color: var(--color-dark);
+  }
+
+  .cat-pill.home-pill {
+    background: var(--color-dark);
+    color: #FAF9F5;
+    border-color: var(--color-dark);
+  }
+
+  .suggested-articles-box {
+    border-top: 1px solid var(--color-border);
+    padding-top: 3rem;
+  }
+
+  .suggested-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.5rem;
+    text-align: left;
+  }
+
+  .suggested-img-wrap {
+    display: block;
+    aspect-ratio: 16 / 10;
+    border-radius: 4px;
+    overflow: hidden;
+    margin-bottom: 0.65rem;
+  }
+
+  .suggested-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .suggested-cat {
+    font-size: 0.625rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    color: var(--color-accent);
+    display: block;
+    margin-bottom: 0.25rem;
+  }
+
+  .suggested-title {
+    font-family: var(--font-serif);
+    font-size: 0.9375rem;
+    font-weight: 700;
+    line-height: 1.35;
+  }
+
+  .suggested-title a:hover {
+    color: var(--color-accent);
+  }
+
+  @media (max-width: 700px) {
+    .suggested-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

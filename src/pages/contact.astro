@@ -1,0 +1,270 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Breadcrumbs from '../components/Breadcrumbs.astro';
+
+const breadcrumbItems = [
+  { name: 'Contact & Submissions' }
+];
+---
+
+<BaseLayout
+  title="Contact Atelier Haven | Press, Editorial Pitches & Letters"
+  description="Connect with the editorial team at Atelier Haven. Submit residential project pitches, photography portfolios, press releases, or licensing inquiries."
+  breadcrumbs={breadcrumbItems}
+  jsonLdType="organization"
+>
+  <Breadcrumbs items={breadcrumbItems} />
+
+  <section class="contact-hero">
+    <div class="container contact-container">
+      <span class="contact-kicker">Connect With Us</span>
+      <h1 class="contact-headline">Editorial Inquiries & Project Submissions</h1>
+      <p class="contact-lead">
+        We welcome submissions of newly completed private residences, historic restorations, architectural monographs, and academic research papers.
+      </p>
+    </div>
+  </section>
+
+  <section class="contact-section">
+    <div class="container contact-grid">
+      <!-- Contact Info / Bureaus -->
+      <div class="contact-info-col">
+        <h2 class="col-title">Publishing Bureaus</h2>
+
+        <div class="info-block">
+          <h3>San Francisco (Headquarters)</h3>
+          <p>
+            Atelier Haven Media Group<br />
+            742 Montgomery St, Suite 400<br />
+            San Francisco, CA 94111 &bull; USA<br />
+            Email: <a href="mailto:editorial@atelierhaven.com">editorial@atelierhaven.com</a>
+          </p>
+        </div>
+
+        <div class="info-block">
+          <h3>European Bureau (Paris)</h3>
+          <p>
+            Bureau d'Architecture Atelier Haven<br />
+            14 Rue de Tournon, 6ème Arrondissement<br />
+            75006 Paris &bull; France<br />
+            Email: <a href="mailto:paris@atelierhaven.com">paris@atelierhaven.com</a>
+          </p>
+        </div>
+
+        <div class="info-block">
+          <h3>Direct Editorial Desk Contacts</h3>
+          <ul class="contacts-list">
+            <li><strong>Project Pitches:</strong> submissions@atelierhaven.com</li>
+            <li><strong>Press Releases:</strong> press@atelierhaven.com</li>
+            <li><strong>Syndication & Licensing:</strong> rights@atelierhaven.com</li>
+            <li><strong>Corrections & Fact-Checking:</strong> corrections@atelierhaven.com</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Submission Interactive Form -->
+      <div class="contact-form-col">
+        <div class="form-card">
+          <h2 class="form-card-title">Send a Direct Message or Project Pitch</h2>
+          <p class="form-card-desc">Our managing editors review all communications within two business days.</p>
+
+          <form class="contact-form" onsubmit="event.preventDefault(); document.getElementById('contactFeedback').style.display = 'block'; this.reset();">
+            <div class="form-group">
+              <label for="contactName">Full Name / Studio Name *</label>
+              <input type="text" id="contactName" required placeholder="e.g. Maya Lin / Studio K Architecture" class="form-input" />
+            </div>
+
+            <div class="form-group">
+              <label for="contactEmail">Professional Email *</label>
+              <input type="email" id="contactEmail" required placeholder="name@studio.com" class="form-input" />
+            </div>
+
+            <div class="form-group">
+              <label for="inquiryType">Inquiry Department *</label>
+              <select id="inquiryType" required class="form-select">
+                <option value="project-submission">Residential Project Submission for Feature</option>
+                <option value="editorial-letter">Letter to the Editor / Feedback</option>
+                <option value="press-release">Press Release / Book Review Copy</option>
+                <option value="advertising">AdSense / Curated Sponsorship Inquiries</option>
+                <option value="correction">Fact-Checking / Editorial Correction</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label for="projectLink">Dropbox / Google Drive Portfolio Link (Optional)</label>
+              <input type="url" id="projectLink" placeholder="https://..." class="form-input" />
+            </div>
+
+            <div class="form-group">
+              <label for="contactMessage">Message / Architectural Abstract *</label>
+              <textarea id="contactMessage" rows="5" required placeholder="Please describe the architectural scope, material palette, location, and photo credits..." class="form-textarea"></textarea>
+            </div>
+
+            <button type="submit" class="btn-primary form-submit-btn">Transmit Inquiry</button>
+
+            <div id="contactFeedback" class="form-feedback">
+              Thank you. Your message has been received by the Atelier Haven editorial board.
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .contact-hero {
+    background-color: var(--color-surface-subtle);
+    border-bottom: 1px solid var(--color-border);
+    padding: 4.5rem 0 3.5rem;
+    text-align: center;
+  }
+
+  .contact-container {
+    max-width: 820px;
+  }
+
+  .contact-kicker {
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.16em;
+    color: var(--color-accent);
+    display: block;
+    margin-bottom: 0.75rem;
+  }
+
+  .contact-headline {
+    font-family: var(--font-serif);
+    font-size: 2.85rem;
+    font-weight: 800;
+    line-height: 1.15;
+    margin-bottom: 1.25rem;
+  }
+
+  .contact-lead {
+    font-size: 1.15rem;
+    color: var(--color-text-muted);
+    line-height: 1.6;
+  }
+
+  .contact-section {
+    padding: 5rem 0;
+  }
+
+  .contact-grid {
+    display: grid;
+    grid-template-columns: 1fr 1.3fr;
+    gap: 4rem;
+  }
+
+  .col-title {
+    font-family: var(--font-serif);
+    font-size: 1.75rem;
+    font-weight: 700;
+    margin-bottom: 2rem;
+  }
+
+  .info-block {
+    margin-bottom: 2.25rem;
+  }
+
+  .info-block h3 {
+    font-size: 1.05rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+  }
+
+  .info-block p {
+    font-size: 0.9375rem;
+    color: var(--color-text-muted);
+    line-height: 1.6;
+  }
+
+  .contacts-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+    font-size: 0.875rem;
+    color: var(--color-text-muted);
+  }
+
+  .form-card {
+    background-color: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: 8px;
+    padding: 2.5rem;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.03);
+  }
+
+  .form-card-title {
+    font-family: var(--font-serif);
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+  }
+
+  .form-card-desc {
+    font-size: 0.875rem;
+    color: var(--color-text-muted);
+    margin-bottom: 2rem;
+  }
+
+  .contact-form {
+    display: flex;
+    flex-direction: column;
+    gap: 1.35rem;
+  }
+
+  .form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+  }
+
+  .form-group label {
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--color-text-main);
+  }
+
+  .form-input, .form-select, .form-textarea {
+    width: 100%;
+    padding: 0.8rem 1rem;
+    font-size: 0.9375rem;
+    border: 1px solid var(--color-border-dark);
+    border-radius: 4px;
+    background-color: #FFFFFF;
+    color: var(--color-text-main);
+    outline: none;
+    font-family: inherit;
+  }
+
+  .form-input:focus, .form-select:focus, .form-textarea:focus {
+    border-color: var(--color-dark);
+  }
+
+  .form-submit-btn {
+    align-self: flex-start;
+    padding: 0.9rem 2rem;
+  }
+
+  .form-feedback {
+    display: none;
+    background-color: #EDF7EE;
+    border: 1px solid #C3E6CB;
+    color: #1E4620;
+    padding: 1rem;
+    border-radius: 4px;
+    font-size: 0.875rem;
+  }
+
+  @media (max-width: 850px) {
+    .contact-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>
