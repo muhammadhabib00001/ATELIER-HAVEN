@@ -1,7 +1,6 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 import Breadcrumbs from '../components/Breadcrumbs.astro';
-import TableOfContents from '../components/TableOfContents.astro';
 import SocialShare from '../components/SocialShare.astro';
 import AdSlot from '../components/AdSlot.astro';
 import Newsletter from '../components/Newsletter.astro';
@@ -151,10 +150,7 @@ const formattedUpdatedDate = article.updatedAt ? new Date(article.updatedAt).toL
           <!-- In-Article Top Ad -->
           <AdSlot slotType="in-article" slotId={`at-art-${article.slug}-1`} />
 
-          <!-- Table of Contents -->
-          {article.toc && article.toc.length > 0 && (
-            <TableOfContents toc={article.toc} />
-          )}
+
 
           <!-- Main Article HTML Body -->
           <div class="prose-content" set:html={article.content} />
