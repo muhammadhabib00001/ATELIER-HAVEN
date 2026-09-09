@@ -93,6 +93,10 @@ const formattedUpdatedDate = article.updatedAt ? new Date(article.updatedAt).toL
               </div>
             )}
           </div>
+
+          <div class="byline-share-wrapper">
+            <SocialShare url={Astro.url.href} title={article.title} description={article.subtitle} />
+          </div>
         </div>
       </div>
     </header>
@@ -122,12 +126,7 @@ const formattedUpdatedDate = article.updatedAt ? new Date(article.updatedAt).toL
     <!-- Editorial Body & Sidebar -->
     <div class="container article-container">
       <div class="article-body-wrapper">
-        <!-- Floating Social Sticky Bar -->
-        <aside class="article-sticky-tools">
-          <div class="tools-inner">
-            <SocialShare url={Astro.url.href} title={article.title} description={article.subtitle} />
-          </div>
-        </aside>
+
 
         <!-- Long-Form Editorial Content -->
         <div class="article-body">
@@ -374,17 +373,9 @@ const formattedUpdatedDate = article.updatedAt ? new Date(article.updatedAt).toL
     position: relative;
   }
 
-  .article-sticky-tools {
-    position: absolute;
-    left: -70px;
-    top: 2rem;
-  }
-
-  .tools-inner {
-    position: sticky;
-    top: 100px;
+  .byline-share-wrapper {
     display: flex;
-    flex-direction: column;
+    align-items: center;
   }
 
   .key-takeaways-card {
@@ -727,9 +718,6 @@ const formattedUpdatedDate = article.updatedAt ? new Date(article.updatedAt).toL
   @media (max-width: 900px) {
     .article-headline {
       font-size: 2.15rem;
-    }
-    .article-sticky-tools {
-      display: none;
     }
     .author-bio-card {
       flex-direction: column;
