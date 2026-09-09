@@ -2,7 +2,6 @@
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import ArticleCard from '../../components/ArticleCard.astro';
 import Breadcrumbs from '../../components/Breadcrumbs.astro';
-import AdSlot from '../../components/AdSlot.astro';
 import Newsletter from '../../components/Newsletter.astro';
 import siteData from '../../data/site.json';
 import articles from '../../data/articles.json';
@@ -52,18 +51,13 @@ const breadcrumbItems = [
     </div>
   </header>
 
-  <!-- Top Ad Slot -->
-  <div class="container">
-    <AdSlot slotType="leaderboard" slotId={`at-cat-${category.slug}-top`} />
-  </div>
-
   <!-- Articles Grid -->
   <section class="category-content-section">
     <div class="container">
       {featuredCategoryArticle && (
         <div class="category-featured-box">
           <span class="featured-banner-tag">Category Feature Story</span>
-          <ArticleCard article={featuredCategoryArticle} variant="hero" priority={true} />
+          <ArticleCard article={featuredCategoryArticle} variant="featured" />
         </div>
       )}
 
@@ -83,11 +77,6 @@ const breadcrumbItems = [
       )}
     </div>
   </section>
-
-  <!-- Bottom Ad Slot -->
-  <div class="container">
-    <AdSlot slotType="in-article" slotId={`at-cat-${category.slug}-mid`} />
-  </div>
 
   <!-- Newsletter -->
   <div class="container">

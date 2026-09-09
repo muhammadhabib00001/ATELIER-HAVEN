@@ -2,7 +2,6 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 import Breadcrumbs from '../components/Breadcrumbs.astro';
 import SocialShare from '../components/SocialShare.astro';
-import AdSlot from '../components/AdSlot.astro';
 import Newsletter from '../components/Newsletter.astro';
 import siteData from '../data/site.json';
 import articles from '../data/articles.json';
@@ -147,16 +146,8 @@ const formattedUpdatedDate = article.updatedAt ? new Date(article.updatedAt).toL
             </div>
           )}
 
-          <!-- In-Article Top Ad -->
-          <AdSlot slotType="in-article" slotId={`at-art-${article.slug}-1`} />
-
-
-
           <!-- Main Article HTML Body -->
           <div class="prose-content" set:html={article.content} />
-
-          <!-- In-Article Mid Ad -->
-          <AdSlot slotType="in-article" slotId={`at-art-${article.slug}-2`} />
 
           <!-- Editorial Fact-Checking Disclaimer -->
           <div class="fact-check-box">
