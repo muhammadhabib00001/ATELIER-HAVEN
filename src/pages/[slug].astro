@@ -73,7 +73,7 @@ const formattedUpdatedDate = article.updatedAt ? new Date(article.updatedAt).toL
         <!-- Byline & E-E-A-T Badges -->
         <div class="article-byline-bar">
           <div class="author-block">
-            <img src={author.avatar} alt={author.name} width="46" height="46" class="author-portrait" />
+            <img src={author.avatar} alt={author.name} width="46" height="46" class="author-portrait" crossorigin="anonymous" referrerpolicy="no-referrer-when-downgrade" />
             <div class="author-text">
               <a href={`/author/${author.slug}`} class="author-byline-name">{author.name}</a>
               <span class="author-credentials">{author.credentials}</span>
@@ -112,7 +112,7 @@ const formattedUpdatedDate = article.updatedAt ? new Date(article.updatedAt).toL
             decoding="async"
             width="1200" 
             height="700" 
-            class="cover-image" 
+            class="cover-image" crossorigin="anonymous" referrerpolicy="no-referrer-when-downgrade" 
           />
           <figcaption class="cover-caption">
             <span>{article.coverAlt || article.title}</span>
@@ -183,7 +183,7 @@ const formattedUpdatedDate = article.updatedAt ? new Date(article.updatedAt).toL
           <!-- Author Bio Box -->
           <section class="author-bio-section" aria-labelledby="author-bio-title">
             <div class="author-bio-card">
-              <img src={author.avatar} alt={author.name} width="84" height="84" class="author-bio-avatar" />
+              <img src={author.avatar} alt={author.name} width="84" height="84" class="author-bio-avatar" crossorigin="anonymous" referrerpolicy="no-referrer-when-downgrade" />
               <div class="author-bio-details">
                 <span class="bio-written-by">Written by</span>
                 <h3 id="author-bio-title" class="author-bio-name">
@@ -214,7 +214,7 @@ const formattedUpdatedDate = article.updatedAt ? new Date(article.updatedAt).toL
           {relatedArticles.map(art => (
             <div class="related-card-item">
               <a href={`/${art.slug}`} class="related-img-link">
-                <img src={art.coverImage} alt={art.title} loading="lazy" width="400" height="250" class="related-img" />
+                <img src={art.coverImage} alt={art.title} loading="lazy" width="400" height="250" class="related-img" crossorigin="anonymous" referrerpolicy="no-referrer-when-downgrade" />
               </a>
               <a href={`/category/${art.category}`} class="related-cat">{art.category}</a>
               <h3 class="related-card-title">

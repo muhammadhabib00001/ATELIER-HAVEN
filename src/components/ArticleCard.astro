@@ -34,7 +34,7 @@ const formattedDate = new Date(article.publishedAt).toLocaleDateString('en-US', 
         fetchpriority={priority ? "high" : "auto"}
         width="800"
         height="500"
-        class="card-img"
+        class="card-img" crossorigin="anonymous" referrerpolicy="no-referrer-when-downgrade"
       />
       {article.trending && <span class="trending-badge">Trending</span>}
     </div>
@@ -69,7 +69,7 @@ const formattedDate = new Date(article.publishedAt).toLocaleDateString('en-US', 
           width="28" 
           height="28" 
           loading="lazy" 
-          class="author-avatar"
+          class="author-avatar" crossorigin="anonymous" referrerpolicy="no-referrer-when-downgrade"
         />
         <div class="author-info">
           <span class="author-name">{author.name}</span>
