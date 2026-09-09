@@ -82,14 +82,7 @@ const categories = siteData.categories;
       <div class="footer-copy">
         &copy; {currentYear} Atelier Haven Media Group, Inc. All rights reserved. Registered architectural publication.
       </div>
-      <div class="footer-ai-disclosure">
-        <a href="/llms.txt" class="llm-badge" title="Machine-readable site manifest for LLMs & AI search engines">
-          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <polyline points="16 18 22 12 16 6"></polyline>
-            <polyline points="8 6 2 12 8 18"></polyline>
-          </svg>
-          /llms.txt Crawlable
-        </a>
+      <div class="footer-links-bottom">
         <a href="/rss.xml" class="rss-link">RSS Feed</a>
         <a href="/sitemap-index.xml" class="sitemap-link">Sitemap</a>
       </div>
@@ -193,31 +186,13 @@ const categories = siteData.categories;
     gap: 1rem;
   }
 
-  .footer-ai-disclosure {
+  .footer-links-bottom {
     display: flex;
     align-items: center;
     gap: 1.25rem;
   }
 
-  .llm-badge {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.35rem;
-    background: #EAE6DC;
-    padding: 0.2rem 0.6rem;
-    border-radius: 4px;
-    font-family: monospace;
-    font-size: 0.75rem;
-    color: var(--color-dark);
-    font-weight: 600;
-  }
-
-  .llm-badge:hover {
-    background: var(--color-dark);
-    color: #FAF9F5;
-  }
-
-  .rss-link, .sitemap-link {
+.rss-link, .sitemap-link {
     color: var(--color-text-muted);
   }
 
