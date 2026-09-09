@@ -19,6 +19,15 @@ const categoryArticles = articles.filter(a => a.category === category.slug);
 const featuredCategoryArticle = categoryArticles[0];
 const otherArticles = categoryArticles.slice(1);
 
+// Suggested related articles from other spaces to ensure full magazine depth
+const relatedSpacesArticles = articles
+  .filter(a => a.category !== category.slug)
+  .slice(0, 3);
+
+const otherCategories = siteData.categories
+  .filter(c => c.slug !== category.slug)
+  .slice(0, 6);
+
 const breadcrumbItems = [
   { name: 'Categories', url: '/' },
   { name: category.name }
@@ -34,47 +43,98 @@ const breadcrumbItems = [
 >
   <Breadcrumbs items={breadcrumbItems} />
 
-  <!-- Category Hero Header -->
-  <header class="category-header">
-    <div class="container">
-      <div class="category-header-inner">
-        <span class="category-kicker">Architectural Focus</span>
+  <!-- Luxury Architectural Category Hero Banner -->
+  <header class="category-hero-banner">
+    <div class="category-hero-bg-media" aria-hidden="true">
+      <img 
+        src={category.cover} 
+        alt={category.name} 
+        class="category-bg-img" 
+        fetchpriority="high"
+        crossorigin="anonymous"
+        referrerpolicy="no-referrer-when-downgrade"
+      />
+      <div class="category-hero-overlay"></div>
+    </div>
+
+    <div class="container category-hero-content-wrapper">
+      <div class="category-hero-card">
+        <span class="category-kicker">Architectural Field Guide</span>
         <h1 class="category-title">{category.name}</h1>
         <p class="category-lead">{category.description}</p>
 
         <div class="category-meta-bar">
-          <span class="article-count">{categoryArticles.length} Curated Guides</span>
-          <span class="meta-dot">&bull;</span>
-          <span class="editorial-status">Peer-Reviewed Specifications</span>
+          <span class="meta-pill">{categoryArticles.length} Curated Volume{categoryArticles.length === 1 ? '' : 's'}</span>
+          <span class="meta-divider">&bull;</span>
+          <span class="meta-status">Peer-Reviewed Specifications</span>
+          <span class="meta-divider">&bull;</span>
+          <span class="meta-edition">Quarterly Edition</span>
         </div>
       </div>
     </div>
   </header>
 
-  <!-- Articles Grid -->
+  <!-- Category Main Articles Section -->
   <section class="category-content-section">
     <div class="container">
       {featuredCategoryArticle && (
-        <div class="category-featured-box">
-          <span class="featured-banner-tag">Category Feature Story</span>
-          <ArticleCard article={featuredCategoryArticle} variant="featured" />
+        <div class="category-lead-feature">
+          <div class="section-label-bar">
+            <span class="label-kicker">Cover Story</span>
+            <span class="label-line"></span>
+          </div>
+          <div class="lead-feature-card-wrapper">
+            <ArticleCard article={featuredCategoryArticle} variant="hero" priority={true} />
+          </div>
         </div>
       )}
 
       {otherArticles.length > 0 && (
-        <div class="category-secondary-grid">
-          {otherArticles.map(art => (
-            <ArticleCard article={art} variant="standard" />
-          ))}
+        <div class="category-secondary-block">
+          <div class="section-label-bar">
+            <span class="label-kicker">Archive & In-Depth Studies</span>
+            <span class="label-line"></span>
+          </div>
+          <div class="category-articles-grid">
+            {otherArticles.map(art => (
+              <ArticleCard article={art} variant="standard" />
+            ))}
+          </div>
         </div>
       )}
 
       {categoryArticles.length === 0 && (
         <div class="empty-category-notice">
-          <p>Our editorial team is currently drafting the upcoming master volume for {category.name}.</p>
+          <p>Our editorial team is currently drafting the upcoming master monograph for {category.name}.</p>
           <a href="/" class="btn-primary">Return to Magazine Home</a>
         </div>
       )}
+
+      <!-- Complementary Architecture from Adjoining Spaces -->
+      <div class="adjoining-spaces-block">
+        <div class="section-label-bar">
+          <span class="label-kicker">Harmonizing Spaces & Material Connections</span>
+          <span class="label-line"></span>
+        </div>
+        <div class="adjoining-articles-grid">
+          {relatedSpacesArticles.map(art => (
+            <ArticleCard article={art} variant="standard" />
+          ))}
+        </div>
+      </div>
+
+      <!-- Quick Browse Other Spaces -->
+      <div class="other-categories-nav">
+        <h3 class="other-nav-title">Explore Adjoining Architectural Portfolios</h3>
+        <div class="other-categories-chips">
+          {otherCategories.map(cat => (
+            <a href={`/category/${cat.slug}`} class="category-chip">
+              <span class="chip-name">{cat.name}</span>
+              <span class="chip-arrow">&rarr;</span>
+            </a>
+          ))}
+        </div>
+      </div>
     </div>
   </section>
 
@@ -85,83 +145,224 @@ const breadcrumbItems = [
 </BaseLayout>
 
 <style>
-  .category-header {
-    background-color: var(--color-surface-subtle);
-    border-bottom: 1px solid var(--color-border);
-    padding: 3.5rem 0 3rem;
-    text-align: center;
+  /* Hero Banner */
+  .category-hero-banner {
+    position: relative;
+    padding: 5rem 0 4rem;
+    overflow: hidden;
+    background-color: var(--color-dark);
+    margin-bottom: 3.5rem;
   }
 
-  .category-header-inner {
-    max-width: 760px;
+  .category-hero-bg-media {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    overflow: hidden;
+  }
+
+  .category-bg-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center 35%;
+    filter: brightness(0.4) saturate(0.85);
+    transform: scale(1.04);
+    transition: transform 1.2s ease;
+  }
+
+  .category-hero-overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      180deg,
+      rgba(26, 26, 26, 0.72) 0%,
+      rgba(26, 26, 26, 0.88) 100%
+    );
+  }
+
+  .category-hero-content-wrapper {
+    position: relative;
+    z-index: 2;
+  }
+
+  .category-hero-card {
+    max-width: 820px;
     margin: 0 auto;
+    text-align: center;
+    color: #FAF9F5;
   }
 
   .category-kicker {
     font-size: 0.75rem;
     font-weight: 700;
-    letter-spacing: 0.14em;
+    letter-spacing: 0.18em;
     text-transform: uppercase;
     color: var(--color-accent);
     display: block;
-    margin-bottom: 0.5rem;
+    margin-bottom: 0.75rem;
   }
 
   .category-title {
     font-family: var(--font-serif);
-    font-size: 3rem;
+    font-size: 3.5rem;
     font-weight: 700;
-    color: var(--color-text-main);
-    line-height: 1.15;
-    margin-bottom: 1rem;
+    color: #FAF9F5;
+    line-height: 1.12;
+    margin-bottom: 1.25rem;
+    letter-spacing: -0.02em;
   }
 
   .category-lead {
-    font-size: 1.05rem;
-    color: var(--color-text-muted);
-    line-height: 1.6;
-    margin-bottom: 1.5rem;
+    font-size: 1.15rem;
+    color: rgba(250, 249, 245, 0.85);
+    line-height: 1.65;
+    margin-bottom: 2rem;
+    max-width: 720px;
+    margin-left: auto;
+    margin-right: auto;
   }
 
   .category-meta-bar {
     display: inline-flex;
+    flex-wrap: wrap;
     align-items: center;
-    gap: 0.6rem;
+    justify-content: center;
+    gap: 0.75rem;
     font-size: 0.75rem;
     font-weight: 600;
     text-transform: uppercase;
     letter-spacing: 0.08em;
-    color: var(--color-text-light);
-    background: #FFFFFF;
-    padding: 0.35rem 1rem;
+    color: rgba(250, 249, 245, 0.8);
+    background: rgba(255, 255, 255, 0.08);
+    backdrop-filter: blur(8px);
+    padding: 0.5rem 1.25rem;
     border-radius: 9999px;
-    border: 1px solid var(--color-border);
+    border: 1px solid rgba(255, 255, 255, 0.15);
   }
 
-  .category-content-section {
-    padding: 3rem 0;
-  }
-
-  .category-featured-box {
-    margin-bottom: 4rem;
-    padding-bottom: 3.5rem;
-    border-bottom: 1px solid var(--color-border);
-  }
-
-  .featured-banner-tag {
-    display: inline-block;
-    font-size: 0.6875rem;
-    font-weight: 700;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
+  .meta-divider {
     color: var(--color-accent);
-    margin-bottom: 1.25rem;
   }
 
-  .category-secondary-grid {
+  /* Content Section */
+  .category-content-section {
+    padding: 1rem 0 4rem;
+  }
+
+  .section-label-bar {
+    display: flex;
+    align-items: center;
+    gap: 1.25rem;
+    margin-bottom: 2rem;
+  }
+
+  .label-kicker {
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--color-text-main);
+    white-space: nowrap;
+  }
+
+  .label-line {
+    flex: 1;
+    height: 1px;
+    background-color: var(--color-border);
+  }
+
+  .category-lead-feature {
+    margin-bottom: 4.5rem;
+  }
+
+  .lead-feature-card-wrapper {
+    background: #FFFFFF;
+    border: 1px solid var(--color-border);
+    border-radius: 8px;
+    padding: 2.25rem;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+  }
+
+  .lead-feature-card-wrapper:hover {
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.06);
+  }
+
+  .category-secondary-block {
+    margin-bottom: 4.5rem;
+  }
+
+  .category-articles-grid {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     gap: 2.5rem;
+  }
+
+  .adjoining-spaces-block {
+    margin-top: 5rem;
+    padding-top: 3.5rem;
+    border-top: 1px solid var(--color-border);
+  }
+
+  .adjoining-articles-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2.5rem;
+  }
+
+  .other-categories-nav {
+    margin-top: 4.5rem;
+    background: var(--color-surface-subtle);
+    border: 1px solid var(--color-border);
+    border-radius: 8px;
+    padding: 2.5rem;
+    text-align: center;
+  }
+
+  .other-nav-title {
+    font-family: var(--font-serif);
+    font-size: 1.4rem;
+    color: var(--color-text-main);
+    margin-bottom: 1.5rem;
+  }
+
+  .other-categories-chips {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 0.85rem;
+  }
+
+  .category-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: #FFFFFF;
+    border: 1px solid var(--color-border);
+    padding: 0.6rem 1.25rem;
+    border-radius: 9999px;
+    font-size: 0.8125rem;
+    font-weight: 600;
+    color: var(--color-text-main);
+    text-decoration: none;
+    transition: all 0.2s ease;
+  }
+
+  .category-chip:hover {
+    border-color: var(--color-accent);
+    color: var(--color-accent);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  }
+
+  .chip-arrow {
+    color: var(--color-accent);
+    transition: transform 0.2s ease;
+  }
+
+  .category-chip:hover .chip-arrow {
+    transform: translateX(3px);
   }
 
   .empty-category-notice {
@@ -170,6 +371,7 @@ const breadcrumbItems = [
     background: var(--color-surface);
     border: 1px dashed var(--color-border);
     border-radius: 6px;
+    margin-bottom: 3rem;
   }
 
   .empty-category-notice p {
@@ -178,12 +380,36 @@ const breadcrumbItems = [
     margin-bottom: 1.5rem;
   }
 
-  @media (max-width: 900px) {
+  @media (max-width: 960px) {
     .category-title {
-      font-size: 2.25rem;
+      font-size: 2.5rem;
     }
-    .category-secondary-grid {
+    .lead-feature-card-wrapper {
+      padding: 1.25rem;
+    }
+    .category-articles-grid,
+    .adjoining-articles-grid {
+      grid-template-columns: repeat(2, 1fr);
+      gap: 1.75rem;
+    }
+  }
+
+  @media (max-width: 640px) {
+    .category-hero-banner {
+      padding: 3.5rem 0 3rem;
+    }
+    .category-title {
+      font-size: 2.1rem;
+    }
+    .category-lead {
+      font-size: 1rem;
+    }
+    .category-articles-grid,
+    .adjoining-articles-grid {
       grid-template-columns: 1fr;
+    }
+    .other-categories-nav {
+      padding: 1.75rem 1rem;
     }
   }
 </style>
