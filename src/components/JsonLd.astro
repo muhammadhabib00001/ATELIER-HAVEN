@@ -5,7 +5,7 @@ interface Props {
 }
 
 const { type, data = {} } = Astro.props;
-const siteUrl = "https://atelierhaven.com";
+const siteUrl = "https://atriumlivings.com";
 
 let schema: any = {};
 
@@ -16,18 +16,18 @@ if (type === "organization" || type === "website") {
       {
         "@type": "Organization",
         "@id": `${siteUrl}/#organization`,
-        "name": "Atelier Haven",
+        "name": "Atrium Livings",
         "url": siteUrl,
         "logo": {
           "@type": "ImageObject",
           "@id": `${siteUrl}/#logo`,
           "url": `${siteUrl}/images/logo.png`,
-          "caption": "Atelier Haven Logo"
+          "caption": "Atrium Livings Logo"
         },
         "sameAs": [
-          "https://twitter.com/atelierhaven",
-          "https://pinterest.com/atelierhaven",
-          "https://instagram.com/atelierhaven"
+          "https://twitter.com/atriumlivings",
+          "https://pinterest.com/atriumlivings",
+          "https://instagram.com/atriumlivings"
         ],
         "description": "The Definitive Journal of Modern Architecture, Interior Spaces & Artful Living."
       },
@@ -35,7 +35,7 @@ if (type === "organization" || type === "website") {
         "@type": "WebSite",
         "@id": `${siteUrl}/#website`,
         "url": siteUrl,
-        "name": "Atelier Haven",
+        "name": "Atrium Livings",
         "publisher": {
           "@id": `${siteUrl}/#organization`
         },
@@ -75,7 +75,7 @@ if (type === "organization" || type === "website") {
     },
     "publisher": {
       "@type": "Organization",
-      "name": "Atelier Haven",
+      "name": "Atrium Livings",
       "url": siteUrl,
       "logo": {
         "@type": "ImageObject",

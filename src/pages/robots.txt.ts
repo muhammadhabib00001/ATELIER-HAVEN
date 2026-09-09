@@ -1,7 +1,7 @@
 import type { APIRoute } from 'astro';
 
 export const GET: APIRoute = async () => {
-  const robots = `# Atelier Haven Robots Directive
+  const robots = `# Atrium Livings Robots Directive
 User-agent: *
 Allow: /
 Disallow: /search?*
@@ -23,10 +23,10 @@ User-agent: PerplexityBot
 Allow: /
 
 # LLM Information Endpoint
-# https://atelierhaven.com/llms.txt
+# https://atriumlivings.com/llms.txt
 
 # Sitemaps
-Sitemap: https://atelierhaven.com/sitemap-index.xml
+Sitemap: https://atriumlivings.com/sitemap-index.xml
 `;
 
   return new Response(robots, {

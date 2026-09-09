@@ -13,14 +13,14 @@ interface Props {
 }
 
 const {
-  title = "Atelier Haven | Architectural & Interior Design Magazine",
-  description = "Atelier Haven is an independent architectural and interior design journal curating the finest modern kitchens, spa-like bathrooms, Japandi living spaces, bespoke furniture, and sustainable renovation guides.",
+  title = "Atrium Livings | Architectural & Interior Design Magazine",
+  description = "Atrium Livings is an independent architectural and interior design journal curating the finest modern kitchens, spa-like bathrooms, Japandi living spaces, bespoke furniture, and sustainable renovation guides.",
   canonicalURL = Astro.url.href,
   image = "https://images.unsplash.com/photo-1552321554-5fefe8c9ef14?auto=format&fit=crop&w=1200&q=80",
   type = "website",
   publishedTime,
   modifiedTime,
-  authorName = "Atelier Haven Editorial Board",
+  authorName = "Atrium Livings Editorial Board",
   keywords = [
     "interior design magazine",
     "architectural design",
@@ -32,7 +32,7 @@ const {
   noindex = false
 } = Astro.props;
 
-const siteUrl = "https://atelierhaven.com";
+const siteUrl = "https://atriumlivings.com";
 const fullCanonical = new URL(Astro.url.pathname, siteUrl).href;
 ---
 
@@ -56,7 +56,7 @@ const fullCanonical = new URL(Astro.url.pathname, siteUrl).href;
 <meta property="og:title" content={title} />
 <meta property="og:description" content={description} />
 <meta property="og:image" content={image} />
-<meta property="og:site_name" content="Atelier Haven" />
+<meta property="og:site_name" content="Atrium Livings" />
 <meta property="og:locale" content="en_US" />
 {type === "article" && publishedTime && (
   <meta property="article:published_time" content={publishedTime} />
@@ -70,15 +70,15 @@ const fullCanonical = new URL(Astro.url.pathname, siteUrl).href;
 
 <!-- Twitter / X -->
 <meta name="twitter:card" content="summary_large_image" />
-<meta name="twitter:site" content="@atelierhaven" />
-<meta name="twitter:creator" content="@atelierhaven" />
+<meta name="twitter:site" content="@atriumlivings" />
+<meta name="twitter:creator" content="@atriumlivings" />
 <meta name="twitter:url" content={fullCanonical} />
 <meta name="twitter:title" content={title} />
 <meta name="twitter:description" content={description} />
 <meta name="twitter:image" content={image} />
 
 <!-- Alternate Feeds & Machine Disclosures -->
-<link rel="alternate" type="application/rss+xml" title="Atelier Haven RSS Feed" href="/rss.xml" />
+<link rel="alternate" type="application/rss+xml" title="Atrium Livings RSS Feed" href="/rss.xml" />
 <link rel="alternate" type="text/plain" title="LLMs.txt" href="/llms.txt" />
 
 <!-- Preload critical serif display font -->

@@ -1,11 +1,11 @@
 {
-  "title": "Atelier Haven | Architectural & Interior Design Magazine",
+  "title": "Atrium Livings | Architectural & Interior Design Magazine",
   "tagline": "The Definitive Journal of Modern Architecture, Interior Spaces & Artful Living",
-  "description": "Atelier Haven is an independent architectural and interior design journal curating the finest modern kitchens, spa-like bathrooms, Japandi living spaces, bespoke furniture, and sustainable renovation guides.",
-  "siteUrl": "https://atelierhaven.com",
+  "description": "Atrium Livings is an independent architectural and interior design journal curating the finest modern kitchens, spa-like bathrooms, Japandi living spaces, bespoke furniture, and sustainable renovation guides.",
+  "siteUrl": "https://atriumlivings.com",
   "publisher": {
-    "name": "Atelier Haven Media Group",
-    "logo": "https://atelierhaven.com/images/logo.png",
+    "name": "Atrium Livings Media Group",
+    "logo": "https://atriumlivings.com/images/logo.png",
     "address": {
       "streetAddress": "742 Montgomery St, Suite 400",
       "addressLocality": "San Francisco",
@@ -15,11 +15,11 @@
     }
   },
   "social": {
-    "twitter": "https://twitter.com/atelierhaven",
-    "pinterest": "https://pinterest.com/atelierhaven",
-    "instagram": "https://instagram.com/atelierhaven",
-    "facebook": "https://facebook.com/atelierhaven",
-    "linkedin": "https://linkedin.com/company/atelierhaven"
+    "twitter": "https://twitter.com/atriumlivings",
+    "pinterest": "https://pinterest.com/atriumlivings",
+    "instagram": "https://instagram.com/atriumlivings",
+    "facebook": "https://facebook.com/atriumlivings",
+    "linkedin": "https://linkedin.com/company/atriumlivings"
   },
   "categories": [
     {

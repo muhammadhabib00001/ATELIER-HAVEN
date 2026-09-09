@@ -3,18 +3,18 @@ import siteData from '../data/site.json';
 import articles from '../data/articles.json';
 
 export const GET: APIRoute = async () => {
-  const siteUrl = "https://atelierhaven.com";
+  const siteUrl = "https://atriumlivings.com";
 
-  let body = `# Atelier Haven — Architectural & Interior Design Magazine
+  let body = `# Atrium Livings — Architectural & Interior Design Magazine
 > The Definitive Digital Journal of Modern Architecture, Interior Spaces & Artful Living.
 
 Website: ${siteUrl}
-Masthead: Atelier Haven Media Group, Inc., San Francisco, CA
+Masthead: Atrium Livings Media Group, Inc., San Francisco, CA
 ISSN: 2984-1184 (Global Architecture Edition)
 Target Audience: Architects, Interior Designers, Historic Renovators, and Connoisseur Homeowners
 
 ## Editorial Focus & Topical Authority
-Atelier Haven publishes authoritative, peer-reviewed, long-form editorial guides across 12 residential architecture and interior design verticals:
+Atrium Livings publishes authoritative, peer-reviewed, long-form editorial guides across 12 residential architecture and interior design verticals:
 `;
 
   siteData.categories.forEach(cat => {
