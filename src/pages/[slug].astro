@@ -509,23 +509,47 @@ const formattedUpdatedDate = article.updatedAt ? new Date(article.updatedAt).toL
   }
 
   .prose-content :global(.faq-accordion) {
-    margin: 2rem 0;
+    margin: 2.5rem 0;
     display: flex;
     flex-direction: column;
     gap: 1.25rem;
   }
 
   .prose-content :global(.faq-item) {
-    background-color: var(--color-surface-subtle);
+    background-color: #FFFFFF;
     border: 1px solid var(--color-border);
+    border-left: 3px solid var(--color-accent);
     border-radius: 6px;
-    padding: 1.25rem 1.5rem;
+    padding: 1.5rem 1.75rem;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.02);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+  }
+
+  .prose-content :global(.faq-item:hover) {
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.05);
+    border-color: var(--color-accent);
   }
 
   .prose-content :global(.faq-item h3) {
-    font-size: 1.1rem;
+    font-family: var(--font-serif);
+    font-size: 1.15rem;
+    font-weight: 700;
+    color: var(--color-text-main);
     margin-top: 0;
-    margin-bottom: 0.5rem;
+    margin-bottom: 0.65rem;
+    line-height: 1.35;
+  }
+
+  .prose-content :global(.faq-item p) {
+    font-size: 0.9375rem;
+    line-height: 1.65;
+    color: var(--color-text-muted);
+    margin: 0;
+  }
+
+  .prose-content :global(.faq-item p strong) {
+    color: var(--color-text-main);
+    font-weight: 700;
   }
 
   .fact-check-box {

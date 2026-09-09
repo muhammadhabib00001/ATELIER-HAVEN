@@ -72,7 +72,7 @@ Format the HTML content meticulously:
 3. Under each <h2>, provide 2 to 4 detailed paragraphs exploring principles, structural framing, plumbing/electrical considerations, and tactile materiality.
 4. At least one prominent editorial quote: <div class="editorial-quote"><blockquote>...</blockquote><cite>— Architect Name, AIA</cite></div>
 5. Architectural specification cards: <div class="spec-card"><h4>Architectural Specifications</h4><ul><li><strong>Material / Tolerance:</strong> Detail</li>...</ul></div>
-6. An extensive FAQ section: <h2 id="faq">Frequently Asked Questions</h2> followed by <div class="faq-accordion"><div class="faq-item"><h3>Question?</h3><p>Detailed answer with concrete recommendations...</p></div> (minimum 3-4 Q&As).`;
+7. High-utility FAQ section: <h2 id="faq">Frequently Asked Questions</h2> followed by <div class="faq-accordion"><div class="faq-item"><h3>Precise Question?</h3><p><strong>Direct Key Info.</strong> 1 to 2 concise sentences providing the direct architectural rule, dimension, or specification.</p></div> (3-4 Q&As with short, direct answers).`;
 
   const modelsToTry = [
     "gemini-3.6-flash",
