@@ -62,7 +62,7 @@ const articleSchema = {
 export async function generateArticle(topic, options = {}) {
   console.log(`\n Generating article for topic: "${topic}"...`);
   
-  const systemPrompt = `You are a world-class architectural writer and luxury interior design consultant for "Atelier Haven" (Atrium Livings).
+  const systemPrompt = `You are a world-class architectural writer and luxury interior design consultant for "Atrium Livings".
 CRITICAL REQUIREMENT: The written HTML article content MUST be a MINIMUM of 1,000 to 1,200 words in length. Never write brief summaries. Be thorough, technical, analytical, and highly descriptive.
 Include rich architectural vocabulary, material specifications (psi, DCOF, janka ratings, kelvin color temperatures, clearance dimensions in inches and millimeters).
 
@@ -75,10 +75,10 @@ Format the HTML content meticulously:
 6. An extensive FAQ section: <h2 id="faq">Frequently Asked Questions</h2> followed by <div class="faq-accordion"><div class="faq-item"><h3>Question?</h3><p>Detailed answer with concrete recommendations...</p></div> (minimum 3-4 Q&As).`;
 
   const modelsToTry = [
+    "gemini-3.6-flash",
     "gemini-3.8-flash",
     "gemini-3.5-flash-lite",
-    "gemini-3.1-flash-lite",
-    "gemini-3.6-flash"
+    "gemini-3.1-flash-lite"
   ];
   let response = null;
 
@@ -127,7 +127,7 @@ Format the HTML content meticulously:
     coverImage: coverImageUrl,
     coverAlt: generated.coverAlt,
     keywords: generated.keywords,
-    seoTitle: generated.seoTitle.includes("Atelier Haven") ? generated.seoTitle : `${generated.seoTitle} | Atelier Haven`,
+    seoTitle: generated.seoTitle.includes("Atrium Livings") ? generated.seoTitle : `${generated.seoTitle} | Atrium Livings`,
     seoDescription: generated.seoDescription,
     keyTakeaways: generated.keyTakeaways,
     toc: generated.toc,
