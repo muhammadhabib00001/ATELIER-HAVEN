@@ -21,9 +21,41 @@ const categories = siteData.categories;
       </div>
 
       <div class="header-brand">
-        <a href="/" class="brand-link">
-          <span class="brand-title">ATRIUM LIVINGS</span>
-          <span class="brand-tagline">Architectural &bull; Interior &bull; Living</span>
+        <a href="/" class="brand-link" aria-label="Atrium Livings Home">
+          <div class="brand-header-wrap">
+            <svg class="brand-emblem-svg" viewBox="0 0 84 86" width="38" height="39" fill="none" aria-hidden="true">
+              <defs>
+                <linearGradient id="hdrGold" x1="0%" y1="0%" x2="100%" y2="100%">
+                  <stop offset="0%" stop-color="#D4AF37" />
+                  <stop offset="35%" stop-color="#AA7C11" />
+                  <stop offset="70%" stop-color="#E5C158" />
+                  <stop offset="100%" stop-color="#C59B27" />
+                </linearGradient>
+                <linearGradient id="hdrSlate" x1="0%" y1="0%" x2="0%" y2="100%">
+                  <stop offset="0%" stop-color="#2D2824" />
+                  <stop offset="100%" stop-color="#181513" />
+                </linearGradient>
+                <radialGradient id="hdrAtriumGlow" cx="50%" cy="65%" r="55%">
+                  <stop offset="0%" stop-color="#FAF4E8" stop-opacity="0.9" />
+                  <stop offset="70%" stop-color="#EFE6D4" stop-opacity="0.3" />
+                  <stop offset="100%" stop-color="#EFE6D4" stop-opacity="0" />
+                </radialGradient>
+              </defs>
+              <polygon points="42,5 80,30 80,76 4,76 4,30" fill="url(#hdrSlate)" stroke="url(#hdrGold)" stroke-width="2" />
+              <path d="M22,76 L22,46 Q42,22 62,46 L62,76 Z" fill="url(#hdrAtriumGlow)" />
+              <path d="M22,76 L22,46 C22,34 31,25 42,25 C53,25 62,34 62,46 L62,76" fill="none" stroke="url(#hdrGold)" stroke-width="2.5" />
+              <polygon points="42,16 68,76 57,76 42,42 27,76 16,76" fill="url(#hdrGold)" fill-opacity="0.22" stroke="url(#hdrGold)" stroke-width="1.2" />
+              <rect x="38" y="22" width="8" height="6" fill="url(#hdrGold)" rx="0.8" />
+              <rect x="18" y="46" width="8" height="3" fill="url(#hdrGold)" rx="0.5" />
+              <rect x="58" y="46" width="8" height="3" fill="url(#hdrGold)" rx="0.5" />
+              <rect x="0" y="76" width="84" height="4.5" fill="url(#hdrGold)" rx="0.5" />
+              <rect x="6" y="80.5" width="72" height="3" fill="url(#hdrSlate)" rx="0.5" />
+            </svg>
+            <div class="brand-text-block">
+              <span class="brand-title">ATRIUM <span class="brand-title-accent">LIVINGS</span></span>
+              <span class="brand-tagline">Architectural &bull; Interior &bull; Sanctuary</span>
+            </div>
+          </div>
         </a>
       </div>
 
@@ -139,26 +171,54 @@ const categories = siteData.categories;
 
   .brand-link {
     display: flex;
-    flex-direction: column;
     align-items: center;
+    justify-content: center;
+    text-decoration: none;
+  }
+
+  .brand-header-wrap {
+    display: flex;
+    align-items: center;
+    gap: 1.1rem;
+  }
+
+  .brand-emblem-svg {
+    flex-shrink: 0;
+    transition: transform 0.3s ease;
+  }
+
+  .brand-link:hover .brand-emblem-svg {
+    transform: scale(1.05);
+  }
+
+  .brand-text-block {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    text-align: left;
   }
 
   .brand-title {
     font-family: var(--font-serif);
-    font-size: 2.2rem;
+    font-size: 2.1rem;
     font-weight: 800;
     letter-spacing: 0.18em;
     color: var(--color-text-main);
-    line-height: 1.1;
+    line-height: 1.05;
+  }
+
+  .brand-title-accent {
+    font-weight: 400;
+    color: #8B6B38;
   }
 
   .brand-tagline {
-    font-size: 0.6875rem;
+    font-size: 0.65rem;
     text-transform: uppercase;
     letter-spacing: 0.28em;
     color: var(--color-text-light);
-    margin-top: 0.35rem;
-    font-weight: 500;
+    margin-top: 0.3rem;
+    font-weight: 600;
   }
 
   .header-actions {

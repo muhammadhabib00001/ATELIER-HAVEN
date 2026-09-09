@@ -1,0 +1,61 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 540 100" width="540" height="100" fill="none">
+  <defs>
+    <!-- Rich brushed bronze-gold gradient -->
+    <linearGradient id="bronzeGold" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#D4AF37" />
+      <stop offset="25%" stop-color="#AA7C11" />
+      <stop offset="50%" stop-color="#E5C158" />
+      <stop offset="75%" stop-color="#996515" />
+      <stop offset="100%" stop-color="#C59B27" />
+    </linearGradient>
+    
+    <!-- Warm ebony slate gradient for structure -->
+    <linearGradient id="ebonySlate" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#2C2825" />
+      <stop offset="100%" stop-color="#181513" />
+    </linearGradient>
+
+    <!-- Warm inner glow for atrium light -->
+    <radialGradient id="atriumGlow" cx="50%" cy="65%" r="55%">
+      <stop offset="0%" stop-color="#FAF4E8" stop-opacity="0.9" />
+      <stop offset="60%" stop-color="#EFE6D4" stop-opacity="0.4" />
+      <stop offset="100%" stop-color="#EFE6D4" stop-opacity="0" />
+    </radialGradient>
+
+    <filter id="subtleShadow" x="-10%" y="-10%" width="130%" height="130%">
+      <feDropShadow dx="0" dy="2" stdDeviation="2.5" flood-color="#181513" flood-opacity="0.15" />
+    </filter>
+  </defs>
+
+  <!-- ICON EMBLEM: Architectural Atrium & Portico (x: 15 to 100, y: 8 to 90) -->
+  <g class="brand-emblem" transform="translate(15, 8)">
+    <!-- Outer Pediment/Portico Silhouette -->
+    <polygon points="42,6 80,32 80,78 4,78 4,32" fill="url(#ebonySlate)" stroke="url(#bronzeGold)" stroke-width="1.8" filter="url(#subtleShadow)" />
+
+    <!-- Interior Atrium Arch Glow -->
+    <path d="M22,78 L22,46 Q42,22 62,46 L62,78 Z" fill="url(#atriumGlow)" />
+
+    <!-- Pure Fluted Architectural Roman/Modern Archway -->
+    <path d="M22,78 L22,46 C22,34 31,25 42,25 C53,25 62,34 62,46 L62,78" fill="none" stroke="url(#bronzeGold)" stroke-width="2.4" stroke-linecap="square" />
+    
+    <!-- Inner Stylized Triangular Arch / Letter A core -->
+    <polygon points="42,16 68,78 57,78 42,42 27,78 16,78" fill="url(#bronzeGold)" fill-opacity="0.18" stroke="url(#bronzeGold)" stroke-width="1.2" />
+
+    <!-- Keystone & Archway Capitals -->
+    <rect x="38" y="22" width="8" height="6" fill="url(#bronzeGold)" rx="0.8" />
+    <rect x="18" y="46" width="8" height="3" fill="url(#bronzeGold)" rx="0.5" />
+    <rect x="58" y="46" width="8" height="3" fill="url(#bronzeGold)" rx="0.5" />
+
+    <!-- Stepped Stylobate / Base -->
+    <rect x="0" y="78" width="84" height="4" fill="url(#bronzeGold)" rx="0.5" />
+    <rect x="6" y="82" width="72" height="2.5" fill="url(#ebonySlate)" rx="0.5" />
+  </g>
+
+  <!-- BRAND TYPOGRAPHY: ATRIUM LIVINGS -->
+  <!-- Primary Masthead -->
+  <text x="122" y="54" font-family="'Cinzel', 'Playfair Display', 'Didot', 'Bodoni MT', 'Times New Roman', Georgia, serif" font-size="36" font-weight="700" letter-spacing="0.22em" fill="#1C1917">ATRIUM</text>
+  <text x="328" y="54" font-family="'Cinzel', 'Playfair Display', 'Didot', 'Bodoni MT', 'Times New Roman', Georgia, serif" font-size="36" font-weight="400" letter-spacing="0.22em" fill="#8B6B38">LIVINGS</text>
+
+  <!-- Editorial Subline -->
+  <text x="124" y="76" font-family="'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="9.5" font-weight="600" letter-spacing="0.40em" fill="#78716C">ARCHITECTURAL • INTERIOR • SANCTUARY</text>
+</svg>

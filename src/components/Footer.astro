@@ -9,7 +9,27 @@ const categories = siteData.categories;
   <div class="container footer-grid">
     <!-- Brand / Mission -->
     <div class="footer-col brand-col">
-      <span class="footer-logo">ATRIUM LIVINGS</span>
+      <div class="footer-brand-wrap">
+        <svg class="footer-emblem-svg" viewBox="0 0 84 86" width="30" height="31" fill="none" aria-hidden="true">
+          <defs>
+            <linearGradient id="ftGold" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stop-color="#D4AF37" />
+              <stop offset="50%" stop-color="#AA7C11" />
+              <stop offset="100%" stop-color="#E5C158" />
+            </linearGradient>
+            <linearGradient id="ftSlate" x1="0%" y1="0%" x2="0%" y2="100%">
+              <stop offset="0%" stop-color="#2D2824" />
+              <stop offset="100%" stop-color="#181513" />
+            </linearGradient>
+          </defs>
+          <polygon points="42,5 80,30 80,76 4,76 4,30" fill="url(#ftSlate)" stroke="url(#ftGold)" stroke-width="2" />
+          <path d="M22,76 L22,46 C22,34 31,25 42,25 C53,25 62,34 62,46 L62,76" fill="none" stroke="url(#ftGold)" stroke-width="2.5" />
+          <polygon points="42,16 68,76 57,76 42,42 27,76 16,76" fill="url(#ftGold)" fill-opacity="0.3" stroke="url(#ftGold)" stroke-width="1.2" />
+          <rect x="38" y="22" width="8" height="6" fill="url(#ftGold)" rx="0.8" />
+          <rect x="0" y="76" width="84" height="4.5" fill="url(#ftGold)" rx="0.5" />
+        </svg>
+        <span class="footer-logo">ATRIUM <span class="footer-logo-accent">LIVINGS</span></span>
+      </div>
       <p class="footer-mission">
         An independent architectural and interior design journal curating the finest modern spaces, bespoke craft, and sustainable renovation principles.
       </p>
@@ -105,6 +125,17 @@ const categories = siteData.categories;
     padding-bottom: 3.5rem;
   }
 
+  .footer-brand-wrap {
+    display: flex;
+    align-items: center;
+    gap: 0.85rem;
+    margin-bottom: 1rem;
+  }
+
+  .footer-emblem-svg {
+    flex-shrink: 0;
+  }
+
   .footer-logo {
     font-family: var(--font-serif);
     font-size: 1.5rem;
@@ -112,7 +143,11 @@ const categories = siteData.categories;
     letter-spacing: 0.16em;
     color: var(--color-text-main);
     display: block;
-    margin-bottom: 1rem;
+  }
+
+  .footer-logo-accent {
+    font-weight: 400;
+    color: #8B6B38;
   }
 
   .footer-mission {
