@@ -6,24 +6,6 @@ const categories = siteData.categories;
 ---
 
 <header class="site-header">
-  <!-- Top ticker / issue bar -->
-  <div class="header-ticker">
-    <div class="container ticker-container">
-      <div class="ticker-left">
-        <span class="ticker-dot"></span>
-        <span class="ticker-label">Vol. XIV &bull; Autumn 2026 Issue</span>
-        <span class="ticker-separator">&bull;</span>
-        <span class="ticker-text">Now Reading: Natural Materials, Acoustic Sanctuaries & Organic Minimalism</span>
-      </div>
-      <div class="ticker-right">
-        <a href="/about" class="ticker-link">Editorial Masthead</a>
-        <span class="ticker-separator">&bull;</span>
-        <a href="/contact" class="ticker-link">Press Inquiries</a>
-        <span class="ticker-separator">&bull;</span>
-        <a href="/llms.txt" class="ticker-link ai-link" title="Machine-readable site manifest for LLMs">LLMS.txt</a>
-      </div>
-    </div>
-  </div>
 
   <!-- Main branding bar -->
   <div class="header-main">
@@ -135,59 +117,6 @@ const categories = siteData.categories;
     z-index: 50;
     backdrop-filter: blur(12px);
     -webkit-backdrop-filter: blur(12px);
-  }
-
-  .header-ticker {
-    background-color: var(--color-surface-subtle);
-    border-bottom: 1px solid var(--color-border);
-    font-size: 0.6875rem;
-    color: var(--color-text-muted);
-    letter-spacing: 0.04em;
-    padding: 0.35rem 0;
-  }
-
-  .ticker-container {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-  }
-
-  .ticker-left, .ticker-right {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-  }
-
-  .ticker-dot {
-    width: 6px;
-    height: 6px;
-    background-color: var(--color-accent);
-    border-radius: 50%;
-    display: inline-block;
-  }
-
-  .ticker-label {
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 0.08em;
-    color: var(--color-text-main);
-  }
-
-  .ticker-link {
-    color: var(--color-text-muted);
-  }
-
-  .ticker-link:hover {
-    color: var(--color-accent);
-  }
-
-  .ai-link {
-    font-family: monospace;
-    background: #EAE6DC;
-    padding: 0.1rem 0.35rem;
-    border-radius: 3px;
-    font-weight: 600;
-    color: var(--color-dark);
   }
 
   .header-main {
@@ -426,10 +355,6 @@ const categories = siteData.categories;
   }
 
   @media (max-width: 992px) {
-    .header-ticker {
-      display: none;
-    }
-
     .header-main-grid {
       display: flex;
       justify-content: space-between;
