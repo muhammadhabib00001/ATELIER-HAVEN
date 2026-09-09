@@ -439,6 +439,26 @@ const formattedUpdatedDate = article.updatedAt ? new Date(article.updatedAt).toL
     padding-left: 1.5rem;
   }
 
+  .prose-content :global(a) {
+    color: var(--color-accent);
+    font-weight: 700;
+    text-decoration: underline;
+    text-underline-offset: 3px;
+    text-decoration-thickness: 1.5px;
+    transition: color 0.15s ease, text-decoration-color 0.15s ease;
+  }
+
+  .prose-content :global(a:hover) {
+    color: var(--color-accent-hover);
+    text-decoration-color: var(--color-accent-hover);
+  }
+
+  .prose-content :global(strong),
+  .prose-content :global(b) {
+    font-weight: 700;
+    color: var(--color-text-main);
+  }
+
   .prose-content :global(li) {
     margin-bottom: 0.5rem;
   }
