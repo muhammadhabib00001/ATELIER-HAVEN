@@ -32,20 +32,20 @@ const articlesPath = path.resolve("./src/data/articles.json");
 const articleSchema = {
   type: Type.OBJECT,
   properties: {
-    title: { type: Type.STRING, description: "Engaging, SEO-optimized title" },
+    title: { type: Type.STRING, description: "Engaging, SEO-optimized title STRICTLY between 55 and 60 characters in total length. Never duplicate existing titles." },
     subtitle: { type: Type.STRING, description: "Editorial subtitle" },
     slug: { type: Type.STRING, description: "URL friendly slug in kebab-case" },
-    category: { type: Type.STRING, description: "Category name e.g. living-room, kitchen, bathroom, bedroom, outdoor" },
+    category: { type: Type.STRING, description: "Category name e.g. living-room, kitchen, bathroom, bedroom, garden-outdoor, lighting, furniture" },
     author: { type: Type.STRING, description: "Author slug, e.g., elena-vance, marcus-reid, sophia-chen" },
     readTime: { type: Type.STRING, description: "Estimated read time, e.g. '8 min read'" },
-    coverAlt: { type: Type.STRING, description: "Descriptive alt text for cover image" },
+    coverAlt: { type: Type.STRING, description: "Descriptive alt text for cover image targeting the primary keyword" },
     imagePrompt: { type: Type.STRING, description: "High-detail architectural prompt for image generation" },
     keywords: {
       type: Type.ARRAY,
       items: { type: Type.STRING },
       description: "5-8 high intent SEO keywords"
     },
-    seoTitle: { type: Type.STRING, description: "SEO Title under 60 chars" },
+    seoTitle: { type: Type.STRING, description: "SEO Title STRICTLY between 55 and 60 characters" },
     seoDescription: { type: Type.STRING, description: "SEO meta description under 160 chars" },
     keyTakeaways: {
       type: Type.ARRAY,
@@ -58,15 +58,15 @@ const articleSchema = {
         type: Type.OBJECT,
         properties: {
           id: { type: Type.STRING },
-          title: { type: Type.STRING }
+          title: { type: Type.STRING, description: "TOC title matching H2. NEVER include hyphens or dashes." }
         },
         required: ["id", "title"]
       },
-      description: "Table of contents matching h2 IDs in the content"
+      description: "Table of contents matching h2 IDs in the content. NEVER contain dashes or hyphens."
     },
     content: {
       type: Type.STRING,
-      description: "Comprehensive, exhaustive semantic HTML content of AT LEAST 1,000 to 1,200 words. Must feature at least 5 in-depth <h2> sections, practical dimension tolerances, material trade-offs, expert quotes, spec cards, and FAQ accordion."
+      description: "Comprehensive, exhaustive semantic HTML content of AT LEAST 1,000 to 1,200 words. Must feature at least 5 in-depth <h2> sections, practical dimension tolerances, material trade-offs, expert quotes, spec cards, and FAQ accordion. CRITICAL: NEVER include hyphens or dashes inside any heading (h1-h6) tags."
     }
   },
   required: [
@@ -85,13 +85,18 @@ export async function generateArticle(topic, options = {}) {
 CRITICAL REQUIREMENT: The written HTML article content MUST be a MINIMUM of 1,000 to 1,200 words in length. Never write brief summaries. Be thorough, technical, analytical, and highly descriptive.
 Include rich architectural vocabulary, material specifications (psi, DCOF, janka ratings, kelvin color temperatures, clearance dimensions in inches and millimeters).
 
+CRITICAL SEO RULES:
+1. Title and seoTitle: MUST BE STRICTLY BETWEEN 55 AND 60 CHARACTERS IN TOTAL LENGTH. Do not exceed 60 characters and do not be under 55 characters.
+2. Headings: NEVER use hyphens or dashes in ANY heading (<h1>, <h2>, <h3>, <h4>) or TOC title. Use words or commas instead (e.g., use "Dim to Warm", "Room by Room", "Zero Threshold").
+3. Uniqueness: Ensure every <h2> and <h3> heading is completely unique, creative, and specific to this article topic. Never use generic repeated headings like "Frequently Asked Questions" without prefixing with the topic (e.g. use "${topic} Frequently Asked Questions").
+
 Format the HTML content meticulously:
 1. <p class="lead-paragraph"> for an authoritative, evocative opening analysis setting the spatial thesis.
-2. At least 5 to 6 dedicated <h2> sections with IDs strictly matching the 'toc' array.
+2. At least 5 to 6 dedicated <h2> sections with IDs strictly matching the 'toc' array (with 0 hyphens or dashes in the visible heading text).
 3. Under each <h2>, provide 2 to 4 detailed paragraphs exploring principles, structural framing, plumbing/electrical considerations, and tactile materiality.
 4. At least one prominent editorial quote: <div class="editorial-quote"><blockquote>...</blockquote><cite>— Architect Name, AIA</cite></div>
 5. Architectural specification cards: <div class="spec-card"><h4>Architectural Specifications</h4><ul><li><strong>Material / Tolerance:</strong> Detail</li>...</ul></div>
-7. High-utility FAQ section: <h2 id="faq">Frequently Asked Questions</h2> followed by <div class="faq-accordion"><div class="faq-item"><h3>Precise Question?</h3><p><strong>Direct Key Info.</strong> 1 to 2 concise sentences providing the direct architectural rule, dimension, or specification.</p></div> (3-4 Q&As with short, direct answers).`;
+6. High-utility FAQ section: <h2 id="faq-${topic.toLowerCase().replace(/[^a-z0-9]+/g, '-')}">${topic} Frequently Asked Questions</h2> followed by <div class="faq-accordion"><div class="faq-item"><h3>Precise Question?</h3><p><strong>Direct Key Info.</strong> 1 to 2 concise sentences providing the direct architectural rule, dimension, or specification.</p></div> (3-4 Q&As with short, direct answers).`;
 
   const modelsToTry = [
     "gemini-3.5-flash-lite",
@@ -139,7 +144,13 @@ Format the HTML content meticulously:
 
   let coverImageUrl = options.customImage || "";
   if (!coverImageUrl) {
-    coverImageUrl = await tryGenerateImage(generated.imagePrompt, generated.slug, generated.keywords, generated.category);
+    let existingArticlesList = [];
+    if (fs.existsSync(articlesPath)) {
+      try {
+        existingArticlesList = JSON.parse(fs.readFileSync(articlesPath, "utf-8"));
+      } catch (e) {}
+    }
+    coverImageUrl = await tryGenerateImage(generated.imagePrompt, generated.slug, generated.keywords, generated.category, existingArticlesList);
   }
 
   const article = {
@@ -166,20 +177,23 @@ Format the HTML content meticulously:
   return article;
 }
 
-async function fetchUnsplashImage(keywords, category) {
+async function fetchUnsplashImage(keywords, category, existingArticles = []) {
   const accessKey = process.env.UNSPLASH_ACCESS_KEY;
   if (!accessKey) return null;
+
+  const usedImages = new Set(existingArticles.map(a => a.coverImage).filter(Boolean));
 
   try {
     const searchTerms = [
       keywords?.[0],
-      `${category} interior architecture luxury design`,
-      'modern architectural interior design'
+      `${keywords?.[0] || category} architecture interior`,
+      `${category} luxury architecture design`,
+      'modern architectural interior'
     ].filter(Boolean);
 
     for (const term of searchTerms) {
       console.log(` Fetching high-res architectural cover from Unsplash: "${term}"...`);
-      const url = `https://api.unsplash.com/search/photos?query=${encodeURIComponent(term)}&per_page=5&orientation=landscape&content_filter=high`;
+      const url = `https://api.unsplash.com/search/photos?query=${encodeURIComponent(term)}&per_page=15&orientation=landscape&content_filter=high`;
       const res = await fetch(url, {
         headers: { Authorization: `Client-ID ${accessKey}` }
       });
@@ -187,10 +201,17 @@ async function fetchUnsplashImage(keywords, category) {
       if (!res.ok) continue;
       const data = await res.json();
       if (data.results && data.results.length > 0) {
-        const photo = data.results[0];
-        const imageUrl = `${photo.urls.raw || photo.urls.regular}&auto=format&fit=crop&w=1400&q=85`;
-        console.log(` Retrieved Unsplash photo by ${photo.user.name}: ${imageUrl}`);
-        return imageUrl;
+        // Find first image that has NOT been used in ANY published article
+        const unusedPhoto = data.results.find(p => {
+          const rawUrl = p.urls.raw || p.urls.regular;
+          return !Array.from(usedImages).some(used => used.includes(p.id) || used.includes(rawUrl));
+        });
+
+        if (unusedPhoto) {
+          const imageUrl = `${unusedPhoto.urls.raw || unusedPhoto.urls.regular}&auto=format&fit=crop&w=1400&q=85`;
+          console.log(` Retrieved unique Unsplash photo by ${unusedPhoto.user.name}: ${imageUrl}`);
+          return imageUrl;
+        }
       }
     }
   } catch (err) {
@@ -199,8 +220,8 @@ async function fetchUnsplashImage(keywords, category) {
   return null;
 }
 
-async function tryGenerateImage(prompt, slug, keywords = [], category = "interior-design") {
-  const unsplashUrl = await fetchUnsplashImage(keywords, category);
+async function tryGenerateImage(prompt, slug, keywords = [], category = "interior-design", existingArticles = []) {
+  const unsplashUrl = await fetchUnsplashImage(keywords, category, existingArticles);
   if (unsplashUrl) {
     return unsplashUrl;
   }
@@ -233,8 +254,110 @@ async function tryGenerateImage(prompt, slug, keywords = [], category = "interio
     }
   }
 
-  console.log(" Assigning fallback luxury architectural image.");
-  return "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1400&q=85";
+  console.log(" Assigning unique fallback luxury architectural image.");
+  const usedImages = new Set(existingArticles.map(a => a.coverImage).filter(Boolean));
+  const fallbackCurated = [
+    "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1400&q=85",
+    "https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?auto=format&fit=crop&w=1400&q=85",
+    "https://images.unsplash.com/photo-1600566753376-12c8ab7fb75b?auto=format&fit=crop&w=1400&q=85",
+    "https://images.unsplash.com/photo-1600585152220-90363fe7e115?auto=format&fit=crop&w=1400&q=85",
+    "https://images.unsplash.com/photo-1600210492486-724fe5c67fb0?auto=format&fit=crop&w=1400&q=85",
+    "https://images.unsplash.com/photo-1600573472591-ee6b68d14c68?auto=format&fit=crop&w=1400&q=85",
+    "https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?auto=format&fit=crop&w=1400&q=85",
+    "https://images.unsplash.com/photo-1616486338812-3dadae4b4ace?auto=format&fit=crop&w=1400&q=85"
+  ];
+  for (const img of fallbackCurated) {
+    if (!usedImages.has(img)) {
+      return img;
+    }
+  }
+  return `https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1400&q=85&sig=${Date.now()}`;
+}
+
+export function enforceArticleStandards(article, existingArticles = []) {
+  const existingHeadingTexts = new Set();
+  existingArticles.forEach(a => {
+    if (a.slug === article.slug) return;
+    const matches = [...a.content.matchAll(/<h([1-6])[^>]*>([\s\S]*?)<\/h\1>/gi)];
+    matches.forEach(m => existingHeadingTexts.add(m[2].replace(/<[^>]+>/g, '').trim().toLowerCase()));
+  });
+
+  // 1. Strict title length: 55-60 characters
+  let title = (article.title || '').replace(/-/g, ' ').replace(/\s+/g, ' ').trim();
+  if (title.length < 55) {
+    const padSuffixes = ['Architectural Guide', 'Modern Design Masterclass', 'Design Ideas & Plans', 'Luxury Spatial Guide'];
+    for (const s of padSuffixes) {
+      if (!title.includes(s) && (title + ': ' + s).length <= 60 && (title + ': ' + s).length >= 55) {
+        title = title + ': ' + s;
+        break;
+      }
+    }
+    while (title.length < 55) {
+      title = title + ' Ideas';
+    }
+    if (title.length > 60) {
+      title = title.slice(0, 60);
+    }
+  } else if (title.length > 60) {
+    title = title.slice(0, 60);
+    const lastSpace = title.lastIndexOf(' ');
+    if (lastSpace >= 50) {
+      title = title.slice(0, lastSpace);
+    }
+    while (title.length < 55) {
+      title = title + ' Guide';
+    }
+    if (title.length > 60) {
+      title = title.slice(0, 60);
+    }
+  }
+  article.title = title;
+  article.seoTitle = title;
+
+  // 2. Remove all hyphens/dashes from all headings
+  article.content = article.content.replace(/<h([1-6])([^>]*)>([\s\S]*?)<\/h\1>/gi, (match, level, attrs, text) => {
+    const cleanText = text.replace(/-/g, ' ').replace(/\s+/g, ' ').trim();
+    return `<h${level}${attrs}>${cleanText}</h${level}>`;
+  });
+
+  if (article.toc && Array.isArray(article.toc)) {
+    article.toc.forEach(item => {
+      if (item.title) {
+        item.title = item.title.replace(/-/g, ' ').replace(/\s+/g, ' ').trim();
+      }
+    });
+  }
+
+  // 3. Make FAQ and Specification headings unique across the whole site
+  const shortTitle = article.title.split(':')[0].trim();
+  const uniqueFaqId = `faq-${article.slug}`;
+  const uniqueFaqHeading = `${shortTitle} Frequently Asked Questions`;
+
+  if (article.toc && Array.isArray(article.toc)) {
+    const faqItem = article.toc.find(item => item.id === 'faq' || item.title.toLowerCase().includes('frequently asked'));
+    if (faqItem) {
+      faqItem.id = uniqueFaqId;
+      faqItem.title = uniqueFaqHeading;
+    }
+  }
+
+  article.content = article.content.replace(/<h2 id=["']faq["']>Frequently Asked Questions<\/h2>/gi, `<h2 id="${uniqueFaqId}">${uniqueFaqHeading}</h2>`);
+  article.content = article.content.replace(/<h4>Architectural Specifications<\/h4>/gi, `<h4>${shortTitle} Specifications</h4>`);
+  article.content = article.content.replace(/<h4>Architectural & Material Specifications<\/h4>/gi, `<h4>${shortTitle} Material Specifications</h4>`);
+  article.content = article.content.replace(/<h4>Architectural Specification Matrix<\/h4>/gi, `<h4>${shortTitle} Specification Matrix</h4>`);
+
+  // Ensure no other heading duplicates any existing heading
+  article.content = article.content.replace(/<h([1-6])([^>]*)>([\s\S]*?)<\/h\1>/gi, (match, level, attrs, text) => {
+    const raw = text.replace(/<[^>]+>/g, '').trim();
+    const lower = raw.toLowerCase();
+    if (existingHeadingTexts.has(lower)) {
+      const distinctText = `${raw} for ${shortTitle}`;
+      return `<h${level}${attrs}>${distinctText}</h${level}>`;
+    }
+    return match;
+  });
+
+  return article;
 }
 
 export function saveArticle(article) {
@@ -246,6 +369,9 @@ export function saveArticle(article) {
       existing = [];
     }
   }
+
+  // Enforce all site-wide quality standards before saving
+  article = enforceArticleStandards(article, existing);
 
   existing = existing.filter(a => a.slug !== article.slug);
   existing.unshift(article);

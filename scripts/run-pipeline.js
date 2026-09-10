@@ -98,15 +98,37 @@ async function run() {
   // Step 1: Generate article via Gemini / Vertex AI
   const article = await generateArticle(targetTopic, { category: targetCategory });
 
-  // Step 2: Ensure internal links reference existing published articles
+  // Step 2: Ensure 2 internal links and 1 authoritative external link
   if (existingArticles.length >= 2) {
     const candidate1 = existingArticles[0];
+    const candidate2 = existingArticles[1];
+
     if (!article.content.includes(candidate1.slug)) {
+      const candTitle1 = candidate1.title.split(':')[0].trim().toLowerCase();
       article.content = article.content.replace(
         /<\/p>/,
-        ` Explore further architectural insights in our guide to <strong><a href="/${candidate1.slug}">${candidate1.title}</a></strong>.</p>`
+        ` Explore further architectural insights in our guide to <strong><a href="/${candidate1.slug}">${candTitle1}</a></strong>.</p>`
       );
     }
+    if (!article.content.includes(candidate2.slug)) {
+      const candTitle2 = candidate2.title.split(':')[0].trim().toLowerCase();
+      const pMatches = [...article.content.matchAll(/<\/p>/g)];
+      if (pMatches.length >= 3) {
+        const thirdPIndex = pMatches[2].index;
+        const before = article.content.slice(0, thirdPIndex);
+        const after = article.content.slice(thirdPIndex);
+        article.content = before + ` Discover related design principles in our analysis of <strong><a href="/${candidate2.slug}">${candTitle2}</a></strong>.` + after;
+      }
+    }
+  }
+
+  // Ensure 1 authoritative external reference if none present
+  if (!article.content.includes('http://') && !article.content.includes('https://')) {
+    const cleanKw = targetTopic.toLowerCase();
+    article.content = article.content.replace(
+      new RegExp(`(${cleanKw})`, 'i'),
+      `<strong><a href="https://www.architecturaldigest.com" target="_blank" rel="noopener noreferrer">$1</a></strong>`
+    );
   }
 
   // Step 3: Save article
