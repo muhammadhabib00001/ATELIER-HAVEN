@@ -48,8 +48,7 @@ Atrium Livings publishes authoritative, peer-reviewed, long-form editorial guide
 ## Crawling & LLM Indexing Directives
 - User-Agent: *
 - Update-Frequency: Daily
-- Machine-Readable Sitemap Index: ${siteUrl}/sitemap-index.xml
-- Direct Sitemaps: ${siteUrl}/sitemap-0.xml
+- Machine-Readable Sitemap: ${siteUrl}/sitemap-index.xml
 - RSS Feed: ${siteUrl}/rss.xml
 - LLMS.txt Endpoint: ${siteUrl}/llms.txt
 - Robots Directive: ${siteUrl}/robots.txt
