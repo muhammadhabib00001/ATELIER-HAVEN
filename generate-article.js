@@ -2,6 +2,7 @@ import { GoogleGenAI, Type } from "@google/genai";
 import "dotenv/config";
 import fs from "fs";
 import path from "path";
+import { fileURLToPath } from "url";
 
 // Initialize AI Client:
 // Supports direct Vertex AI OR Gemini Developer API with automatic fallback
@@ -11,7 +12,6 @@ const vertexLocation = process.env.GOOGLE_CLOUD_LOCATION || process.env.VERTEX_L
 const geminiApiKey = process.env.GEMINI_API_KEY;
 
 if (geminiApiKey) {
-  // If GEMINI_API_KEY is provided, it works immediately with zero extra cloud config
   console.log(" Initializing Google GenAI Client via GEMINI_API_KEY...");
   ai = new GoogleGenAI({ apiKey: geminiApiKey });
 } else if (vertexProject) {
@@ -24,7 +24,6 @@ if (geminiApiKey) {
   });
 } else {
   console.error("Error: Neither GEMINI_API_KEY nor GOOGLE_CLOUD_PROJECT (Vertex AI) is configured.");
-  console.error("Please add GEMINI_API_KEY or VERTEX_PROJECT_ID in GitHub Repository Secrets.");
   process.exit(1);
 }
 
@@ -77,6 +76,8 @@ const articleSchema = {
   ]
 };
 
+const delay = (ms) => new Promise(res => setTimeout(res, ms));
+
 export async function generateArticle(topic, options = {}) {
   console.log(`\n Generating article for topic: "${topic}"...`);
   
@@ -94,29 +95,39 @@ Format the HTML content meticulously:
 
   const modelsToTry = [
     "gemini-3.5-flash-lite",
-    "gemini-flash-latest",
     "gemini-3.5-flash",
-    "gemini-3.6-flash",
-    "gemini-2.5-pro"
+    "gemini-flash-latest",
+    "gemini-2.5-pro",
+    "gemini-3.6-flash"
   ];
   let response = null;
 
+  // Try each model with retries for temporary high-demand (503) spikes
   for (const modelName of modelsToTry) {
-    try {
-      console.log(` Attempting with model: ${modelName}...`);
-      response = await ai.models.generateContent({
-        model: modelName,
-        contents: `Write an exhaustive, SEO-dominant architectural guide about: "${topic}". Category: ${options.category || "interior-design"}. Ensure length strictly exceeds 1,100 words with thorough technical and design depth.`,
-        config: {
-          systemInstruction: systemPrompt,
-          responseMimeType: "application/json",
-          responseSchema: articleSchema
+    for (let attempt = 1; attempt <= 2; attempt++) {
+      try {
+        console.log(` Attempting with model: ${modelName} (attempt ${attempt})...`);
+        response = await ai.models.generateContent({
+          model: modelName,
+          contents: `Write an exhaustive, SEO-dominant architectural guide about: "${topic}". Category: ${options.category || "interior-design"}. Ensure length strictly exceeds 1,100 words with thorough technical and design depth.`,
+          config: {
+            systemInstruction: systemPrompt,
+            responseMimeType: "application/json",
+            responseSchema: articleSchema
+          }
+        });
+        if (response && response.text) break;
+      } catch (err) {
+        console.warn(` ${modelName} attempt ${attempt} issue: ${err.message}`);
+        if (err.message.includes("503") || err.message.includes("high demand") || err.message.includes("UNAVAILABLE")) {
+          console.log(" Waiting 3 seconds before retry...");
+          await delay(3000);
+        } else {
+          break; // For 404 or other errors, immediately try next model
         }
-      });
-      if (response && response.text) break;
-    } catch (err) {
-      console.warn(` ${modelName} issue: ${err.message}. Retrying with next available model...`);
+      }
     }
+    if (response && response.text) break;
   }
 
   if (!response || !response.text) {
@@ -243,14 +254,20 @@ export function saveArticle(article) {
   console.log(` Successfully saved "${article.title}" to src/data/articles.json!`);
 }
 
-const args = process.argv.slice(2);
-if (args.length > 0) {
-  const topic = args[0];
-  const category = args[1] || "living-room";
-  generateArticle(topic, { category }).then(article => {
-    saveArticle(article);
-    console.log(` Done! View at: http://localhost:3000/${article.slug}`);
-  }).catch(err => {
-    console.error("Failed to generate article:", err);
-  });
+// Only execute directly if invoked via CLI `node generate-article.js`, not when imported by run-pipeline.js
+const currentFilePath = fileURLToPath(import.meta.url);
+const executedFilePath = process.argv[1] ? path.resolve(process.argv[1]) : "";
+
+if (executedFilePath === currentFilePath) {
+  const args = process.argv.slice(2);
+  if (args.length > 0) {
+    const topic = args[0];
+    const category = args[1] || "living-room";
+    generateArticle(topic, { category }).then(article => {
+      saveArticle(article);
+      console.log(` Done! View at: http://localhost:3000/${article.slug}`);
+    }).catch(err => {
+      console.error("Failed to generate article:", err);
+    });
+  }
 }
