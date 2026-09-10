@@ -4,13 +4,17 @@ import fs from "fs";
 import path from "path";
 
 // Initialize AI Client:
-// Supports direct Vertex AI (via Google Cloud Project + Location) OR Gemini Developer API (via GEMINI_API_KEY)
+// Supports direct Vertex AI OR Gemini Developer API with automatic fallback
 let ai;
 const vertexProject = process.env.GOOGLE_CLOUD_PROJECT || process.env.VERTEX_PROJECT_ID;
 const vertexLocation = process.env.GOOGLE_CLOUD_LOCATION || process.env.VERTEX_LOCATION || "us-central1";
 const geminiApiKey = process.env.GEMINI_API_KEY;
 
-if (vertexProject) {
+if (geminiApiKey) {
+  // If GEMINI_API_KEY is provided, it works immediately with zero extra cloud config
+  console.log(" Initializing Google GenAI Client via GEMINI_API_KEY...");
+  ai = new GoogleGenAI({ apiKey: geminiApiKey });
+} else if (vertexProject) {
   console.log(` Initializing Google Cloud Vertex AI Client (Project: ${vertexProject}, Location: ${vertexLocation})...`);
   ai = new GoogleGenAI({
     vertexAI: {
@@ -18,11 +22,9 @@ if (vertexProject) {
       location: vertexLocation
     }
   });
-} else if (geminiApiKey) {
-  console.log(" Initializing Google GenAI Client via GEMINI_API_KEY...");
-  ai = new GoogleGenAI({ apiKey: geminiApiKey });
 } else {
-  console.error("Error: Neither GOOGLE_CLOUD_PROJECT (Vertex AI) nor GEMINI_API_KEY is configured.");
+  console.error("Error: Neither GEMINI_API_KEY nor GOOGLE_CLOUD_PROJECT (Vertex AI) is configured.");
+  console.error("Please add GEMINI_API_KEY or VERTEX_PROJECT_ID in GitHub Repository Secrets.");
   process.exit(1);
 }
 
@@ -118,7 +120,7 @@ Format the HTML content meticulously:
   }
 
   if (!response || !response.text) {
-    throw new Error("Unable to complete generation with available models. Please retry shortly.");
+    throw new Error("Unable to complete generation with available models. Please check API credentials and retry.");
   }
 
   const generated = JSON.parse(response.text);

@@ -1,19 +1,20 @@
 name: Automated Article Publishing & Google Drive Backup
 
 on:
+  # Runs daily at 06:00 UTC (11:00 AM PKT / 02:00 AM EDT)
   schedule:
-    # Runs daily at 06:00 UTC (11:00 AM PKT / 02:00 AM EDT)
     - cron: '0 6 * * *'
+  # Allows manual triggering with optional custom keyword
   workflow_dispatch:
     inputs:
       topic:
-        description: 'Article Topic / Keyword (Leave blank for automated queue rotation)'
+        description: 'Article Topic / Keyword (Leave blank to fetch from Google Drive file)'
         required: false
         type: string
       category:
-        description: 'Category (living-room, kitchen, bathroom, bedroom, lighting, renovation, diy, garden-outdoor, small-spaces, etc.)'
+        description: 'Category (leave blank for auto-detection from keyword)'
         required: false
-        default: 'living-room'
+        default: ''
         type: string
 
 permissions:
@@ -39,8 +40,10 @@ jobs:
       - name: Install Dependencies
         run: npm ci
 
-      # Configure Google Cloud Credentials for Vertex AI (if Service Account provided)
+      # Optional GCP Auth: Only runs if GCP_SERVICE_ACCOUNT_KEY or GDRIVE_SERVICE_ACCOUNT_KEY is configured
       - name: Authenticate to Google Cloud (Vertex AI)
+        id: gcp-auth
+        continue-on-error: true
         if: "${{ secrets.GCP_SERVICE_ACCOUNT_KEY != '' || secrets.GDRIVE_SERVICE_ACCOUNT_KEY != '' }}"
         uses: google-github-actions/auth@v2
         with:
@@ -48,14 +51,10 @@ jobs:
 
       - name: Generate SEO Article & Sync Links
         env:
-          # Vertex AI Configuration
           GOOGLE_CLOUD_PROJECT: ${{ secrets.VERTEX_PROJECT_ID || secrets.GCP_PROJECT_ID }}
           GOOGLE_CLOUD_LOCATION: ${{ secrets.VERTEX_LOCATION || 'us-central1' }}
-          # Gemini Developer API (Fallback / Alternative)
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
-          # Unsplash Photography
           UNSPLASH_ACCESS_KEY: ${{ secrets.UNSPLASH_ACCESS_KEY }}
-          # Google Drive Backup
           GDRIVE_SERVICE_ACCOUNT_KEY: ${{ secrets.GDRIVE_SERVICE_ACCOUNT_KEY || secrets.GCP_SERVICE_ACCOUNT_KEY }}
           GDRIVE_FOLDER_ID: ${{ secrets.GDRIVE_FOLDER_ID }}
           GDRIVE_CLIENT_ID: ${{ secrets.GDRIVE_CLIENT_ID }}
@@ -73,7 +72,7 @@ jobs:
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
           git add src/data/articles.json public/
           if git diff --staged --quiet; then
-            echo "No changes to commit."
+            echo "No new changes to commit."
           else
             git commit -m "Auto-publish new article & update Google Drive backup [skip ci]"
             git push origin main
