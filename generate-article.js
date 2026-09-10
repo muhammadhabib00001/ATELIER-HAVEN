@@ -33,7 +33,7 @@ const articleSchema = {
   type: Type.OBJECT,
   properties: {
     title: { type: Type.STRING, description: "Engaging, SEO-optimized title STRICTLY between 55 and 60 characters in total length, featuring the primary target keyword naturally. Never duplicate existing titles." },
-    subtitle: { type: Type.STRING, description: "Editorial subtitle" },
+    subtitle: { type: Type.STRING, description: "Engaging editorial summary (under 160 characters) that STRICTLY features the primary target keyword explicitly and naturally. Must focus entirely on the keyword topic." },
     slug: { type: Type.STRING, description: "URL friendly slug in kebab-case" },
     category: { type: Type.STRING, description: "Category name e.g. living-room, kitchen, bathroom, bedroom, garden-outdoor, lighting, furniture" },
     author: { type: Type.STRING, description: "Author slug, e.g., elena-vance, marcus-reid, sophia-chen" },
@@ -46,7 +46,7 @@ const articleSchema = {
       description: "5-8 high intent SEO keywords with primary keyword first"
     },
     seoTitle: { type: Type.STRING, description: "SEO Title STRICTLY between 55 and 60 characters featuring the primary target keyword" },
-    seoDescription: { type: Type.STRING, description: "SEO meta description under 160 characters featuring the primary target keyword naturally" },
+    seoDescription: { type: Type.STRING, description: "SEO meta description under 160 characters that STRICTLY features the primary target keyword explicitly and naturally. Must directly align with the keyword and article focus." },
     keyTakeaways: {
       type: Type.ARRAY,
       items: { type: Type.STRING },
@@ -86,7 +86,12 @@ CRITICAL REQUIREMENT: The written HTML article content MUST be a MINIMUM of 1,00
 Include rich architectural vocabulary, material specifications (psi, DCOF, janka ratings, kelvin color temperatures, clearance dimensions in inches and millimeters).
 
 CRITICAL SEO RULES:
-1. Primary Target Keyword: MUST be explicitly and naturally featured in the Article Headline (Title), Meta Title (seoTitle), Meta Description (seoDescription), and Cover Image Heading (coverAlt).
+1. Primary Target Keyword: MUST be explicitly and prominently featured in ALL four key places:
+   - Article Headline (title)
+   - Meta Title (seoTitle)
+   - Article Summary Subtitle (subtitle): MUST directly start with or feature the primary keyword, describing the essential design takeaway.
+   - Meta Description (seoDescription): MUST directly feature the primary keyword within the first 100 characters (max 160 characters total).
+   - Cover Image Heading (coverAlt): MUST directly include the primary target keyword as a descriptive headline.
 2. Title and seoTitle: MUST BE STRICTLY BETWEEN 55 AND 60 CHARACTERS IN TOTAL LENGTH. Do not exceed 60 characters and do not be under 55 characters.
 3. Headings: NEVER use hyphens or dashes in ANY heading (<h1>, <h2>, <h3>, <h4>) or TOC title. Use words or commas instead (e.g., use "Dim to Warm", "Room by Room", "Zero Threshold").
 4. Uniqueness: Ensure every <h2> and <h3> heading is completely unique, creative, and specific to this article topic. Never use generic repeated headings like "Frequently Asked Questions" without prefixing with the topic (e.g. use "${topic} Frequently Asked Questions").
@@ -358,6 +363,36 @@ export function enforceArticleStandards(article, existingArticles = []) {
     }
     return match;
   });
+
+  // 4. STRICT SEO LOCK: Ensure Subtitle (Summary) and Meta Description match with primary target keyword
+  const primaryKeyword = (article.keywords && article.keywords[0]) ? article.keywords[0].trim() : shortTitle;
+  const primaryKwLower = primaryKeyword.toLowerCase();
+
+  // Lock Subtitle (Summary): Must explicitly feature the primary keyword
+  let subtitle = (article.subtitle || '').replace(/-/g, ' ').replace(/\s+/g, ' ').trim();
+  if (!subtitle.toLowerCase().includes(primaryKwLower)) {
+    // Lock keyword into the summary seamlessly
+    subtitle = `${primaryKeyword}: ${subtitle}`;
+  }
+  // Trim summary if over 160 characters
+  if (subtitle.length > 160) {
+    const truncated = subtitle.slice(0, 157);
+    const lastSp = truncated.lastIndexOf(' ');
+    subtitle = (lastSp > 120 ? truncated.slice(0, lastSp) : truncated) + '...';
+  }
+  article.subtitle = subtitle;
+
+  // Lock Meta Description: Must explicitly feature the primary keyword within 160 characters
+  let seoDescription = (article.seoDescription || '').replace(/-/g, ' ').replace(/\s+/g, ' ').trim();
+  if (!seoDescription.toLowerCase().includes(primaryKwLower)) {
+    seoDescription = `Comprehensive guide to ${primaryKeyword}: explore spatial layouts, architectural material specifications, and expert design solutions.`;
+  }
+  if (seoDescription.length > 160) {
+    const truncated = seoDescription.slice(0, 157);
+    const lastSp = truncated.lastIndexOf(' ');
+    seoDescription = (lastSp > 120 ? truncated.slice(0, lastSp) : truncated) + '...';
+  }
+  article.seoDescription = seoDescription;
 
   return article;
 }
