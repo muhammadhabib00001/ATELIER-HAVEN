@@ -1,21 +1,21 @@
 /**
- * Google Drive / Sheets Keyword Fetcher
- * Reads keywords from an Excel file (.xlsx, .csv) or Google Sheet stored in Google Drive.
- * Automatically detects the right category from the keyword name if category is not provided.
+ * Google Drive / Sheets & Excel Keyword Fetcher
+ * Reads keywords from Excel (.xlsx, .xls), CSV (.csv), or Google Sheets stored in Google Drive.
+ * Automatically detects the right category from the keyword text.
  */
 
-import fs from 'fs';
-import path from 'path';
+import * as XLSX from 'xlsx';
 
 // Intelligent keyword-to-category matcher
 export function detectCategoryFromKeyword(keyword) {
-  const kw = keyword.toLowerCase();
+  const kw = (keyword || "").toLowerCase();
 
   // 1. Bathroom
   if (
     kw.includes('bathroom') || kw.includes('bath') || kw.includes('shower') ||
     kw.includes('tub') || kw.includes('vanity') || kw.includes('powder room') ||
-    kw.includes('toilet') || kw.includes('faucet') || kw.includes('tile')
+    kw.includes('toilet') || kw.includes('faucet') || kw.includes('tile') ||
+    kw.includes('soaking')
   ) {
     return 'bathroom';
   }
@@ -96,7 +96,7 @@ export function detectCategoryFromKeyword(keyword) {
     return 'home-decor';
   }
 
-  // Fallback
+  // Default fallback
   return 'living-room';
 }
 
@@ -108,7 +108,8 @@ export async function fetchKeywordsFromDrive(accessToken) {
   }
 
   try {
-    const query = `'${folderId}' in parents and (name contains 'keyword' or name contains 'Keyword' or mimeType = 'text/csv' or mimeType = 'application/vnd.google-apps.spreadsheet') and trashed = false`;
+    // Search for Excel (.xlsx, .xls), CSV, Google Sheets, or any file with keyword in name
+    const query = `'${folderId}' in parents and (name contains 'keyword' or name contains 'Keyword' or name contains '.xlsx' or name contains '.xls' or name contains '.csv' or mimeType = 'text/csv' or mimeType = 'application/vnd.google-apps.spreadsheet' or mimeType = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet') and trashed = false`;
     const searchUrl = `https://www.googleapis.com/drive/v3/files?q=${encodeURIComponent(query)}&fields=files(id,name,mimeType)`;
 
     const res = await fetch(searchUrl, {
@@ -130,46 +131,68 @@ export async function fetchKeywordsFromDrive(accessToken) {
     const targetFile = data.files[0];
     console.log(` Found keyword file in Drive: "${targetFile.name}" (ID: ${targetFile.id}, Type: ${targetFile.mimeType})`);
 
-    let rawContent = "";
+    const keywords = [];
 
     if (targetFile.mimeType === 'application/vnd.google-apps.spreadsheet') {
+      // Export Google Sheet as CSV
       const exportUrl = `https://www.googleapis.com/drive/v3/files/${targetFile.id}/export?mimeType=text/csv`;
       const exportRes = await fetch(exportUrl, {
         headers: { Authorization: `Bearer ${accessToken}` }
       });
-      if (!exportRes.ok) throw new Error(`Failed to export Google Sheet as CSV: ${await exportRes.text()}`);
-      rawContent = await exportRes.text();
+      if (!exportRes.ok) throw new Error(`Failed to export Google Sheet: ${await exportRes.text()}`);
+      const rawCsv = await exportRes.text();
+
+      const lines = rawCsv.split(/\r?\n/).map(l => l.trim()).filter(Boolean);
+      for (let i = 0; i < lines.length; i++) {
+        const line = lines[i];
+        if (i === 0 && (line.toLowerCase().includes('keyword') || line.toLowerCase().includes('topic'))) continue;
+        const parts = line.split(',').map(p => p.trim().replace(/^["']|["']$/g, ''));
+        const rawKeyword = parts[0];
+        if (rawKeyword) {
+          keywords.push({
+            topic: rawKeyword,
+            category: parts[1] || detectCategoryFromKeyword(rawKeyword)
+          });
+        }
+      }
     } else {
+      // Download binary Excel (.xlsx, .xls) or raw text (.csv)
       const downloadUrl = `https://www.googleapis.com/drive/v3/files/${targetFile.id}?alt=media`;
       const downloadRes = await fetch(downloadUrl, {
         headers: { Authorization: `Bearer ${accessToken}` }
       });
       if (!downloadRes.ok) throw new Error(`Failed to download file: ${await downloadRes.text()}`);
-      rawContent = await downloadRes.text();
-    }
 
-    const lines = rawContent.split(/\r?\n/).map(l => l.trim()).filter(Boolean);
-    const keywords = [];
+      const arrayBuffer = await downloadRes.arrayBuffer();
+      const buffer = Buffer.from(arrayBuffer);
 
-    for (let i = 0; i < lines.length; i++) {
-      const line = lines[i];
-      if (i === 0 && (line.toLowerCase().includes('keyword') || line.toLowerCase().includes('topic'))) {
-        continue;
-      }
-      
-      const parts = line.split(',').map(p => p.trim().replace(/^["']|["']$/g, ''));
-      const rawKeyword = parts[0];
-      if (rawKeyword) {
-        // Use specified category if present; otherwise intelligently auto-detect category from the keyword text!
-        const category = parts[1] || detectCategoryFromKeyword(rawKeyword);
+      // Parse with XLSX parser (handles both binary Excel .xlsx/.xls and .csv perfectly)
+      const workbook = XLSX.read(buffer, { type: 'buffer' });
+      const firstSheetName = workbook.SheetNames[0];
+      const worksheet = workbook.Sheets[firstSheetName];
+      const rows = XLSX.utils.sheet_to_json(worksheet, { header: 1 });
+
+      for (let i = 0; i < rows.length; i++) {
+        const row = rows[i];
+        if (!row || row.length === 0) continue;
+        
+        const rawKeyword = String(row[0] || "").trim();
+        if (!rawKeyword) continue;
+        
+        // Skip header row if it says "keyword", "keywords", "topic"
+        if (i === 0 && (rawKeyword.toLowerCase() === 'keywords' || rawKeyword.toLowerCase() === 'keyword' || rawKeyword.toLowerCase() === 'topic')) {
+          continue;
+        }
+
+        const rawCategory = row[1] ? String(row[1]).trim() : null;
         keywords.push({
           topic: rawKeyword,
-          category: category
+          category: rawCategory || detectCategoryFromKeyword(rawKeyword)
         });
       }
     }
 
-    console.log(` Loaded ${keywords.length} keywords from Google Drive!`);
+    console.log(` Loaded ${keywords.length} keywords from Google Drive Excel file!`);
     return keywords;
   } catch (err) {
     console.warn(" Warning while fetching keywords from Google Drive:", err.message);
