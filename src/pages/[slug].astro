@@ -114,7 +114,7 @@ const formattedUpdatedDate = article.updatedAt ? new Date(article.updatedAt).toL
             class="cover-image" crossorigin="anonymous" referrerpolicy="no-referrer-when-downgrade" 
           />
           <figcaption class="cover-caption">
-            <span>{article.coverAlt || article.title}</span>
+            <h4 class="cover-image-heading">{article.coverAlt || article.title}</h4>
           </figcaption>
         </figure>
       </div>
@@ -344,11 +344,20 @@ const formattedUpdatedDate = article.updatedAt ? new Date(article.updatedAt).toL
   .cover-caption {
     display: flex;
     justify-content: space-between;
-    font-size: 0.75rem;
-    color: var(--color-text-light);
-    margin-top: 0.65rem;
+    align-items: center;
+    margin-top: 0.85rem;
     flex-wrap: wrap;
     gap: 0.5rem;
+  }
+
+  .cover-image-heading {
+    font-family: var(--font-sans);
+    font-size: 0.8125rem;
+    font-weight: 500;
+    letter-spacing: 0.02em;
+    color: var(--color-text-muted);
+    margin: 0;
+    line-height: 1.45;
   }
 
   .photo-credit {

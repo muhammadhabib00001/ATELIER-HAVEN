@@ -32,21 +32,21 @@ const articlesPath = path.resolve("./src/data/articles.json");
 const articleSchema = {
   type: Type.OBJECT,
   properties: {
-    title: { type: Type.STRING, description: "Engaging, SEO-optimized title STRICTLY between 55 and 60 characters in total length. Never duplicate existing titles." },
+    title: { type: Type.STRING, description: "Engaging, SEO-optimized title STRICTLY between 55 and 60 characters in total length, featuring the primary target keyword naturally. Never duplicate existing titles." },
     subtitle: { type: Type.STRING, description: "Editorial subtitle" },
     slug: { type: Type.STRING, description: "URL friendly slug in kebab-case" },
     category: { type: Type.STRING, description: "Category name e.g. living-room, kitchen, bathroom, bedroom, garden-outdoor, lighting, furniture" },
     author: { type: Type.STRING, description: "Author slug, e.g., elena-vance, marcus-reid, sophia-chen" },
     readTime: { type: Type.STRING, description: "Estimated read time, e.g. '8 min read'" },
-    coverAlt: { type: Type.STRING, description: "Descriptive alt text for cover image targeting the primary keyword" },
+    coverAlt: { type: Type.STRING, description: "Descriptive alt text and image heading caption directly incorporating the primary target keyword naturally" },
     imagePrompt: { type: Type.STRING, description: "High-detail architectural prompt for image generation" },
     keywords: {
       type: Type.ARRAY,
       items: { type: Type.STRING },
-      description: "5-8 high intent SEO keywords"
+      description: "5-8 high intent SEO keywords with primary keyword first"
     },
-    seoTitle: { type: Type.STRING, description: "SEO Title STRICTLY between 55 and 60 characters" },
-    seoDescription: { type: Type.STRING, description: "SEO meta description under 160 chars" },
+    seoTitle: { type: Type.STRING, description: "SEO Title STRICTLY between 55 and 60 characters featuring the primary target keyword" },
+    seoDescription: { type: Type.STRING, description: "SEO meta description under 160 characters featuring the primary target keyword naturally" },
     keyTakeaways: {
       type: Type.ARRAY,
       items: { type: Type.STRING },
@@ -86,9 +86,11 @@ CRITICAL REQUIREMENT: The written HTML article content MUST be a MINIMUM of 1,00
 Include rich architectural vocabulary, material specifications (psi, DCOF, janka ratings, kelvin color temperatures, clearance dimensions in inches and millimeters).
 
 CRITICAL SEO RULES:
-1. Title and seoTitle: MUST BE STRICTLY BETWEEN 55 AND 60 CHARACTERS IN TOTAL LENGTH. Do not exceed 60 characters and do not be under 55 characters.
-2. Headings: NEVER use hyphens or dashes in ANY heading (<h1>, <h2>, <h3>, <h4>) or TOC title. Use words or commas instead (e.g., use "Dim to Warm", "Room by Room", "Zero Threshold").
-3. Uniqueness: Ensure every <h2> and <h3> heading is completely unique, creative, and specific to this article topic. Never use generic repeated headings like "Frequently Asked Questions" without prefixing with the topic (e.g. use "${topic} Frequently Asked Questions").
+1. Primary Target Keyword: MUST be explicitly and naturally featured in the Article Headline (Title), Meta Title (seoTitle), Meta Description (seoDescription), and Cover Image Heading (coverAlt).
+2. Title and seoTitle: MUST BE STRICTLY BETWEEN 55 AND 60 CHARACTERS IN TOTAL LENGTH. Do not exceed 60 characters and do not be under 55 characters.
+3. Headings: NEVER use hyphens or dashes in ANY heading (<h1>, <h2>, <h3>, <h4>) or TOC title. Use words or commas instead (e.g., use "Dim to Warm", "Room by Room", "Zero Threshold").
+4. Uniqueness: Ensure every <h2> and <h3> heading is completely unique, creative, and specific to this article topic. Never use generic repeated headings like "Frequently Asked Questions" without prefixing with the topic (e.g. use "${topic} Frequently Asked Questions").
+5. Cover Image Heading (coverAlt): Provide an informative architectural description incorporating the target keyword as a headline caption.
 
 Format the HTML content meticulously:
 1. <p class="lead-paragraph"> for an authoritative, evocative opening analysis setting the spatial thesis.
