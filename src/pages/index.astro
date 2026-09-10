@@ -21,15 +21,22 @@ const heroSecondary = articles
 heroSecondary.forEach(a => usedSlugs.add(a.slug));
 
 // 3. Trending Dispatch Articles (Hero Sidebar)
-const trendingCandidates = articles.filter(a => !usedSlugs.has(a.slug) && a.trending);
-const trendingArticles = trendingCandidates.slice(0, 4);
+// Prioritize trending articles, then fallback to other published articles so the sidebar is never empty
+const trendingArticles = [];
+const trendingCandidates = articles.filter(a => a.trending && a.slug !== heroArticle?.slug);
+trendingArticles.push(...trendingCandidates.slice(0, 4));
+
 if (trendingArticles.length < 4 && articles.length > 0) {
   const extra = articles
-    .filter(a => !usedSlugs.has(a.slug) && !trendingArticles.includes(a))
+    .filter(a => a.slug !== heroArticle?.slug && !trendingArticles.some(t => t.slug === a.slug))
     .slice(0, 4 - trendingArticles.length);
   trendingArticles.push(...extra);
 }
-trendingArticles.forEach(a => usedSlugs.add(a.slug));
+
+// If there are still fewer articles than desired (e.g. only 1-3 total published), fill with available articles
+if (trendingArticles.length === 0 && articles.length > 0) {
+  trendingArticles.push(...articles.slice(0, 4));
+}
 
 // 4. Editor's Essential Reads (3 Curated Cards)
 const subFeatured = articles
