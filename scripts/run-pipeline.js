@@ -3,20 +3,22 @@
  * Used by GitHub Actions and local scheduler.
  * 
  * Steps:
- * 1. Picks keyword/topic (either from CLI args or from an automated queue of high-intent topics).
- * 2. Invokes Google Gemini API / Vertex AI to write a 1,200-1,600+ word technical guide.
- * 3. Injects internal links to recently published articles and bold external link.
- * 4. Saves article to `src/data/articles.json`.
- * 5. Uploads backup to Google Drive if credentials are configured.
+ * 1. Checks Google Drive folder for keywords Excel / Sheet file.
+ * 2. If present, picks the next unpublished keyword from the Drive file.
+ * 3. If not present or all published, falls back to custom CLI input or default queue.
+ * 4. Invokes Google Gemini / Vertex AI to write a 1,200-1,600+ word technical guide.
+ * 5. Injects internal links and saves to src/data/articles.json.
+ * 6. Uploads timestamped JSON backup to Google Drive.
  */
 
 import 'dotenv/config';
 import fs from 'fs';
 import path from 'path';
-import { generateArticle, saveArticle } from './generate-article.js';
-import { uploadToGoogleDrive } from './scripts/backup-to-drive.js';
+import { generateArticle, saveArticle } from '../generate-article.js';
+import { uploadToGoogleDrive, getDriveAccessToken } from './backup-to-drive.js';
+import { fetchKeywordsFromDrive } from './fetch-keywords.js';
 
-// Pre-curated rotation of high-volume, low-KD architectural & interior topics
+// Fallback curated rotation of high-volume, low-KD architectural topics
 const TOPIC_QUEUE = [
   { topic: "Minimalist Master Bathroom Layout Ideas", category: "bathroom" },
   { topic: "Modern Walk-in Pantry Joinery and Storage Solutions", category: "kitchen" },
@@ -45,9 +47,42 @@ async function run() {
     }
   }
 
-  // If no custom topic passed via CLI/dispatch, pick next fresh topic from queue
+  const publishedTitles = existingArticles.map(a => (a.title || "").toLowerCase());
+  const publishedKeywords = existingArticles.flatMap(a => (a.keywords || []).map(k => k.toLowerCase()));
+
+  // 1. If no manual topic provided via GitHub Actions dispatch, try fetching from Google Drive Excel/Sheet!
   if (!targetTopic) {
-    const publishedTitles = existingArticles.map(a => a.title.toLowerCase());
+    try {
+      const accessToken = await getDriveAccessToken();
+      if (accessToken) {
+        console.log(" Checking Google Drive folder for keywords file...");
+        const driveKeywords = await fetchKeywordsFromDrive(accessToken);
+        
+        if (driveKeywords.length > 0) {
+          // Find first keyword from Drive that has not yet been published
+          const nextUnpublished = driveKeywords.find(item => {
+            const itemTopicLower = item.topic.toLowerCase();
+            const isTitleMatch = publishedTitles.some(t => t.includes(itemTopicLower));
+            const isKeywordMatch = publishedKeywords.some(k => k === itemTopicLower);
+            return !isTitleMatch && !isKeywordMatch;
+          });
+
+          if (nextUnpublished) {
+            console.log(` Selected next unpublished keyword from Google Drive file: "${nextUnpublished.topic}" (Category: ${nextUnpublished.category})`);
+            targetTopic = nextUnpublished.topic;
+            targetCategory = nextUnpublished.category;
+          } else {
+            console.log(" All keywords in Google Drive file have already been published! Falling back to rotation queue.");
+          }
+        }
+      }
+    } catch (driveErr) {
+      console.warn(" Note: Unable to read keywords from Drive file:", driveErr.message);
+    }
+  }
+
+  // 2. If still no topic, pick from the default curated topic queue
+  if (!targetTopic) {
     const available = TOPIC_QUEUE.filter(item => 
       !publishedTitles.some(t => t.includes(item.topic.toLowerCase()))
     );
@@ -60,19 +95,16 @@ async function run() {
   console.log(` Topic: "${targetTopic}"`);
   console.log(` Category: "${targetCategory || 'living-room'}"`);
 
-  // Step 1: Generate article via Gemini / Vertex
+  // Step 1: Generate article via Gemini / Vertex AI
   const article = await generateArticle(targetTopic, { category: targetCategory });
 
   // Step 2: Ensure internal links reference existing published articles
   if (existingArticles.length >= 2) {
     const candidate1 = existingArticles[0];
-    const candidate2 = existingArticles[1];
-    
-    // Cross-link into the generated content if not already present
     if (!article.content.includes(candidate1.slug)) {
       article.content = article.content.replace(
         /<\/p>/,
-        ` Learn more in our architectural analysis of <strong><a href="/${candidate1.slug}">${candidate1.title}</a></strong>.</p>`
+        ` Explore further architectural insights in our guide to <strong><a href="/${candidate1.slug}">${candidate1.title}</a></strong>.</p>`
       );
     }
   }
