@@ -59,7 +59,7 @@ export function detectCategoryFromKeyword(keyword) {
     kw.includes('bathroom') || kw.includes('bath') || kw.includes('shower') ||
     kw.includes('tub') || kw.includes('vanity') || kw.includes('powder room') ||
     kw.includes('toilet') || kw.includes('faucet') || kw.includes('tile') ||
-    kw.includes('soaking')
+    kw.includes('soaking') || kw.includes('baño') || kw.includes('bano') || kw.includes('baños') || kw.includes('banos')
   ) {
     return 'bathroom';
   }

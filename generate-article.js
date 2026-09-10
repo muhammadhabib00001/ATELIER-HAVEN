@@ -191,16 +191,24 @@ async function fetchUnsplashImage(keywords, category, existingArticles = []) {
   const usedImages = new Set(existingArticles.map(a => a.coverImage).filter(Boolean));
 
   try {
+    const primaryKw = (keywords?.[0] || "").trim();
+    // Normalize foreign or raw keywords into English architectural context if needed
+    let enrichedTerm = primaryKw;
+    if (primaryKw.toLowerCase().includes('baño') || primaryKw.toLowerCase().includes('bano')) {
+      enrichedTerm = 'modern luxury bathroom architecture';
+    }
+
     const searchTerms = [
-      keywords?.[0],
-      `${keywords?.[0] || category} architecture interior`,
-      `${category} luxury architecture design`,
-      'modern architectural interior'
+      `${enrichedTerm} interior design`,
+      `${primaryKw} interior`,
+      `${category} modern luxury architectural design`,
+      `${category} interior architecture`,
+      'modern luxury architectural interior'
     ].filter(Boolean);
 
     for (const term of searchTerms) {
       console.log(` Fetching high-res architectural cover from Unsplash: "${term}"...`);
-      const url = `https://api.unsplash.com/search/photos?query=${encodeURIComponent(term)}&per_page=15&orientation=landscape&content_filter=high`;
+      const url = `https://api.unsplash.com/search/photos?query=${encodeURIComponent(term)}&per_page=20&orientation=landscape&content_filter=high`;
       const res = await fetch(url, {
         headers: { Authorization: `Client-ID ${accessKey}` }
       });
