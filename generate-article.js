@@ -3,13 +3,29 @@ import "dotenv/config";
 import fs from "fs";
 import path from "path";
 
-const apiKey = process.env.GEMINI_API_KEY;
-if (!apiKey) {
-  console.error("Error: GEMINI_API_KEY is not set in .env");
+// Initialize AI Client:
+// Supports direct Vertex AI (via Google Cloud Project + Location) OR Gemini Developer API (via GEMINI_API_KEY)
+let ai;
+const vertexProject = process.env.GOOGLE_CLOUD_PROJECT || process.env.VERTEX_PROJECT_ID;
+const vertexLocation = process.env.GOOGLE_CLOUD_LOCATION || process.env.VERTEX_LOCATION || "us-central1";
+const geminiApiKey = process.env.GEMINI_API_KEY;
+
+if (vertexProject) {
+  console.log(` Initializing Google Cloud Vertex AI Client (Project: ${vertexProject}, Location: ${vertexLocation})...`);
+  ai = new GoogleGenAI({
+    vertexAI: {
+      project: vertexProject,
+      location: vertexLocation
+    }
+  });
+} else if (geminiApiKey) {
+  console.log(" Initializing Google GenAI Client via GEMINI_API_KEY...");
+  ai = new GoogleGenAI({ apiKey: geminiApiKey });
+} else {
+  console.error("Error: Neither GOOGLE_CLOUD_PROJECT (Vertex AI) nor GEMINI_API_KEY is configured.");
   process.exit(1);
 }
 
-const ai = new GoogleGenAI({ apiKey });
 const articlesPath = path.resolve("./src/data/articles.json");
 
 const articleSchema = {
@@ -75,10 +91,11 @@ Format the HTML content meticulously:
 7. High-utility FAQ section: <h2 id="faq">Frequently Asked Questions</h2> followed by <div class="faq-accordion"><div class="faq-item"><h3>Precise Question?</h3><p><strong>Direct Key Info.</strong> 1 to 2 concise sentences providing the direct architectural rule, dimension, or specification.</p></div> (3-4 Q&As with short, direct answers).`;
 
   const modelsToTry = [
+    "gemini-2.5-flash",
+    "gemini-1.5-flash",
     "gemini-3.6-flash",
     "gemini-3.8-flash",
-    "gemini-3.5-flash-lite",
-    "gemini-3.1-flash-lite"
+    "gemini-3.5-flash-lite"
   ];
   let response = null;
 
@@ -96,7 +113,7 @@ Format the HTML content meticulously:
       });
       if (response && response.text) break;
     } catch (err) {
-      console.warn(` ${modelName} temporary issue: ${err.message}. Retrying with next available model...`);
+      console.warn(` ${modelName} issue: ${err.message}. Retrying with next available model...`);
     }
   }
 
@@ -107,7 +124,6 @@ Format the HTML content meticulously:
   const generated = JSON.parse(response.text);
   const now = new Date().toISOString();
 
-  // Try generating image if supported or fallback to high-quality Unsplash architecture photo
   let coverImageUrl = options.customImage || "";
   if (!coverImageUrl) {
     coverImageUrl = await tryGenerateImage(generated.imagePrompt, generated.slug, generated.keywords, generated.category);
@@ -158,7 +174,6 @@ async function fetchUnsplashImage(keywords, category) {
       if (!res.ok) continue;
       const data = await res.json();
       if (data.results && data.results.length > 0) {
-        // Pick top relevant architectural photo
         const photo = data.results[0];
         const imageUrl = `${photo.urls.raw || photo.urls.regular}&auto=format&fit=crop&w=1400&q=85`;
         console.log(` Retrieved Unsplash photo by ${photo.user.name}: ${imageUrl}`);
@@ -172,15 +187,13 @@ async function fetchUnsplashImage(keywords, category) {
 }
 
 async function tryGenerateImage(prompt, slug, keywords = [], category = "interior-design") {
-  // 1. First check if Unsplash API is available for genuine, high-resolution photography
   const unsplashUrl = await fetchUnsplashImage(keywords, category);
   if (unsplashUrl) {
     return unsplashUrl;
   }
 
-  // 2. Try Gemini Image model if available
   console.log(` Attempting AI image generation for prompt: "${prompt}"...`);
-  const imageModels = ["gemini-3.1-flash-image", "gemini-2.5-flash-image"];
+  const imageModels = ["gemini-2.5-flash-image", "gemini-3.1-flash-image"];
   
   for (const model of imageModels) {
     try {
@@ -221,7 +234,6 @@ export function saveArticle(article) {
     }
   }
 
-  // Remove existing with same slug if updating
   existing = existing.filter(a => a.slug !== article.slug);
   existing.unshift(article);
 
@@ -229,7 +241,6 @@ export function saveArticle(article) {
   console.log(` Successfully saved "${article.title}" to src/data/articles.json!`);
 }
 
-// CLI usage: node generate-article.js "Organic Modern Living Room Ideas"
 const args = process.argv.slice(2);
 if (args.length > 0) {
   const topic = args[0];
