@@ -106,22 +106,23 @@ Format the HTML content meticulously:
 6. High-utility FAQ section: <h2 id="faq-${topic.toLowerCase().replace(/[^a-z0-9]+/g, '-')}">${topic} Frequently Asked Questions</h2> followed by <div class="faq-accordion"><div class="faq-item"><h3>Precise Question incorporating "${topic}"?</h3><p><strong>Direct Key Info on ${topic}.</strong> 1 to 2 concise sentences providing the direct architectural rule, dimension, or specification directly for ${topic}.</p></div>. CRITICAL: Every single FAQ question (<h3>) and answer (<p>) MUST explicitly focus on and incorporate the target keyword "${topic}". Never write generic questions.`;
 
   const modelsToTry = [
-    "gemini-3.5-flash-lite",
+    "gemini-2.5-flash",
+    "gemini-2.5-flash-lite",
     "gemini-3.5-flash",
-    "gemini-flash-latest",
-    "gemini-2.5-pro",
-    "gemini-3.6-flash"
+    "gemini-3.5-flash-lite",
+    "gemini-3.7-flash",
+    "gemini-3.8-flash"
   ];
   let response = null;
 
-  // Try each model with retries for temporary high-demand (503) spikes
+  // Try each model with retries for temporary spikes or transient internal errors
   for (const modelName of modelsToTry) {
     for (let attempt = 1; attempt <= 2; attempt++) {
       try {
         console.log(` Attempting with model: ${modelName} (attempt ${attempt})...`);
         response = await ai.models.generateContent({
           model: modelName,
-          contents: `Write an exhaustive, SEO-dominant architectural guide about: "${topic}". Category: ${options.category || "interior-design"}. Ensure length strictly exceeds 1,100 words with thorough technical and design depth.`,
+          contents: `Write an exhaustive, SEO-dominant architectural guide about: "${topic}". Category: ${options.category || "interior-design"}. Ensure length strictly exceeds 1,100 words with thorough technical and design depth. Output strictly in JSON.`,
           config: {
             systemInstruction: systemPrompt,
             responseMimeType: "application/json",
@@ -131,11 +132,11 @@ Format the HTML content meticulously:
         if (response && response.text) break;
       } catch (err) {
         console.warn(` ${modelName} attempt ${attempt} issue: ${err.message}`);
-        if (err.message.includes("503") || err.message.includes("high demand") || err.message.includes("UNAVAILABLE")) {
-          console.log(" Waiting 3 seconds before retry...");
-          await delay(3000);
+        if (err.message.includes("503") || err.message.includes("500") || err.message.includes("INTERNAL") || err.message.includes("high demand") || err.message.includes("UNAVAILABLE")) {
+          console.log(" Waiting 4 seconds before retry...");
+          await delay(4000);
         } else {
-          break; // For 404 or other errors, immediately try next model
+          break; // For 404 or unsupported models, immediately try next model
         }
       }
     }
