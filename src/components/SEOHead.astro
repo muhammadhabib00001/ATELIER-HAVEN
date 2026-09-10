@@ -90,8 +90,8 @@ const fullCanonical = new URL(Astro.url.pathname, siteUrl).href;
 <meta name="google-site-verification" content="PASTE_YOUR_GSC_HTML_TAG_CONTENT_HERE" />
 
 <!-- Google Analytics 4 (G-QN9D3K0JQY) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-QN9D3K0JQY"></script>
-<script>
+<script is:inline async src="https://www.googletagmanager.com/gtag/js?id=G-QN9D3K0JQY"></script>
+<script is:inline>
   window.dataLayer = window.dataLayer || [];
   function gtag(){dataLayer.push(arguments);}
   gtag('js', new Date());
