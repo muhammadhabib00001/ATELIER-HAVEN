@@ -38,7 +38,7 @@ const articleSchema = {
     category: { type: Type.STRING, description: "Category name e.g. living-room, kitchen, bathroom, bedroom, garden-outdoor, lighting, furniture" },
     author: { type: Type.STRING, description: "Author slug, e.g., elena-vance, marcus-reid, sophia-chen" },
     readTime: { type: Type.STRING, description: "Estimated read time, e.g. '8 min read'" },
-    coverAlt: { type: Type.STRING, description: "Descriptive alt text and image heading caption directly incorporating the primary target keyword naturally" },
+    coverAlt: { type: Type.STRING, description: "Image description and heading caption STRICTLY matching the article title." },
     imagePrompt: { type: Type.STRING, description: "High-detail architectural prompt for image generation" },
     keywords: {
       type: Type.ARRAY,
@@ -86,16 +86,16 @@ CRITICAL REQUIREMENT: The written HTML article content MUST be a MINIMUM of 1,00
 Include rich architectural vocabulary, material specifications (psi, DCOF, janka ratings, kelvin color temperatures, clearance dimensions in inches and millimeters).
 
 CRITICAL SEO RULES:
-1. Primary Target Keyword: MUST be explicitly and prominently featured in ALL four key places:
+1. Primary Target Keyword: MUST be explicitly and prominently featured in ALL key places:
    - Article Headline (title)
    - Meta Title (seoTitle)
    - Article Summary Subtitle (subtitle): MUST directly start with or feature the primary keyword, describing the essential design takeaway.
    - Meta Description (seoDescription): MUST directly feature the primary keyword within the first 100 characters (max 160 characters total).
-   - Cover Image Heading (coverAlt): MUST directly include the primary target keyword as a descriptive headline.
+   - Cover Image Heading & Description (coverAlt): MUST match the article title exactly.
 2. Title and seoTitle: MUST BE STRICTLY BETWEEN 55 AND 60 CHARACTERS IN TOTAL LENGTH. Do not exceed 60 characters and do not be under 55 characters.
 3. Headings: NEVER use hyphens or dashes in ANY heading (<h1>, <h2>, <h3>, <h4>) or TOC title. Use words or commas instead (e.g., use "Dim to Warm", "Room by Room", "Zero Threshold").
 4. Uniqueness: Ensure every <h2> and <h3> heading is completely unique, creative, and specific to this article topic. Never use generic repeated headings like "Frequently Asked Questions" without prefixing with the topic (e.g. use "${topic} Frequently Asked Questions").
-5. Cover Image Heading (coverAlt): Provide an informative architectural description incorporating the target keyword as a headline caption.
+5. Cover Image Heading (coverAlt): STRICTLY match the article title.
 
 Format the HTML content meticulously:
 1. <p class="lead-paragraph"> for an authoritative, evocative opening analysis setting the spatial thesis.
@@ -393,6 +393,9 @@ export function enforceArticleStandards(article, existingArticles = []) {
     seoDescription = (lastSp > 120 ? truncated.slice(0, lastSp) : truncated) + '...';
   }
   article.seoDescription = seoDescription;
+
+  // 5. STRICT COVER IMAGE LOCK: Image description and caption strictly match the article title
+  article.coverAlt = article.title;
 
   return article;
 }
