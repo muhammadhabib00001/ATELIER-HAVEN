@@ -9,8 +9,10 @@ import articles from '../data/articles.json';
 const usedSlugs = new Set();
 
 // 1. Lead Cover Hero Article
-const heroArticle = articles.find(a => a.featured) || articles[0];
-usedSlugs.add(heroArticle.slug);
+const heroArticle = articles.find(a => a.featured) || articles[0] || null;
+if (heroArticle) {
+  usedSlugs.add(heroArticle.slug);
+}
 
 // 2. Two Hero Secondary Latest Articles to eliminate hero gaps
 const heroSecondary = articles
@@ -21,7 +23,7 @@ heroSecondary.forEach(a => usedSlugs.add(a.slug));
 // 3. Trending Dispatch Articles (Hero Sidebar)
 const trendingCandidates = articles.filter(a => !usedSlugs.has(a.slug) && a.trending);
 const trendingArticles = trendingCandidates.slice(0, 4);
-if (trendingArticles.length < 4) {
+if (trendingArticles.length < 4 && articles.length > 0) {
   const extra = articles
     .filter(a => !usedSlugs.has(a.slug) && !trendingArticles.includes(a))
     .slice(0, 4 - trendingArticles.length);
@@ -56,41 +58,48 @@ const authors = siteData.authors;
         <span class="hero-date">Autumn 2026 Edition</span>
       </div>
 
-      <div class="hero-grid">
-        <div class="hero-primary">
-          <ArticleCard article={heroArticle} variant="hero" priority={true} />
+      {heroArticle ? (
+        <div class="hero-grid">
+          <div class="hero-primary">
+            <ArticleCard article={heroArticle} variant="hero" priority={true} />
 
-          <!-- Two Latest Supporting Articles to fill all gaps -->
-          {heroSecondary.length > 0 && (
-            <div class="hero-secondary-grid">
-              {heroSecondary.map(art => (
-                <ArticleCard article={art} variant="standard" />
+            <!-- Two Latest Supporting Articles to fill all gaps -->
+            {heroSecondary.length > 0 && (
+              <div class="hero-secondary-grid">
+                {heroSecondary.map(art => (
+                  <ArticleCard article={art} variant="standard" />
+                ))}
+              </div>
+            )}
+          </div>
+
+          <aside class="hero-sidebar">
+            <div class="sidebar-header">
+              <h2 class="sidebar-title">Trending Dispatch</h2>
+              <span class="trending-pulse"></span>
+            </div>
+            <div class="trending-list">
+              {trendingArticles.map((art, index) => (
+                <div class="trending-compact-item">
+                  <span class="trending-num">{String(index + 1).padStart(2, '0')}</span>
+                  <div class="trending-compact-content">
+                    <a href={`/category/${art.category}`} class="trending-cat">{art.category}</a>
+                    <h3 class="trending-compact-title">
+                      <a href={`/${art.slug}`}>{art.title}</a>
+                    </h3>
+                    <span class="trending-time">{art.readTime}</span>
+                  </div>
+                </div>
               ))}
             </div>
-          )}
+          </aside>
         </div>
-
-        <aside class="hero-sidebar">
-          <div class="sidebar-header">
-            <h2 class="sidebar-title">Trending Dispatch</h2>
-            <span class="trending-pulse"></span>
-          </div>
-          <div class="trending-list">
-            {trendingArticles.map((art, index) => (
-              <div class="trending-compact-item">
-                <span class="trending-num">{String(index + 1).padStart(2, '0')}</span>
-                <div class="trending-compact-content">
-                  <a href={`/category/${art.category}`} class="trending-cat">{art.category}</a>
-                  <h3 class="trending-compact-title">
-                    <a href={`/${art.slug}`}>{art.title}</a>
-                  </h3>
-                  <span class="trending-time">{art.readTime}</span>
-                </div>
-              </div>
-            ))}
-          </div>
-        </aside>
-      </div>
+      ) : (
+        <div class="empty-magazine-notice">
+          <h2>Upcoming Architectural Edition</h2>
+          <p>Our editorial board is preparing upcoming technical monographs, spatial layouts, and luxury material guides. New articles are being published shortly.</p>
+        </div>
+      )}
     </div>
   </section>
 

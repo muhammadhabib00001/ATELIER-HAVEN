@@ -111,17 +111,19 @@ const breadcrumbItems = [
       )}
 
       <!-- Complementary Architecture from Adjoining Spaces -->
-      <div class="adjoining-spaces-block">
-        <div class="section-label-bar">
-          <span class="label-kicker">Harmonizing Spaces & Material Connections</span>
-          <span class="label-line"></span>
+      {relatedSpacesArticles.length > 0 && (
+        <div class="adjoining-spaces-block">
+          <div class="section-label-bar">
+            <span class="label-kicker">Harmonizing Spaces & Material Connections</span>
+            <span class="label-line"></span>
+          </div>
+          <div class="adjoining-articles-grid">
+            {relatedSpacesArticles.map(art => (
+              <ArticleCard article={art} variant="standard" />
+            ))}
+          </div>
         </div>
-        <div class="adjoining-articles-grid">
-          {relatedSpacesArticles.map(art => (
-            <ArticleCard article={art} variant="standard" />
-          ))}
-        </div>
-      </div>
+      )}
 
       <!-- Quick Browse Other Spaces -->
       <div class="other-categories-nav">
