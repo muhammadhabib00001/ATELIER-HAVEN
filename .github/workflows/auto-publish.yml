@@ -80,5 +80,24 @@ jobs:
             echo "No new changes to commit."
           else
             git commit -m "Auto-publish new article & update Google Drive backup [skip ci]"
-            git push origin main
+            
+            # Robust push with pull rebase retries to permanently prevent push conflicts:
+            pushed=false
+            for i in {1..5}; do
+              echo "Pulling latest remote changes with rebase (attempt $i)..."
+              git pull --rebase origin main || true
+              echo "Pushing changes to origin main (attempt $i)..."
+              if git push origin main; then
+                pushed=true
+                echo "Successfully pushed article to origin main!"
+                break
+              fi
+              echo "Push failed, waiting 3 seconds before retry..."
+              sleep 3
+            done
+
+            if [ "$pushed" = false ]; then
+              echo "Failed to push after 5 attempts."
+              exit 1
+            fi
           fi
