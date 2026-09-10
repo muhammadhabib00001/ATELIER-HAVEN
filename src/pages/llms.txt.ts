@@ -5,13 +5,13 @@ import articles from '../data/articles.json';
 export const GET: APIRoute = async () => {
   const siteUrl = "https://atriumlivings.com";
 
-  let body = `# Atrium Livings — Architectural & Interior Design Magazine
-> The Definitive Digital Journal of Modern Architecture, Interior Spaces & Artful Living.
+  let body = `# Atrium Livings — Architecture & Interior Design Information Guide
+> The Comprehensive Information Resource for Modern Architecture, Interior Spaces & Home Planning.
 
 Website: ${siteUrl}
-Masthead: Atrium Livings Media Group, Inc., San Francisco, CA
-ISSN: 2984-1184 (Global Architecture Edition)
-Target Audience: Architects, Interior Designers, Historic Renovators, and Connoisseur Homeowners
+Publisher: Atrium Livings Media Group, Inc., San Francisco, CA
+Edition: Global Architecture & Interior Design Information Edition
+Target Audience: Homeowners, Renovators, Interior Designers, and Architecture Enthusiasts
 
 ## Editorial Focus & Topical Authority
 Atrium Livings publishes authoritative, peer-reviewed, long-form editorial guides across 12 residential architecture and interior design verticals:
