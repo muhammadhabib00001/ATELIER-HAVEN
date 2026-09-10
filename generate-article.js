@@ -103,7 +103,7 @@ Format the HTML content meticulously:
 3. Under each <h2>, provide 2 to 4 detailed paragraphs exploring principles, structural framing, plumbing/electrical considerations, and tactile materiality.
 4. At least one prominent editorial quote: <div class="editorial-quote"><blockquote>...</blockquote><cite>— Architect Name, AIA</cite></div>
 5. Architectural specification cards: <div class="spec-card"><h4>Architectural Specifications</h4><ul><li><strong>Material / Tolerance:</strong> Detail</li>...</ul></div>
-6. High-utility FAQ section: <h2 id="faq-${topic.toLowerCase().replace(/[^a-z0-9]+/g, '-')}">${topic} Frequently Asked Questions</h2> followed by <div class="faq-accordion"><div class="faq-item"><h3>Precise Question?</h3><p><strong>Direct Key Info.</strong> 1 to 2 concise sentences providing the direct architectural rule, dimension, or specification.</p></div> (3-4 Q&As with short, direct answers).`;
+6. High-utility FAQ section: <h2 id="faq-${topic.toLowerCase().replace(/[^a-z0-9]+/g, '-')}">${topic} Frequently Asked Questions</h2> followed by <div class="faq-accordion"><div class="faq-item"><h3>Precise Question incorporating "${topic}"?</h3><p><strong>Direct Key Info on ${topic}.</strong> 1 to 2 concise sentences providing the direct architectural rule, dimension, or specification directly for ${topic}.</p></div>. CRITICAL: Every single FAQ question (<h3>) and answer (<p>) MUST explicitly focus on and incorporate the target keyword "${topic}". Never write generic questions.`;
 
   const modelsToTry = [
     "gemini-3.5-flash-lite",
@@ -402,7 +402,40 @@ export function enforceArticleStandards(article, existingArticles = []) {
   }
   article.seoDescription = seoDescription;
 
-  // 5. STRICT COVER IMAGE LOCK: Image description and caption strictly match the article title
+  // 5. STRICT FAQ KEYWORD LOCK: Ensure every FAQ question (<h3>) and answer (<p>) explicitly contains the primary target keyword
+  const faqAccordionRegex = /<div class=["']faq-accordion["']>([\s\S]*?)<\/div>/i;
+  const faqMatch = article.content.match(faqAccordionRegex);
+  if (faqMatch) {
+    let faqContent = faqMatch[1];
+    faqContent = faqContent.replace(/<div class=["']faq-item["']>([\s\S]*?)<\/div>/gi, (itemMatch, itemInner) => {
+      let updatedItem = itemInner;
+      // Check <h3>
+      const qMatch = updatedItem.match(/<h3>([\s\S]*?)<\/h3>/i);
+      if (qMatch) {
+        const qText = qMatch[1].trim();
+        if (!qText.toLowerCase().includes(primaryKwLower)) {
+          // Prepend or integrate primary keyword naturally
+          const cleanQ = qText.replace(/\?$/, '');
+          const newQ = `In ${primaryKeyword}, ${cleanQ.charAt(0).toLowerCase() + cleanQ.slice(1)}?`;
+          updatedItem = updatedItem.replace(qMatch[0], `<h3>${newQ}</h3>`);
+        }
+      }
+      // Check <p>
+      const pMatch = updatedItem.match(/<p>([\s\S]*?)<\/p>/i);
+      if (pMatch) {
+        const pText = pMatch[1].trim();
+        if (!pText.toLowerCase().includes(primaryKwLower)) {
+          // Append reference to primary keyword naturally if missing
+          const newP = pText.replace(/\.$/, '') + ` when planning luxury ${primaryKeyword}.`;
+          updatedItem = updatedItem.replace(pMatch[0], `<p>${newP}</p>`);
+        }
+      }
+      return `<div class="faq-item">${updatedItem}</div>`;
+    });
+    article.content = article.content.replace(faqMatch[0], `<div class="faq-accordion">${faqContent}</div>`);
+  }
+
+  // 6. STRICT COVER IMAGE LOCK: Image description and caption strictly match the article title
   article.coverAlt = article.title;
 
   return article;
