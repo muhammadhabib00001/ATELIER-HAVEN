@@ -150,15 +150,42 @@ Format the HTML content meticulously:
   const generated = JSON.parse(response.text);
   const now = new Date().toISOString();
 
+  let existingArticlesList = [];
+  if (fs.existsSync(articlesPath)) {
+    try {
+      existingArticlesList = JSON.parse(fs.readFileSync(articlesPath, "utf-8"));
+    } catch (e) {}
+  }
+
   let coverImageUrl = options.customImage || "";
   if (!coverImageUrl) {
-    let existingArticlesList = [];
-    if (fs.existsSync(articlesPath)) {
-      try {
-        existingArticlesList = JSON.parse(fs.readFileSync(articlesPath, "utf-8"));
-      } catch (e) {}
-    }
     coverImageUrl = await tryGenerateImage(generated.imagePrompt, generated.slug, generated.keywords, generated.category, existingArticlesList);
+  }
+
+  // Fetch 1-2 unique keyword-aligned body images ensuring strictly NO duplicates
+  const extraUsed = new Set([coverImageUrl]);
+  const bodyImages = await fetchArticleBodyImages(generated.keywords, generated.category, 2, existingArticlesList, extraUsed);
+  
+  let finalContent = generated.content;
+  if (bodyImages.length > 0) {
+    // Insert into content after 2nd and 4th H2 sections
+    const h2Regex = /(<h2[^>]*>[\s\S]*?<\/h2>)/gi;
+    const parts = finalContent.split(h2Regex);
+    const primaryKw = (generated.keywords && generated.keywords[0]) ? generated.keywords[0] : generated.title;
+
+    if (bodyImages[0] && parts.length >= 5) {
+      const fig1 = `\n<figure class="editorial-figure"><img src="${bodyImages[0].url}" alt="${bodyImages[0].alt}" loading="lazy" width="1200" height="700" crossorigin="anonymous" referrerpolicy="no-referrer-when-downgrade" /><figcaption><strong>${primaryKw} Architectural Focus:</strong> ${bodyImages[0].caption}</figcaption></figure>\n`;
+      parts[4] = fig1 + parts[4];
+    }
+    if (bodyImages[1]) {
+      const fig2 = `\n<figure class="editorial-figure"><img src="${bodyImages[1].url}" alt="${bodyImages[1].alt}" loading="lazy" width="1200" height="700" crossorigin="anonymous" referrerpolicy="no-referrer-when-downgrade" /><figcaption><strong>${primaryKw} Detail View:</strong> ${bodyImages[1].caption}</figcaption></figure>\n`;
+      if (parts.length >= 9) {
+        parts[8] = fig2 + parts[8];
+      } else if (parts.length >= 7) {
+        parts[6] = fig2 + parts[6];
+      }
+    }
+    finalContent = parts.join('');
   }
 
   const article = {
@@ -179,21 +206,46 @@ Format the HTML content meticulously:
     seoDescription: generated.seoDescription,
     keyTakeaways: generated.keyTakeaways,
     toc: generated.toc,
-    content: generated.content
+    content: finalContent
   };
 
   return article;
 }
 
-async function fetchUnsplashImage(keywords, category, existingArticles = []) {
+// Helper to extract ALL image URLs used across the entire site (both coverImage and in-content figures)
+export function getAllUsedImageUrls(existingArticles = []) {
+  const used = new Set();
+  for (const art of existingArticles) {
+    if (art.coverImage) used.add(art.coverImage);
+    if (art.content) {
+      const imgMatches = [...art.content.matchAll(/<img[^>]+src=["']([^"']+)["']/gi)];
+      for (const m of imgMatches) {
+        used.add(m[1]);
+      }
+    }
+  }
+  return used;
+}
+
+// Check if an image URL matches any existing used image (by full URL or Unsplash photo id)
+function isImageAlreadyUsed(urlOrId, usedImagesSet) {
+  if (!urlOrId) return false;
+  for (const used of usedImagesSet) {
+    if (used.includes(urlOrId) || (urlOrId.length > 5 && used.includes(urlOrId))) {
+      return true;
+    }
+  }
+  return false;
+}
+
+export async function fetchUnsplashImage(keywords, category, existingArticles = [], extraUsedSet = new Set()) {
   const accessKey = process.env.UNSPLASH_ACCESS_KEY;
   if (!accessKey) return null;
 
-  const usedImages = new Set(existingArticles.map(a => a.coverImage).filter(Boolean));
+  const usedImages = new Set([...getAllUsedImageUrls(existingArticles), ...extraUsedSet]);
 
   try {
     const primaryKw = (keywords?.[0] || "").trim();
-    // Normalize foreign or raw keywords into English architectural context if needed
     let enrichedTerm = primaryKw;
     if (primaryKw.toLowerCase().includes('baño') || primaryKw.toLowerCase().includes('bano')) {
       enrichedTerm = 'modern luxury bathroom architecture';
@@ -208,7 +260,6 @@ async function fetchUnsplashImage(keywords, category, existingArticles = []) {
     ].filter(Boolean);
 
     for (const term of searchTerms) {
-      console.log(` Fetching high-res architectural cover from Unsplash: "${term}"...`);
       const url = `https://api.unsplash.com/search/photos?query=${encodeURIComponent(term)}&per_page=20&orientation=landscape&content_filter=high`;
       const res = await fetch(url, {
         headers: { Authorization: `Client-ID ${accessKey}` }
@@ -217,15 +268,14 @@ async function fetchUnsplashImage(keywords, category, existingArticles = []) {
       if (!res.ok) continue;
       const data = await res.json();
       if (data.results && data.results.length > 0) {
-        // Find first image that has NOT been used in ANY published article
         const unusedPhoto = data.results.find(p => {
           const rawUrl = p.urls.raw || p.urls.regular;
-          return !Array.from(usedImages).some(used => used.includes(p.id) || used.includes(rawUrl));
+          return !isImageAlreadyUsed(p.id, usedImages) && !isImageAlreadyUsed(rawUrl, usedImages);
         });
 
         if (unusedPhoto) {
           const imageUrl = `${unusedPhoto.urls.raw || unusedPhoto.urls.regular}&auto=format&fit=crop&w=1400&q=85`;
-          console.log(` Retrieved unique Unsplash photo by ${unusedPhoto.user.name}: ${imageUrl}`);
+          console.log(` Retrieved unique Unsplash photo (${unusedPhoto.id}) by ${unusedPhoto.user.name}: ${imageUrl}`);
           return imageUrl;
         }
       }
@@ -234,6 +284,59 @@ async function fetchUnsplashImage(keywords, category, existingArticles = []) {
     console.warn(" Unsplash fetch error:", err.message);
   }
   return null;
+}
+
+export async function fetchArticleBodyImages(keywords, category, count = 2, existingArticles = [], extraUsedSet = new Set()) {
+  const accessKey = process.env.UNSPLASH_ACCESS_KEY;
+  const primaryKw = (keywords?.[0] || "").trim();
+  const secondaryKw = (keywords?.[1] || "").trim();
+  const usedImages = new Set([...getAllUsedImageUrls(existingArticles), ...extraUsedSet]);
+  const results = [];
+
+  const queries = [
+    `${primaryKw} architectural detail`,
+    `${primaryKw} modern luxury interior`,
+    `${secondaryKw || primaryKw} luxury design`,
+    `${category} interior architecture styling`,
+    `${category} modern luxury details`
+  ];
+
+  if (!accessKey) return results;
+
+  for (const query of queries) {
+    if (results.length >= count) break;
+    try {
+      let cleanQuery = query;
+      if (cleanQuery.toLowerCase().includes('baño') || cleanQuery.toLowerCase().includes('bano')) {
+        cleanQuery = cleanQuery.replace(/baño/gi, 'bathroom').replace(/bano/gi, 'bathroom');
+      }
+
+      const url = `https://api.unsplash.com/search/photos?query=${encodeURIComponent(cleanQuery)}&per_page=15&orientation=landscape&content_filter=high`;
+      const res = await fetch(url, { headers: { Authorization: `Client-ID ${accessKey}` } });
+      if (!res.ok) continue;
+
+      const data = await res.json();
+      const photo = (data.results || []).find(p => {
+        const rawUrl = p.urls.raw || p.urls.regular;
+        return !isImageAlreadyUsed(p.id, usedImages) && !isImageAlreadyUsed(rawUrl, usedImages);
+      });
+
+      if (photo) {
+        const imgUrl = `${photo.urls.raw || photo.urls.regular}&auto=format&fit=crop&w=1200&q=85`;
+        usedImages.add(photo.id);
+        usedImages.add(imgUrl);
+        results.push({
+          url: imgUrl,
+          alt: `${primaryKw} - ${(photo.alt_description || photo.description || primaryKw).replace(/"/g, '')}`,
+          caption: `${primaryKw}: Architectural detailing and spatial materiality curated for modern luxury residences.`
+        });
+      }
+    } catch (e) {
+      console.warn(" Body image fetch error:", e.message);
+    }
+  }
+
+  return results;
 }
 
 async function tryGenerateImage(prompt, slug, keywords = [], category = "interior-design", existingArticles = []) {
