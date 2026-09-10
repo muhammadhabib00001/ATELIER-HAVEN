@@ -1,0 +1,67 @@
+name: Automated Article Publishing & Google Drive Backup
+
+on:
+  schedule:
+    # Runs daily at 06:00 UTC (11:00 AM PKT / 02:00 AM EDT)
+    - cron: '0 6 * * *'
+  workflow_dispatch:
+    inputs:
+      topic:
+        description: 'Article Topic / Keyword (Leave blank for automated queue rotation)'
+        required: false
+        type: string
+      category:
+        description: 'Category (living-room, kitchen, bathroom, bedroom, lighting, renovation, diy, garden-outdoor, small-spaces, etc.)'
+        required: false
+        default: 'living-room'
+        type: string
+
+permissions:
+  contents: write
+
+jobs:
+  publish-and-backup:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Codebase
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'npm'
+
+      - name: Install Dependencies
+        run: npm ci
+
+      - name: Generate SEO Article & Sync Links
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          UNSPLASH_ACCESS_KEY: ${{ secrets.UNSPLASH_ACCESS_KEY }}
+          GDRIVE_SERVICE_ACCOUNT_KEY: ${{ secrets.GDRIVE_SERVICE_ACCOUNT_KEY }}
+          GDRIVE_FOLDER_ID: ${{ secrets.GDRIVE_FOLDER_ID }}
+          GDRIVE_CLIENT_ID: ${{ secrets.GDRIVE_CLIENT_ID }}
+          GDRIVE_CLIENT_SECRET: ${{ secrets.GDRIVE_CLIENT_SECRET }}
+          GDRIVE_REFRESH_TOKEN: ${{ secrets.GDRIVE_REFRESH_TOKEN }}
+        run: |
+          node scripts/run-pipeline.js "${{ github.event.inputs.topic }}" "${{ github.event.inputs.category }}"
+
+      - name: Verify Build
+        run: npm run build
+
+      - name: Commit and Push New Article
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git add src/data/articles.json public/
+          if git diff --staged --quiet; then
+            echo "No changes to commit."
+          else
+            git commit -m "Auto-publish new article & update Google Drive backup [skip ci]"
+            git push origin main
+          fi
