@@ -12,10 +12,24 @@ on:
         required: false
         type: string
       category:
-        description: 'Category (leave blank for auto-detection from keyword)'
+        description: 'Category (Select a specific category or leave auto-balanced)'
         required: false
-        default: ''
-        type: string
+        default: 'auto'
+        type: choice
+        options:
+          - auto
+          - kitchen
+          - bathroom
+          - living-room
+          - bedroom
+          - home-decor
+          - furniture
+          - lighting
+          - renovation
+          - diy
+          - garden-outdoor
+          - small-spaces
+          - design-trends
 
 permissions:
   contents: write

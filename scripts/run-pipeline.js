@@ -16,7 +16,25 @@ import fs from 'fs';
 import path from 'path';
 import { generateArticle, saveArticle } from '../generate-article.js';
 import { uploadToGoogleDrive, getDriveAccessToken } from './backup-to-drive.js';
-import { fetchKeywordsFromDrive } from './fetch-keywords.js';
+import { fetchKeywordsFromDrive, normalizeCategory, detectCategoryFromKeyword } from './fetch-keywords.js';
+
+// Load official categories from site.json
+const siteDataPath = path.resolve("./src/data/site.json");
+let SITE_CATEGORIES = [
+  "kitchen", "bathroom", "living-room", "bedroom", "home-decor",
+  "furniture", "lighting", "renovation", "diy", "garden-outdoor",
+  "small-spaces", "design-trends"
+];
+if (fs.existsSync(siteDataPath)) {
+  try {
+    const siteJson = JSON.parse(fs.readFileSync(siteDataPath, 'utf8'));
+    if (siteJson.categories && Array.isArray(siteJson.categories)) {
+      SITE_CATEGORIES = siteJson.categories.map(c => c.slug);
+    }
+  } catch (e) {
+    // fallback to default list
+  }
+}
 
 // Fallback curated rotation of high-volume, low-KD architectural topics
 const TOPIC_QUEUE = [
@@ -27,12 +45,18 @@ const TOPIC_QUEUE = [
   { topic: "Curated Courtyard Garden Landscape Design", category: "garden-outdoor" },
   { topic: "Micro Luxury Small Space Storage and Pocket Doors", category: "small-spaces" },
   { topic: "Modern Travertine Dining Tables and Stone Craftsmanship", category: "furniture" },
-  { topic: "Architectural Wall Sconces and Indirect Living Room Lighting", category: "lighting" }
+  { topic: "Architectural Wall Sconces and Indirect Living Room Lighting", category: "lighting" },
+  { topic: "Artisanal Limewash and Microcement Wall Finishes", category: "diy" },
+  { topic: "Structural Wall Removal and Open Concept Renovation Costs", category: "renovation" },
+  { topic: "Handcrafted Ceramic Vessels and Woven Textile Styling", category: "home-decor" },
+  { topic: "Quiet Luxury and Tactile Biophilic Interior Forecast", category: "design-trends" }
 ];
 
 async function run() {
   const customTopic = process.argv[2];
-  const customCategory = process.argv[3];
+  const rawCustomCategory = process.argv[3];
+  const isAuto = !rawCustomCategory || rawCustomCategory.trim().toLowerCase() === 'auto';
+  const customCategory = isAuto ? null : (normalizeCategory(rawCustomCategory) || (rawCustomCategory && rawCustomCategory.trim() ? rawCustomCategory.trim() : null));
 
   let targetTopic = customTopic;
   let targetCategory = customCategory;
@@ -50,7 +74,7 @@ async function run() {
   const publishedTitles = existingArticles.map(a => (a.title || "").toLowerCase());
   const publishedKeywords = existingArticles.flatMap(a => (a.keywords || []).map(k => k.toLowerCase()));
 
-  // 1. If no manual topic provided via GitHub Actions dispatch, try fetching from Google Drive Excel/Sheet!
+  // 1. If no manual topic provided via GitHub Actions dispatch, select category-wise from Google Drive file!
   if (!targetTopic) {
     try {
       const accessToken = await getDriveAccessToken();
@@ -59,18 +83,67 @@ async function run() {
         const driveKeywords = await fetchKeywordsFromDrive(accessToken);
         
         if (driveKeywords.length > 0) {
-          // Find first keyword from Drive that has not yet been published
-          const nextUnpublished = driveKeywords.find(item => {
+          // Filter unpublished keywords
+          const unpublishedDriveKeywords = driveKeywords.filter(item => {
             const itemTopicLower = item.topic.toLowerCase();
             const isTitleMatch = publishedTitles.some(t => t.includes(itemTopicLower));
             const isKeywordMatch = publishedKeywords.some(k => k === itemTopicLower);
             return !isTitleMatch && !isKeywordMatch;
           });
 
-          if (nextUnpublished) {
-            console.log(` Selected next unpublished keyword from Google Drive file: "${nextUnpublished.topic}" (Category: ${nextUnpublished.category})`);
-            targetTopic = nextUnpublished.topic;
-            targetCategory = nextUnpublished.category;
+          if (unpublishedDriveKeywords.length > 0) {
+            console.log(` Found ${unpublishedDriveKeywords.length} unpublished keywords in Google Drive file.`);
+
+            // Category-wise Selection:
+            let selectedItem = null;
+
+            if (customCategory) {
+              // A specific category was requested by the user
+              selectedItem = unpublishedDriveKeywords.find(item => item.category === customCategory);
+              if (selectedItem) {
+                console.log(` Filtered specifically for requested category "${customCategory}": "${selectedItem.topic}"`);
+              }
+            }
+
+            if (!selectedItem) {
+              // Calculate current distribution of published articles across all official site categories
+              const categoryCounts = {};
+              SITE_CATEGORIES.forEach(cat => { categoryCounts[cat] = 0; });
+              existingArticles.forEach(a => {
+                const cat = normalizeCategory(a.category) || a.category;
+                if (cat) {
+                  categoryCounts[cat] = (categoryCounts[cat] || 0) + 1;
+                }
+              });
+
+              console.log(" Current site category article distribution:", JSON.stringify(categoryCounts));
+
+              // Sort site categories ascending by count (categories with fewest articles first)
+              const sortedCategories = [...SITE_CATEGORIES].sort((a, b) => {
+                return (categoryCounts[a] || 0) - (categoryCounts[b] || 0);
+              });
+
+              // Select the next unpublished keyword belonging to the least-represented category
+              for (const cat of sortedCategories) {
+                const match = unpublishedDriveKeywords.find(item => item.category === cat);
+                if (match) {
+                  selectedItem = match;
+                  console.log(` Category-wise rotation selected "${cat}" (currently ${categoryCounts[cat] || 0} articles on site).`);
+                  break;
+                }
+              }
+
+              // If no match within official categories, pick the first available unpublished keyword
+              if (!selectedItem) {
+                selectedItem = unpublishedDriveKeywords[0];
+              }
+            }
+
+            if (selectedItem) {
+              console.log(` Selected keyword: "${selectedItem.topic}" (Category: ${selectedItem.category})`);
+              targetTopic = selectedItem.topic;
+              targetCategory = selectedItem.category;
+            }
           } else {
             console.log(" All keywords in Google Drive file have already been published! Falling back to rotation queue.");
           }
@@ -81,15 +154,31 @@ async function run() {
     }
   }
 
-  // 2. If still no topic, pick from the default curated topic queue
+  // 2. If still no topic, pick category-wise from the default curated topic queue
   if (!targetTopic) {
     const available = TOPIC_QUEUE.filter(item => 
       !publishedTitles.some(t => t.includes(item.topic.toLowerCase()))
     );
-    const chosen = available.length > 0 ? available[0] : TOPIC_QUEUE[Math.floor(Math.random() * TOPIC_QUEUE.length)];
+
+    // Calculate published count per category to balance queue selection
+    const categoryCounts = {};
+    SITE_CATEGORIES.forEach(cat => { categoryCounts[cat] = 0; });
+    existingArticles.forEach(a => {
+      const cat = normalizeCategory(a.category) || a.category;
+      if (cat) categoryCounts[cat] = (categoryCounts[cat] || 0) + 1;
+    });
+
+    const sortedQueue = [...(available.length > 0 ? available : TOPIC_QUEUE)].sort((a, b) => {
+      return (categoryCounts[a.category] || 0) - (categoryCounts[b.category] || 0);
+    });
+
+    const chosen = sortedQueue[0];
     targetTopic = chosen.topic;
     targetCategory = chosen.category;
   }
+
+  // Ensure category is a valid site category slug
+  targetCategory = normalizeCategory(targetCategory) || targetCategory || 'living-room';
 
   console.log(`\n Starting Automated Generation Pipeline:`);
   console.log(` Topic: "${targetTopic}"`);

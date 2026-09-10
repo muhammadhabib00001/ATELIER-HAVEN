@@ -6,6 +6,50 @@
 
 import * as XLSX from 'xlsx';
 
+// Normalizes any category string into one of the 12 official site category slugs
+export function normalizeCategory(cat) {
+  if (!cat) return null;
+  const c = String(cat).toLowerCase().trim().replace(/[_\s]+/g, '-');
+  
+  const categoryMap = {
+    'kitchen': 'kitchen',
+    'kitchens': 'kitchen',
+    'bathroom': 'bathroom',
+    'bathrooms': 'bathroom',
+    'bath': 'bathroom',
+    'living-room': 'living-room',
+    'living-rooms': 'living-room',
+    'living': 'living-room',
+    'livingroom': 'living-room',
+    'bedroom': 'bedroom',
+    'bedrooms': 'bedroom',
+    'home-decor': 'home-decor',
+    'decor': 'home-decor',
+    'homedecor': 'home-decor',
+    'furniture': 'furniture',
+    'furnishings': 'furniture',
+    'lighting': 'lighting',
+    'lights': 'lighting',
+    'renovation': 'renovation',
+    'renovations': 'renovation',
+    'remodel': 'renovation',
+    'diy': 'diy',
+    'garden-outdoor': 'garden-outdoor',
+    'outdoor': 'garden-outdoor',
+    'garden': 'garden-outdoor',
+    'outdoors': 'garden-outdoor',
+    'small-spaces': 'small-spaces',
+    'small-space': 'small-spaces',
+    'smallspaces': 'small-spaces',
+    'design-trends': 'design-trends',
+    'trends': 'design-trends',
+    'designtrends': 'design-trends',
+    'trend': 'design-trends'
+  };
+
+  return categoryMap[c] || null;
+}
+
 // Intelligent keyword-to-category matcher
 export function detectCategoryFromKeyword(keyword) {
   const kw = (keyword || "").toLowerCase();
@@ -91,7 +135,12 @@ export function detectCategoryFromKeyword(keyword) {
     return 'diy';
   }
 
-  // 10. Home Decor
+  // 10. Design Trends
+  if (kw.includes('trend') || kw.includes('biophilic') || kw.includes('forecast') || kw.includes('aesthetic') || kw.includes('quiet luxury')) {
+    return 'design-trends';
+  }
+
+  // 11. Home Decor
   if (kw.includes('decor') || kw.includes('vase') || kw.includes('vessel') || kw.includes('rug') || kw.includes('textile') || kw.includes('art')) {
     return 'home-decor';
   }
@@ -145,13 +194,14 @@ export async function fetchKeywordsFromDrive(accessToken) {
       const lines = rawCsv.split(/\r?\n/).map(l => l.trim()).filter(Boolean);
       for (let i = 0; i < lines.length; i++) {
         const line = lines[i];
-        if (i === 0 && (line.toLowerCase().includes('keyword') || line.toLowerCase().includes('topic'))) continue;
         const parts = line.split(',').map(p => p.trim().replace(/^["']|["']$/g, ''));
         const rawKeyword = parts[0];
+        const rawCategory = parts[1] ? String(parts[1]).trim() : null;
+        const normalizedCat = normalizeCategory(rawCategory) || detectCategoryFromKeyword(rawKeyword);
         if (rawKeyword) {
           keywords.push({
             topic: rawKeyword,
-            category: parts[1] || detectCategoryFromKeyword(rawKeyword)
+            category: normalizedCat
           });
         }
       }
@@ -185,9 +235,10 @@ export async function fetchKeywordsFromDrive(accessToken) {
         }
 
         const rawCategory = row[1] ? String(row[1]).trim() : null;
+        const normalizedCat = normalizeCategory(rawCategory) || detectCategoryFromKeyword(rawKeyword);
         keywords.push({
           topic: rawKeyword,
-          category: rawCategory || detectCategoryFromKeyword(rawKeyword)
+          category: normalizedCat
         });
       }
     }
