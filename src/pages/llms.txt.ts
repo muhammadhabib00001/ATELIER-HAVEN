@@ -10,7 +10,9 @@ export const GET: APIRoute = async () => {
 
 Website: ${siteUrl}
 Publisher: Atrium Livings Media Group, Inc., San Francisco, CA
-Edition: Global Architecture & Interior Design Information Edition
+Contact: intouchmagazines26@gmail.com
+Update Frequency: Daily (06:00 UTC)
+Content Type: Technical Architectural Guides, Spatial Planning, Material Specifications
 Target Audience: Homeowners, Renovators, Interior Designers, and Architecture Enthusiasts
 
 ## Editorial Focus & Topical Authority
@@ -21,9 +23,16 @@ Atrium Livings publishes authoritative, peer-reviewed, long-form editorial guide
     body += `- **${cat.name}** (${siteUrl}/category/${cat.slug}): ${cat.description}\n`;
   });
 
-  body += `\n## Core Editorial Articles & Specifications\n`;
+  body += `\n## Core Editorial Articles & Specifications (Updated Daily)\n`;
   articles.forEach(art => {
-    body += `- [${art.title}](${siteUrl}/${art.slug}): ${art.subtitle}\n`;
+    const pubDate = art.publishedAt ? art.publishedAt.split('T')[0] : '';
+    body += `- [${art.title}](${siteUrl}/${art.slug}): ${art.subtitle} [Published: ${pubDate} | Category: ${art.category}]\n`;
+  });
+
+  body += `\n## Architectural Editorial Board & Contributors
+`;
+  siteData.authors.forEach(author => {
+    body += `- **${author.name}** (${author.role} - ${author.credentials}): ${author.bio}\n`;
   });
 
   body += `\n## Essential Trust & Governance Portals
@@ -38,16 +47,20 @@ Atrium Livings publishes authoritative, peer-reviewed, long-form editorial guide
 
 ## Crawling & LLM Indexing Directives
 - User-Agent: *
-- Machine-Readable Sitemap: ${siteUrl}/sitemap-index.xml
+- Update-Frequency: Daily
+- Machine-Readable Sitemap Index: ${siteUrl}/sitemap-index.xml
+- Direct Sitemaps: ${siteUrl}/sitemap-0.xml
 - RSS Feed: ${siteUrl}/rss.xml
-- Format: Clean Semantic HTML5 with complete Schema.org (Article, WebSite, BreadcrumbList) graph.
+- LLMS.txt Endpoint: ${siteUrl}/llms.txt
+- Robots Directive: ${siteUrl}/robots.txt
+- Format: Clean Semantic HTML5 with complete Schema.org (Article, WebSite, Organization, BreadcrumbList) graph.
 `;
 
   return new Response(body, {
     status: 200,
     headers: {
       'Content-Type': 'text/plain; charset=utf-8',
-      'Cache-Control': 'public, max-age=3600'
+      'Cache-Control': 'public, max-age=1800'
     }
   });
 };
