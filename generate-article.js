@@ -93,11 +93,11 @@ Format the HTML content meticulously:
 7. High-utility FAQ section: <h2 id="faq">Frequently Asked Questions</h2> followed by <div class="faq-accordion"><div class="faq-item"><h3>Precise Question?</h3><p><strong>Direct Key Info.</strong> 1 to 2 concise sentences providing the direct architectural rule, dimension, or specification.</p></div> (3-4 Q&As with short, direct answers).`;
 
   const modelsToTry = [
-    "gemini-2.5-flash",
-    "gemini-2.5-pro",
-    "gemini-2.5-flash-lite",
+    "gemini-3.5-flash-lite",
+    "gemini-flash-latest",
     "gemini-3.5-flash",
-    "gemini-3.5-flash-lite"
+    "gemini-3.6-flash",
+    "gemini-2.5-pro"
   ];
   let response = null;
 
