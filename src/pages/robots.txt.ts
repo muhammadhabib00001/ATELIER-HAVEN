@@ -4,7 +4,6 @@ export const GET: APIRoute = async () => {
   const robots = `# Atrium Livings Robots Directive
 User-agent: *
 Allow: /
-Disallow: /search?*
 
 # AI & LLM Bot Directives
 User-agent: GPTBot

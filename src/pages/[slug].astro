@@ -46,9 +46,9 @@ const formattedUpdatedDate = article.updatedAt ? new Date(article.updatedAt).toL
   year: 'numeric'
 }) : null;
 
-const pageTitle = article.seoTitle && article.seoTitle !== article.title
+const pageTitle = article.seoTitle
   ? `${article.seoTitle} | Atrium Livings`
-  : `${article.title}: Architectural Specifications & Planning Guide | Atrium Livings`;
+  : `${article.title} | Atrium Livings`;
 ---
 
 <BaseLayout

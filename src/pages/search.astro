@@ -25,7 +25,6 @@ const searchableData = articles.map(art => ({
   title="Search Architectural Archive | Atrium Livings"
   description="Search across our comprehensive editorial index of luxury kitchen designs, small bathroom tile plans, Japandi living spaces, and renovation guides."
   breadcrumbs={breadcrumbItems}
-  noindex={true}
 >
   <Breadcrumbs items={breadcrumbItems} />
 
@@ -69,7 +68,20 @@ const searchableData = articles.map(art => ({
       </div>
 
       <div class="search-results-grid" id="resultsGrid">
-        <!-- Rendered client-side dynamically -->
+        {articles.map(art => (
+          <article class="search-result-card">
+            <a href={`/${art.slug}/`} class="result-img-link">
+              <img src={art.coverImage} alt={art.title} loading="lazy" width="400" height="250" class="result-img" crossorigin="anonymous" referrerpolicy="no-referrer-when-downgrade" />
+            </a>
+            <div class="result-body">
+              <span class="result-cat">{art.category} &bull; {art.readTime}</span>
+              <h3 class="result-title">
+                <a href={`/${art.slug}/`}>{art.title}</a>
+              </h3>
+              <p class="result-excerpt">{art.subtitle}</p>
+            </div>
+          </article>
+        ))}
       </div>
     </div>
   </section>

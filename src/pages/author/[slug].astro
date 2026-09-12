@@ -27,7 +27,7 @@ const authorDescription = author.bio.length > 150
 ---
 
 <BaseLayout
-  title={`${author.name} | Architectural Portfolio & Biography | Atrium Livings`}
+  title={`${author.name} | Atrium Livings`}
   description={authorDescription}
   image={author.avatar}
   breadcrumbs={breadcrumbItems}
@@ -79,14 +79,44 @@ const authorDescription = author.bio.length > 150
         </div>
       </div>
 
-      <div class="author-articles-grid">
-        {authorArticles.map(art => (
-          <ArticleCard article={art} variant="standard" />
-        ))}
-      </div>
+      {authorArticles.length > 0 ? (
+        <div class="author-articles-grid">
+          {authorArticles.map(art => (
+            <ArticleCard article={art} variant="standard" />
+          ))}
+        </div>
+      ) : (
+        <div class="author-empty-wrapper">
+          <div class="author-monograph-card">
+            <h3 class="monograph-title">Curatorial Focus & Research Specialization</h3>
+            <p class="monograph-text">
+              As Style Director and Fine Arts Curator at Atrium Livings, Charlotte Dupuis oversees decorative materiality, ceramic installations, vintage furnishings, and spatial tactile finishes. Her curatorial methodology evaluates how artisanal craftsmanship, organic textures, and historic decorative arts enrich contemporary architectural spaces.
+            </p>
+            <p class="monograph-text">
+              Her upcoming monographic essays explore European mid-century furniture acquisition provenance, sustainable architectural textiles, and hand-thrown ceramic spatial installations across boutique hospitality and private residences.
+            </p>
+            <div class="curatorial-pillars">
+              <div class="pillar-item">
+                <span class="pillar-label">Focus Areas</span>
+                <span class="pillar-val">Mid-Century Provenance, Ceramic Arts, French & Italian Modernism</span>
+              </div>
+              <div class="pillar-item">
+                <span class="pillar-label">Advisory Consultations</span>
+                <span class="pillar-val">Milan Furniture Fair, Paris Deco Off, Private Collectors</span>
+              </div>
+            </div>
+          </div>
 
-      {authorArticles.length === 0 && (
-        <p class="empty-state">No articles currently published under this byline.</p>
+          <div class="recommended-archive-header">
+            <span class="section-kicker">Collaborative Reading</span>
+            <h3 class="section-title">Essential Editorial Studies from the Masthead</h3>
+          </div>
+          <div class="author-articles-grid">
+            {articles.slice(0, 3).map(art => (
+              <ArticleCard article={art} variant="standard" />
+            ))}
+          </div>
+        </div>
       )}
     </div>
   </section>
@@ -214,6 +244,63 @@ const authorDescription = author.bio.length > 150
     gap: 2.5rem;
   }
 
+  .author-monograph-card {
+    background: #FFFFFF;
+    border: 1px solid var(--color-border);
+    border-radius: 8px;
+    padding: 2.5rem 3rem;
+    margin-bottom: 3.5rem;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.02);
+  }
+
+  .monograph-title {
+    font-family: var(--font-serif);
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--color-text-main);
+    margin-bottom: 1rem;
+  }
+
+  .monograph-text {
+    font-size: 1.05rem;
+    line-height: 1.75;
+    color: var(--color-text-muted);
+    margin-bottom: 1.25rem;
+  }
+
+  .curatorial-pillars {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.5rem;
+    margin-top: 1.75rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--color-border);
+  }
+
+  .pillar-item {
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+  }
+
+  .pillar-label {
+    font-size: 0.6875rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--color-accent);
+  }
+
+  .pillar-val {
+    font-size: 0.9375rem;
+    font-weight: 600;
+    color: var(--color-text-main);
+  }
+
+  .recommended-archive-header {
+    margin-bottom: 2rem;
+  }
+
   @media (max-width: 800px) {
     .author-profile-card {
       flex-direction: column;
@@ -222,6 +309,12 @@ const authorDescription = author.bio.length > 150
     }
     .author-articles-grid {
       grid-template-columns: 1fr;
+    }
+    .curatorial-pillars {
+      grid-template-columns: 1fr;
+    }
+    .author-monograph-card {
+      padding: 2rem 1.5rem;
     }
   }
 </style>
