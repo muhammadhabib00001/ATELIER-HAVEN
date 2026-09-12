@@ -2,7 +2,7 @@
   "title": "Atrium Livings | Architecture & Interior Design Information Guide",
   "tagline": "The Comprehensive Information Resource for Architecture, Interior Design & Home Planning",
   "description": "Atrium Livings is an authoritative architectural and interior design information resource offering comprehensive guides on modern kitchens, bathrooms, spatial layouts, material tolerances, and home renovations.",
-  "siteUrl": "https://atriumlivings.com",
+  "siteUrl": "https://www.atriumlivings.com",
   "publisher": {
     "name": "Atrium Livings Media Group",
     "logo": "https://atriumlivings.com/logo.svg",
@@ -50,7 +50,7 @@
     {
       "slug": "bedroom",
       "name": "Bedroom",
-      "title": "Primary Bedroom Suites, Acoustic Comfort & Calming Palettes",
+      "title": "Primary Bedroom Suites & Acoustic Comfort Palettes",
       "description": "Transform restful quarters with upholstered acoustic headboards, pure Belgian linen bedding, recessed mood lighting, and serene plaster finishes.",
       "cover": "https://images.unsplash.com/photo-1616594039964-ae9021a400a0?auto=format&fit=crop&w=1200&q=80",
       "color": "#4A3B32"
@@ -66,15 +66,15 @@
     {
       "slug": "furniture",
       "name": "Furniture",
-      "title": "Modern Furniture Classics, Joinery & Sustainable Woodcraft",
-      "description": "In-depth analyses of iconic mid-century silhouettes, curved boucl\u00e9 sofas, solid walnut dining tables, and heirloom custom joinery.",
+      "title": "Modern Furniture Classics & Sustainable Woodcraft",
+      "description": "In-depth analyses of iconic mid-century silhouettes, curved bouclé sofas, solid walnut dining tables, and heirloom custom joinery.",
       "cover": "https://images.unsplash.com/photo-1586023492125-27b2c045efd7?auto=format&fit=crop&w=1200&q=80",
       "color": "#704214"
     },
     {
       "slug": "lighting",
       "name": "Lighting",
-      "title": "Architectural Lighting: Pendants, Sconces & Concealed LEDs",
+      "title": "Architectural Lighting: Pendants & Concealed LEDs",
       "description": "Mastering the 3 layers of illumination: ambient, task, and accent lighting with dim-to-warm 2700K illumination and alabaster fixtures.",
       "cover": "https://images.unsplash.com/photo-1513506003901-1e6a229e2d15?auto=format&fit=crop&w=1200&q=80",
       "color": "#B8860B"
@@ -82,7 +82,7 @@
     {
       "slug": "renovation",
       "name": "Renovation",
-      "title": "Renovation Chronicles: Structural Overhauls & Cost Guides",
+      "title": "Renovation Chronicles: Structural Overhaul Guides",
       "description": "Authoritative architectural guidelines for load-bearing modifications, permit workflows, realistic cost breakdowns, and general contractor collaboration.",
       "cover": "https://images.unsplash.com/photo-1503387762-592deb58ef4e?auto=format&fit=crop&w=1200&q=80",
       "color": "#36454F"
@@ -90,7 +90,7 @@
     {
       "slug": "diy",
       "name": "DIY",
-      "title": "Artisanal DIY: Fluting, Plaster Finishes & Custom Joinery",
+      "title": "Artisanal DIY: Fluting & Custom Plaster Finishes",
       "description": "Step-by-step masterclasses in limewash application, bespoke slatted acoustic panel fabrication, and custom architectural mouldings.",
       "cover": "https://images.unsplash.com/photo-1581783342308-f792dbdd27c5?auto=format&fit=crop&w=1200&q=80",
       "color": "#6B8E23"
@@ -98,7 +98,7 @@
     {
       "slug": "garden-outdoor",
       "name": "Garden & Outdoor",
-      "title": "Courtyards, Pergolas & Architectural Landscape Architecture",
+      "title": "Courtyards, Pergolas & Architectural Landscapes",
       "description": "Blur the boundaries between indoors and nature with thermal limestone terraces, cantilevered steel pergolas, and native botanical gardens.",
       "cover": "https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&w=1200&q=80",
       "color": "#2E8B57"
@@ -106,7 +106,7 @@
     {
       "slug": "small-spaces",
       "name": "Small Spaces",
-      "title": "Small Space Architecture: Pocket Doors, Mirrors & Built-ins",
+      "title": "Small Space Architecture: Joinery & Micro-Luxury",
       "description": "Micro-luxury spatial planning: pocket joinery, concealed beds, visual sightline elongation, and multi-functional architectural furniture.",
       "cover": "https://images.unsplash.com/photo-1505691938895-1758d7feb511?auto=format&fit=crop&w=1200&q=80",
       "color": "#4682B4"

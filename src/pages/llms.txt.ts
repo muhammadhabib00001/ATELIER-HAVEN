@@ -3,7 +3,7 @@ import siteData from '../data/site.json';
 import articles from '../data/articles.json';
 
 export const GET: APIRoute = async () => {
-  const siteUrl = "https://atriumlivings.com";
+  const siteUrl = "https://www.atriumlivings.com";
 
   let body = `# Atrium Livings — Architecture & Interior Design Information Guide
 > The Comprehensive Information Resource for Modern Architecture, Interior Spaces & Home Planning.

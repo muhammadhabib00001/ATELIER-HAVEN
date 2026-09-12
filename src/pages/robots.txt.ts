@@ -23,10 +23,10 @@ User-agent: PerplexityBot
 Allow: /
 
 # LLM Information Endpoint
-# https://atriumlivings.com/llms.txt
+# https://www.atriumlivings.com/llms.txt
 
 # Sitemaps
-Sitemap: https://atriumlivings.com/sitemap-index.xml
+Sitemap: https://www.atriumlivings.com/sitemap-index.xml
 `;
 
   return new Response(robots, {

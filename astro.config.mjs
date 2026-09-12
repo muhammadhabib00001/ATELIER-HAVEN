@@ -2,7 +2,7 @@ import { defineConfig } from 'astro/config';
 import sitemap from '@astrojs/sitemap';
 
 export default defineConfig({
-  site: 'https://atriumlivings.com',
+  site: 'https://www.atriumlivings.com',
   integrations: [],
   server: {
     port: 3000,

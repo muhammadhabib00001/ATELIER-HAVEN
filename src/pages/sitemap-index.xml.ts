@@ -3,19 +3,15 @@ import articles from '../data/articles.json';
 import siteData from '../data/site.json';
 
 export const GET: APIRoute = async () => {
-  const siteUrl = "https://atriumlivings.com";
+  const siteUrl = "https://www.atriumlivings.com";
   const now = new Date().toISOString();
 
+  // Primary indexable pages (legal and utility pages have noindex and are excluded from sitemap)
   const staticPages = [
     { url: `${siteUrl}/`, priority: '1.0', changefreq: 'daily' },
     { url: `${siteUrl}/about/`, priority: '0.8', changefreq: 'daily' },
     { url: `${siteUrl}/contact/`, priority: '0.8', changefreq: 'daily' },
     { url: `${siteUrl}/editorial-policy/`, priority: '0.8', changefreq: 'daily' },
-    { url: `${siteUrl}/search/`, priority: '0.8', changefreq: 'daily' },
-    { url: `${siteUrl}/privacy-policy/`, priority: '0.3', changefreq: 'monthly' },
-    { url: `${siteUrl}/terms/`, priority: '0.3', changefreq: 'monthly' },
-    { url: `${siteUrl}/disclaimer/`, priority: '0.3', changefreq: 'monthly' },
-    { url: `${siteUrl}/cookie-policy/`, priority: '0.3', changefreq: 'monthly' },
   ];
 
   const categoryPages = siteData.categories.map((cat: { slug: string }) => ({
