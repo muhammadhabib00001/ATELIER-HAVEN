@@ -52,12 +52,7 @@ const TOPIC_QUEUE = [
   { topic: "Quiet Luxury and Tactile Biophilic Interior Forecast", category: "design-trends" }
 ];
 
-async function run() {
-  const customTopic = process.argv[2];
-  const rawCustomCategory = process.argv[3];
-  const isAuto = !rawCustomCategory || rawCustomCategory.trim().toLowerCase() === 'auto';
-  const customCategory = isAuto ? null : (normalizeCategory(rawCustomCategory) || (rawCustomCategory && rawCustomCategory.trim() ? rawCustomCategory.trim() : null));
-
+async function generateSingleArticle(customTopic, customCategory) {
   let targetTopic = customTopic;
   let targetCategory = customCategory;
 
@@ -188,6 +183,7 @@ async function run() {
   const article = await generateArticle(targetTopic, { category: targetCategory });
 
   // Step 2: Ensure 2 internal links and 1 authoritative external link
+  // Note: We use canonical trailing slashes /${slug}/ to ensure 100% internal SEO consistency
   if (existingArticles.length >= 2) {
     const candidate1 = existingArticles[0];
     const candidate2 = existingArticles[1];
@@ -196,7 +192,7 @@ async function run() {
       const candTitle1 = candidate1.title.split(':')[0].trim().toLowerCase();
       article.content = article.content.replace(
         /<\/p>/,
-        ` Explore further architectural insights in our guide to <strong><a href="/${candidate1.slug}">${candTitle1}</a></strong>.</p>`
+        ` Explore further architectural insights in our guide to <strong><a href="/${candidate1.slug}/">${candTitle1}</a></strong>.</p>`
       );
     }
     if (!article.content.includes(candidate2.slug)) {
@@ -206,7 +202,7 @@ async function run() {
         const thirdPIndex = pMatches[2].index;
         const before = article.content.slice(0, thirdPIndex);
         const after = article.content.slice(thirdPIndex);
-        article.content = before + ` Discover related design principles in our analysis of <strong><a href="/${candidate2.slug}">${candTitle2}</a></strong>.` + after;
+        article.content = before + ` Discover related design principles in our analysis of <strong><a href="/${candidate2.slug}/">${candTitle2}</a></strong>.` + after;
       }
     }
   }
@@ -223,15 +219,61 @@ async function run() {
   // Step 3: Save article
   saveArticle(article);
 
-  // Step 4: Backup to Google Drive
-  try {
-    const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
-    await uploadToGoogleDrive(articlesPath, `articles-backup-${timestamp}.json`);
-  } catch (driveErr) {
-    console.warn(" Google Drive backup note:", driveErr.message);
+  console.log(` Article saved successfully: ${article.slug}`);
+  return article;
+}
+
+async function run() {
+  const customTopic = process.argv[2] && process.argv[2].trim() ? process.argv[2].trim() : null;
+  const rawCustomCategory = process.argv[3];
+  const isAuto = !rawCustomCategory || rawCustomCategory.trim().toLowerCase() === 'auto';
+  const customCategory = isAuto ? null : (normalizeCategory(rawCustomCategory) || (rawCustomCategory && rawCustomCategory.trim() ? rawCustomCategory.trim() : null));
+
+  // Count of articles to generate (default 1, allows up to 5)
+  const rawCount = process.argv[4];
+  const count = Math.max(1, Math.min(parseInt(rawCount, 10) || 1, 5));
+
+  console.log(`\n========================================`);
+  console.log(` Running Article Pipeline: Target Count = ${count}`);
+  console.log(`========================================\n`);
+
+  const publishedArticles = [];
+
+  for (let i = 0; i < count; i++) {
+    console.log(`\n--- Generating Article ${i + 1} of ${count} ---`);
+    try {
+      // If a specific custom topic was passed, only use it for the 1st article to prevent duplicate topics
+      const topicForRun = (i === 0) ? customTopic : null;
+      const article = await generateSingleArticle(topicForRun, customCategory);
+      if (article) {
+        publishedArticles.push(article);
+      }
+    } catch (err) {
+      console.error(` Error generating article ${i + 1}:`, err.message);
+      // If one fails, continue or throw depending on whether we generated any
+      if (count === 1) throw err;
+    }
+
+    // Small delay between generations to avoid rate limit spikes
+    if (i < count - 1) {
+      console.log(" Pausing 3 seconds before next generation...");
+      await new Promise(res => setTimeout(res, 3000));
+    }
   }
 
-  console.log(` Pipeline completed successfully for: ${article.slug}`);
+  // Step 4: Backup all articles to Google Drive after batch completes
+  if (publishedArticles.length > 0) {
+    try {
+      const articlesPath = path.resolve("./src/data/articles.json");
+      const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
+      await uploadToGoogleDrive(articlesPath, `articles-backup-${timestamp}.json`);
+      console.log(` Uploaded updated backup to Google Drive (${publishedArticles.length} new article(s)).`);
+    } catch (driveErr) {
+      console.warn(" Google Drive backup note:", driveErr.message);
+    }
+  }
+
+  console.log(`\n Pipeline batch finished. Published ${publishedArticles.length} article(s).`);
 }
 
 run().catch(err => {
