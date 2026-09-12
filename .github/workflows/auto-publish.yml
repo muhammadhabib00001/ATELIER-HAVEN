@@ -1,14 +1,14 @@
 name: Automated Article Publishing & Google Drive Backup
 
 on:
-  # Runs 4 times daily (00:00, 06:00, 12:00, 18:00 UTC = 4 articles/day evenly spaced for optimal SEO indexing)
+  # Runs 3 times daily (00:00, 08:00, 16:00 UTC = exactly 3 articles/day evenly spaced)
   schedule:
-    - cron: '0 0,6,12,18 * * *'
+    - cron: '0 0,8,16 * * *'
   # Allows manual triggering with optional custom keyword and count (1-5 articles)
   workflow_dispatch:
     inputs:
       count:
-        description: 'Number of articles to generate (1 to 5, recommended: 3-4 for batch)'
+        description: 'Number of articles to generate (default: 1, or 3 for batch)'
         required: false
         default: '1'
         type: choice
