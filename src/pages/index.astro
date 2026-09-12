@@ -61,7 +61,7 @@ const authors = siteData.authors;
   <section class="hero-section">
     <div class="container">
       <div class="hero-header-label">
-        <span class="edition-tag">Featured Guides &bull; Architecture & Interior Design</span>
+        <h1 class="edition-tag">Architecture & Interior Design Information Guide</h1>
       </div>
 
       {heroArticle ? (
@@ -114,11 +114,11 @@ const authors = siteData.authors;
     <div class="container">
       <div class="strip-header">
         <h2 class="strip-heading">Explore Architectural Spaces</h2>
-        <a href="/category/kitchen" class="strip-all-link">Browse All 12 Categories &rarr;</a>
+        <a href="/category/kitchen/" class="strip-all-link">Browse All 12 Categories &rarr;</a>
       </div>
       <div class="category-pills">
         {categories.map(cat => (
-          <a href={`/category/${cat.slug}`} class="cat-card-mini">
+          <a href={`/category/${cat.slug}/`} class="cat-card-mini">
             <div class="cat-mini-img-wrap">
               <img src={cat.cover} alt={cat.name} loading="lazy" width="80" height="80" class="cat-mini-img" />
             </div>
@@ -158,17 +158,18 @@ const authors = siteData.authors;
     <section class="latest-section">
       <div class="container main-content-layout">
         <!-- Main Column: Latest Articles -->
-        <div class="main-articles-col">
+        <div class="main-stream">
           <div class="section-title-bar">
             <div>
-              <span class="section-kicker">Chronological Archive</span>
+              <span class="section-kicker">Chronological Folio</span>
               <h2 class="section-title">Latest Published Architecture & Spaces</h2>
             </div>
+            <div class="title-decor-line"></div>
           </div>
 
-          <div class="articles-vertical-stack">
+          <div class="stream-grid">
             {latestRemaining.map(art => (
-              <ArticleCard article={art} variant="horizontal" />
+              <ArticleCard article={art} variant="standard" />
             ))}
           </div>
         </div>
@@ -183,7 +184,7 @@ const authors = siteData.authors;
               <h3 class="spotlight-name">{authors[0].name}</h3>
               <span class="spotlight-role">{authors[0].role}</span>
               <p class="spotlight-bio">{authors[0].bio}</p>
-              <a href={`/author/${authors[0].slug}`} class="spotlight-link">View Published Folio &rarr;</a>
+              <a href={`/author/${authors[0].slug}/`} class="spotlight-link">View Published Folio &rarr;</a>
             </div>
           </div>
 
@@ -198,7 +199,7 @@ const authors = siteData.authors;
             <p class="eeat-desc">
               Every specification, clearance dimension, and structural renovation guide published in Atrium Livings is reviewed by certified architects and historic preservation specialists.
             </p>
-            <a href="/editorial-policy" class="eeat-link">Read our Editorial Policy & Fact-Checking &rarr;</a>
+            <a href="/editorial-policy/" class="eeat-link">Read our Editorial Policy & Fact-Checking &rarr;</a>
           </div>
         </aside>
       </div>
@@ -232,6 +233,12 @@ const authors = siteData.authors;
 
   .edition-tag {
     color: var(--color-accent);
+    font-size: 0.75rem;
+    font-weight: 700;
+    margin: 0;
+    line-height: inherit;
+    letter-spacing: inherit;
+    text-transform: inherit;
   }
 
   .hero-date {

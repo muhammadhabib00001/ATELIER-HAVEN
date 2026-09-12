@@ -83,7 +83,7 @@ const categories = siteData.categories;
         </li>
         {categories.slice(0, 8).map(cat => (
           <li class="nav-item">
-            <a href={`/category/${cat.slug}`} class={`nav-link ${currentPath.startsWith(`/category/${cat.slug}`) ? 'active' : ''}`}>
+            <a href={`/category/${cat.slug}/`} class={`nav-link ${currentPath.startsWith(`/category/${cat.slug}`) ? 'active' : ''}`}>
               {cat.name}
             </a>
           </li>
@@ -97,7 +97,7 @@ const categories = siteData.categories;
           </button>
           <div class="dropdown-menu" id="moreDropdownMenu">
             {categories.slice(8).map(cat => (
-              <a href={`/category/${cat.slug}`} class="dropdown-link">
+              <a href={`/category/${cat.slug}/`} class="dropdown-link">
                 <span class="dropdown-name">{cat.name}</span>
               </a>
             ))}
@@ -124,7 +124,7 @@ const categories = siteData.categories;
         <li><a href="/">Home</a></li>
         {categories.map(cat => (
           <li>
-            <a href={`/category/${cat.slug}`}>
+            <a href={`/category/${cat.slug}/`}>
               {cat.name}
             </a>
           </li>
@@ -132,9 +132,9 @@ const categories = siteData.categories;
       </ul>
       <div class="drawer-section-title">Publication</div>
       <ul class="drawer-links secondary">
-        <li><a href="/about">About & Mission</a></li>
-        <li><a href="/contact">Contact & Pitches</a></li>
-        <li><a href="/editorial-policy">Editorial Standards</a></li>
+        <li><a href="/about/">About & Mission</a></li>
+        <li><a href="/contact/">Contact & Pitches</a></li>
+        <li><a href="/editorial-policy/">Editorial Standards</a></li>
         <li><a href="/sitemap-index.xml">XML Sitemap</a></li>
       </ul>
     </div>

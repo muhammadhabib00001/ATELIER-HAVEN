@@ -21,11 +21,14 @@ const breadcrumbItems = [
   { name: 'Editorial Board', url: '/about' },
   { name: author.name }
 ];
+const authorDescription = author.bio.length > 150 
+  ? author.bio.split('.')[0] + '.' 
+  : author.bio;
 ---
 
 <BaseLayout
   title={`${author.name} | Editorial Masthead | Atrium Livings`}
-  description={author.bio}
+  description={authorDescription}
   image={author.avatar}
   breadcrumbs={breadcrumbItems}
   jsonLdType="website"

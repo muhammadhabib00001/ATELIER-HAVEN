@@ -30,7 +30,7 @@ const latestArticles = articles
   .slice(0, 4);
 
 const breadcrumbItems = [
-  { name: category.name, url: `/category/${category.slug}` },
+  { name: category.name, url: `/category/${category.slug}/` },
   { name: article.title }
 ];
 
@@ -67,7 +67,7 @@ const formattedUpdatedDate = article.updatedAt ? new Date(article.updatedAt).toL
     <header class="article-header">
       <div class="container article-container">
         <div class="article-kicker-row">
-          <a href={`/category/${category.slug}`} class="badge-category">
+          <a href={`/category/${category.slug}/`} class="badge-category">
             {category.name}
           </a>
           <span class="read-duration">{article.readTime}</span>
@@ -81,7 +81,7 @@ const formattedUpdatedDate = article.updatedAt ? new Date(article.updatedAt).toL
           <div class="author-block">
             <img src={author.avatar} alt={author.name} width="46" height="46" class="author-portrait" crossorigin="anonymous" referrerpolicy="no-referrer-when-downgrade" />
             <div class="author-text">
-              <a href={`/author/${author.slug}`} class="author-byline-name">{author.name}</a>
+              <a href={`/author/${author.slug}/`} class="author-byline-name">{author.name}</a>
               <span class="author-credentials">{author.credentials}</span>
             </div>
           </div>
@@ -210,12 +210,12 @@ const formattedUpdatedDate = article.updatedAt ? new Date(article.updatedAt).toL
         <div class="related-grid">
           {relatedArticles.map(art => (
             <div class="related-card-item">
-              <a href={`/${art.slug}`} class="related-img-link">
+              <a href={`/${art.slug}/`} class="related-img-link">
                 <img src={art.coverImage} alt={art.title} loading="lazy" width="400" height="250" class="related-img" crossorigin="anonymous" referrerpolicy="no-referrer-when-downgrade" />
               </a>
-              <a href={`/category/${art.category}`} class="related-cat">{art.category}</a>
+              <a href={`/category/${art.category}/`} class="related-cat">{art.category}</a>
               <h3 class="related-card-title">
-                <a href={`/${art.slug}`}>{art.title}</a>
+                <a href={`/${art.slug}/`}>{art.title}</a>
               </h3>
               <p class="related-card-desc">{art.subtitle}</p>
             </div>
@@ -236,16 +236,16 @@ const formattedUpdatedDate = article.updatedAt ? new Date(article.updatedAt).toL
         <div class="latest-guides-grid">
           {latestArticles.map(art => (
             <div class="latest-card-item">
-              <a href={`/${art.slug}`} class="latest-img-link">
+              <a href={`/${art.slug}/`} class="latest-img-link">
                 <img src={art.coverImage} alt={art.title} loading="lazy" width="350" height="220" class="latest-img" crossorigin="anonymous" referrerpolicy="no-referrer-when-downgrade" />
               </a>
               <div class="latest-card-content">
                 <div class="latest-meta-row">
-                  <a href={`/category/${art.category}`} class="related-cat">{art.category}</a>
+                  <a href={`/category/${art.category}/`} class="related-cat">{art.category}</a>
                   <span class="latest-read-time">{art.readTime}</span>
                 </div>
                 <h3 class="latest-card-title">
-                  <a href={`/${art.slug}`}>{art.title}</a>
+                  <a href={`/${art.slug}/`}>{art.title}</a>
                 </h3>
               </div>
             </div>
