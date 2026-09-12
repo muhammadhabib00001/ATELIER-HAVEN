@@ -492,7 +492,7 @@ const pageTitle = article.seoTitle && article.seoTitle !== article.title
 
   .prose-content :global(a) {
     color: var(--color-accent);
-    font-weight: 700;
+    font-weight: 600;
     text-decoration: underline;
     text-underline-offset: 3px;
     text-decoration-thickness: 1.5px;
@@ -502,6 +502,15 @@ const pageTitle = article.seoTitle && article.seoTitle !== article.title
   .prose-content :global(a:hover) {
     color: var(--color-accent-hover);
     text-decoration-color: var(--color-accent-hover);
+  }
+
+  .prose-content :global(a[target="_blank"])::after {
+    content: " ↗";
+    font-size: 0.75em;
+    font-weight: bold;
+    display: inline-block;
+    vertical-align: super;
+    line-height: 0;
   }
 
   .prose-content :global(strong),
