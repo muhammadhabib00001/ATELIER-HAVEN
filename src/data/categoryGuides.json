@@ -1,0 +1,374 @@
+{
+  "kitchen": {
+    "scopeTitle": "Culinary Spatial Architecture & Ergonomic Zoning",
+    "scopeParagraph1": "Modern residential kitchen architecture synthesizes spatial discipline, fluid circulation vectors, and high-performance culinary choreography. Rather than viewing the kitchen as an isolated service quarter, contemporary residential design integrates it as the primary spatial and social anchor of the modern residence. Spatial planning centers around dedicated activity zones—prep, thermal processing, refrigeration, and social hospitality—ensuring work paths never intersect awkwardly.",
+    "scopeParagraph2": "Clearance boundaries must adhere to rigid ergonomic metrics. Primary circulation aisles demand a minimum of 42 inches (1067 mm) for single-cook workflows and 48 inches (1219 mm) for multi-user family living. Countertop heights must be calibrated at 36 inches finished floor level, preserving an optimal 18-inch clearance to upper wall cabinetry or floating stone ledges to prevent visual and physical obstruction during food preparation.",
+    "materialTitle": "Sintered Surfaces, Custom Millwork & Thermal Engineering",
+    "materialParagraph": "Material selection in luxury culinary environments balances tactile elegance against extreme mechanical, thermal, and chemical stress. Sintered stone and ultra-compact porcelain slabs engineered to withstand compressive loads exceeding 8,000 psi represent the premier standard for waterfall islands and full-height splashbacks. Hand-selected quarter-sawn white oak and walnut veneers with low-VOC matte polyurethane coats introduce biophilic warmth, while recessed extruded aluminum finger rails deliver seamless handleless geometry.",
+    "engineeringSpecs": [
+      {
+        "label": "Circulation Clearance",
+        "value": "42 in (single) / 48 in (multi-user) minimum"
+      },
+      {
+        "label": "Island Depth Standard",
+        "value": "36 to 48 inches for continuous work surfaces"
+      },
+      {
+        "label": "Sintered Surface Compressive Strength",
+        "value": "8,000+ psi flexural durability"
+      },
+      {
+        "label": "Lighting Color Temperature",
+        "value": "2700K warm-dim high-CRI task illumination"
+      }
+    ],
+    "keyRules": [
+      "Maintain minimum 42-inch clear corridors around island perimeters to permit simultaneous appliance door opening.",
+      "Specify continuous-rim diamond hole cuts for undermount sink cutouts to prevent micro-fracturing along stone edges.",
+      "Isolate high-temperature cooktop zones with dedicated 20A dedicated circuits and remote exterior roof blowers.",
+      "Recess under-cabinet linear LEDs behind micro-diffusers to eliminate hot spots on polished quartzite countertops."
+    ]
+  },
+  "bathroom": {
+    "scopeTitle": "Sanctuary Architecture & Hydro-Spatial Planning",
+    "scopeParagraph1": "Luxury residential bathroom architecture translates hydrotherapy, acoustic containment, and sensory tactile materiality into a personal sanctuary. Whether orchestrating an expansive primary wet room or maximizing a compact powder room envelope, architectural planning demands millimetric precision across drainage slopes, moisture vapor barriers, and structural subfloor reinforcement.",
+    "scopeParagraph2": "Curbless showers and linear trench drains require a continuous 1/4-inch per foot slope toward the waste line, embedded within bonded waterproof membrane assemblies. Vanity clearances must provide at least 36 inches of clear frontal space, with centerlines spaced at least 30 inches apart in double-basin configurations to ensure uncompromised human comfort.",
+    "materialTitle": "Forged Brass, Travertine & Impervious Porcelain Metallurgy",
+    "materialParagraph": "High-humidity wet zones demand non-corrosive substrates and impervious wall claddings. Solid forged brass substrates coated with Physical Vapor Deposition (PVD) molecular plating deliver unmatched resistance against galvanic pitting and acidic bath cleansers. Honed travertine, Calacatta marble, and large-format porcelain slabs exceeding 48x96 inches reduce grout joints by over 80%, inhibiting mildew formation and amplifying the perception of continuous architectural volume.",
+    "engineeringSpecs": [
+      {
+        "label": "Shower Drainage Slope",
+        "value": "1/4 inch per linear foot to linear drain"
+      },
+      {
+        "label": "Vanity Mounting Height",
+        "value": "34 to 36 inches finished floor level"
+      },
+      {
+        "label": "Towel Bar & Hook Height",
+        "value": "48 inches (bars) / 66 inches (robe hooks)"
+      },
+      {
+        "label": "Moisture Barrier Rating",
+        "value": "Class I vapor retarder (perm rating < 0.1)"
+      }
+    ],
+    "keyRules": [
+      "Ensure solid 2x6 timber backing behind all drywall substrates prior to tiling for grab bars and heavy towel rails.",
+      "Integrate low-voltage heating mats under stone floors with digital dual-sensing thermostats for thermal continuity.",
+      "Mount vanity sconces at 60 to 65 inches above finished floor on eye level to cast shadow-free illumination.",
+      "Utilize epoxy or high-performance urethane grouts in wet zones to eliminate moisture absorption entirely."
+    ]
+  },
+  "living-room": {
+    "scopeTitle": "Volumetric Composition & Social Gathering Envelopes",
+    "scopeParagraph1": "Living room architecture serves as the primary civic pavilion within the private residence. Balancing monumental spatial volume with human intimacy requires thoughtful spatial zoning, deliberate sightline alignment, and acoustic resonance management. The relationship between architectural seating clusters, natural fenestration, and architectural focal points like hearths or courtyard views sets the cadence of the entire home.",
+    "scopeParagraph2": "Circulation corridors through the living pavilion should never dissect primary seating conversation clusters. Maintain a clear main passage of 36 to 48 inches between primary architectural millwork and furniture perimeters. Low-profile, monolithic seating arrangements should preserve visual sightlines toward exterior landscape features or adjoining architectural pavilions.",
+    "materialTitle": "Organic Modern Textures, Mineral Plasters & Acoustic Timber",
+    "materialParagraph": "Harmonizing expansive living volumes requires a sophisticated synthesis of acoustic absorption and tactile mineral finishes. Hand-applied lime plaster and micro-cement wall treatments diffuse daylight softly without glare, while acoustic slatted timber ceilings absorb low-frequency reverberations. Furnishings articulated in textured bouclé, Belgian linen, patinated full-grain leather, and solid smoked oak ground the expansive volume with grounded earth tones.",
+    "engineeringSpecs": [
+      {
+        "label": "Primary Pathway Width",
+        "value": "36 to 48 inches clear of furniture boundaries"
+      },
+      {
+        "label": "Coffee Table Clearance",
+        "value": "16 to 18 inches from sofa edge for reach ergonomics"
+      },
+      {
+        "label": "Acoustic Target (RT60)",
+        "value": "0.5 to 0.7 seconds for residential comfort"
+      },
+      {
+        "label": "Ambient Lighting Layer",
+        "value": "2700K indirect cove wash with 95+ CRI"
+      }
+    ],
+    "keyRules": [
+      "Anchor conversational seating groupings within 8 to 10 foot diameters to maintain natural vocal intimacy.",
+      "Incorporate floor-recessed poke-through electrical outlets beneath central seating to eliminate surface cord runs.",
+      "Specify deep drapery pockets (minimum 6 to 8 inches) for motorized double-track sheer and blackout treatments.",
+      "Balance large-format glazing with soft textile wall coverings or acoustic slatted paneling to prevent flutter echo."
+    ]
+  },
+  "bedroom": {
+    "scopeTitle": "Restorative Biophilia & Acoustic Comfort Architecture",
+    "scopeParagraph1": "The primary bedroom suite represents the ultimate restorative sanctum of the home. Architectural design must orchestrate complete circadian alignment, absolute acoustic attenuation, and sensory deceleration. From the spatial orientation of the bed relative to morning solar vectors to the seamless integration of concealed dressing corridors, every proportion serves psychological restoration.",
+    "scopeParagraph2": "Bed placement should command the room while avoiding direct line-of-sight exposure to exterior entry doors. Provide a minimum of 36 inches of clear perimeter walkway on both lateral sides and foot of the bed. Ceiling heights should comfortably exceed 9 feet, detailed with perimeter acoustic plaster details that isolate mechanical vibration and HVAC airflow noise below NC-25 levels.",
+    "materialTitle": "Tactile Linens, Sound-Dampening Paneling & Low-VOC Joinery",
+    "materialParagraph": "Promoting restorative sleep requires materials that improve indoor air quality and dampen tactile reverberation. Solid European white oak flooring paired with dense wool felt underlays cushions footfall, while fully upholstered acoustic bed walls lined with unbleached organic linen absorb ambient sound. Custom wardrobe joinery featuring flush pocket doors and cedar linings provides structured organization without visual distraction.",
+    "engineeringSpecs": [
+      {
+        "label": "Lateral Bed Clearance",
+        "value": "36 inches minimum on all accessible sides"
+      },
+      {
+        "label": "Acoustic Noise Criterion",
+        "value": "NC-20 to NC-25 maximum background HVAC sound"
+      },
+      {
+        "label": "Blackout Pocket Depth",
+        "value": "7 inches for dual motorized drapery tracks"
+      },
+      {
+        "label": "Circadian Lighting",
+        "value": "Tunable warm white 2700K scaling down to 1800K"
+      }
+    ],
+    "keyRules": [
+      "Incorporate soft-close magnetic latches across all walk-in closet millwork to ensure silent nocturnal operation.",
+      "Position bedside reading luminaires at 42 inches above finished floor with narrow 20-degree optical beam spreads.",
+      "Eliminate direct supply air diffusers aimed at the bed head; utilize perimeter architectural linear slot diffusers.",
+      "Incorporate secondary acoustic glazing or laminated glass panels on exterior windows to block low-frequency traffic noise."
+    ]
+  },
+  "home-decor": {
+    "scopeTitle": "Artisanal Layering, Curation & Spatial Punctuation",
+    "scopeParagraph1": "Home decor in architectural interiors is not superficial decoration; it is the deliberate curation of scale, form, shadow, and tactile authenticity. The final layer of ceramics, sculptural vessels, textile weaves, and fine art brings tectonic structures into dialogue with human handcraft. Every decorative object must possess intentional materiality, proportion, and resonance with its architectural setting.",
+    "scopeParagraph2": "Curating architectural vignettes relies on the rule of asymmetrical balance and volumetric hierarchy. Tall vertical elements like turned timber branches or slender bronze candlesticks create height vectors, while broad horizontal trays or stone bowls ground surfaces. Ensure decorative displays never obstruct primary sightlines or impede daylight distribution through living corridors.",
+    "materialTitle": "Hand-Thrown Stoneware, Textural Weaves & Patinated Bronzes",
+    "materialParagraph": "Architectural curation celebrates authentic artisanal processes over mass-produced artifacts. Hand-thrown stoneware vessels displaying raw iron flecks and crackle glazes contrast against polished marble tops. Hand-knotted Tibetan wool rugs, raw unspun silk cushions, and cast bronze tabletop sculptures develop authentic patinas over time, adding historical depth to contemporary spaces.",
+    "engineeringSpecs": [
+      {
+        "label": "Gallery Wall Sightline",
+        "value": "57 to 60 inches on center from finished floor"
+      },
+      {
+        "label": "Console Vignette Depth",
+        "value": "14 to 18 inches minimum surface support"
+      },
+      {
+        "label": "Art Accent Beam Spread",
+        "value": "15 to 25 degree tight spots with framing projectors"
+      },
+      {
+        "label": "Sculptural Pedestal Load",
+        "value": "Engineered for 150+ lbs centered load capacity"
+      }
+    ],
+    "keyRules": [
+      "Hang two-dimensional artwork so its optical center rests precisely at 58 inches above finished floor.",
+      "Group decorative objects in odd groupings of three or five to establish organic, non-rigid visual interest.",
+      "Utilize museum-grade microcrystalline wax under precious ceramic vessels in seismically active residential zones.",
+      "Specify high-CRI (98 Ra) lighting with dedicated UV-filtering lenses to protect organic textile pigments from photo-degradation."
+    ]
+  },
+  "furniture": {
+    "scopeTitle": "Tectonic Woodcraft, Ergonomic Geometry & Modern Classics",
+    "scopeParagraph1": "Architectural furniture bridges the gap between static building envelopes and human scale. High-end residential joinery and iconic freestanding silhouettes represent structural engineering in miniature. Every joint, cantilevering rail, and upholstered curve must balance structural load distribution against aesthetic weightlessness, anchoring spatial volumes with purposeful grace.",
+    "scopeParagraph2": "Specifying furniture requires rigorous clearance calculations. Dining suites require 30 linear inches per seated guest and 36 to 48 inches of perimeter service clearance. Lounge seating must provide seat depths between 22 and 26 inches with high-resilience foam or natural down cores that support human posture through hours of relaxed entertaining.",
+    "materialTitle": "Hardwood Joinery, Full-Grain Leathers & Architectural Metals",
+    "materialParagraph": "Longevity stems from uncompromising material integrity. Furniture frames specified in kiln-dried North American walnut, quarter-sawn white oak, or ash display superior dimensional stability. Mortise-and-tenon and half-lap joinery reinforced with structural steel tie-plates prevent joint loosening under dynamic lateral forces. Upholstery selections emphasize aniline-dyed full-grain leathers and high-abrasion wool textiles exceeding 50,000 Martindale rubs.",
+    "engineeringSpecs": [
+      {
+        "label": "Dining Seat Height",
+        "value": "18 to 19 inches floor to crown of cushion"
+      },
+      {
+        "label": "Apron-to-Seat Clearance",
+        "value": "11 to 12 inches vertical legroom clearance"
+      },
+      {
+        "label": "Upholstery Abrasion Rating",
+        "value": "50,000+ Martindale cycles minimum"
+      },
+      {
+        "label": "Timber Moisture Content",
+        "value": "6% to 8% kiln-dried baseline stability"
+      }
+    ],
+    "keyRules": [
+      "Preserve 12 inches of vertical clearance between the dining chair seat cushion and the underside of table aprons.",
+      "Ensure cantilevered stone or timber table surfaces are engineered with structural steel subframes to prevent deflection.",
+      "Specify high-density foam cores wrapped in channeled down envelopes to retain tailored form without daily fluffing.",
+      "Apply silicone or wool felt protective glides to all furniture feet to prevent damage to hardwood and stone flooring."
+    ]
+  },
+  "lighting": {
+    "scopeTitle": "Photometric Layering & Architectural Luminance Control",
+    "scopeParagraph1": "Architectural lighting is the invisible medium that gives form, depth, and emotional warmth to residential interiors. Superior lighting design rejects singular, overpowering ceiling fixtures in favor of a synchronized three-tier strategy: ambient, task, and accent illumination. By concealing the light source and sculpting the bounce, spaces feel bathed in natural radiance rather than artificial glare.",
+    "scopeParagraph2": "Placement geometry dictates visual comfort. Downlights must feature deep architectural regress bezels (minimum 40-degree cut-off angle) to eliminate glare when traversing rooms. Target surface illuminance levels must be tailored to room function: 150 lux for ambient relaxation, 300 to 500 lux on kitchen culinary surfaces, and 100 lux for dramatic nocturnal living scenes.",
+    "materialTitle": "Warm-Dim LEDs, Natural Alabaster & Low-Glare Optics",
+    "materialParagraph": "Modern luminaires integrate advanced optical micro-reflectors and high-fidelity LED engines. Dim-to-warm technology dynamically transitions from a crisp 3000K daylight simulation to an intimate 1800K candlelit glow as brightness dims, mimicking natural twilight. Hand-carved Spanish alabaster, fluted Murano glass, and matte powder-coated bronze fixtures provide sculptural presence even when unilluminated.",
+    "engineeringSpecs": [
+      {
+        "label": "Color Rendering Index",
+        "value": "95+ Ra with R9 red rendering > 80"
+      },
+      {
+        "label": "Dimming Protocol",
+        "value": "0-10V, DALI-2 or Phase-Adaptive smooth to 0.1%"
+      },
+      {
+        "label": "Ceiling Regress Cutoff",
+        "value": "40-degree visual shielding to prevent glare"
+      },
+      {
+        "label": "Pendant Mounting Height",
+        "value": "30 to 36 inches above dining and island surfaces"
+      }
+    ],
+    "keyRules": [
+      "Circuit ambient cove lighting, task downlights, and decorative pendants separately to enable granular scene control.",
+      "Mount decorative wall sconces between 60 and 66 inches above finished floor along primary circulation corridors.",
+      "Specify continuous frosted silicone channels for linear LED strips to prevent visible pixelation on reflective surfaces.",
+      "Position recessed ceiling downlights at least 24 to 30 inches off the wall plane to create graceful vertical wall washes."
+    ]
+  },
+  "renovation": {
+    "scopeTitle": "Structural Preservation & Heritage Residential Overhauls",
+    "scopeParagraph1": "Renovating architectural homes requires a rigorous understanding of existing load-bearing structures, envelope thermal performance, and MEP (mechanical, electrical, plumbing) modernizations. Merging historic architectural character with contemporary lifestyle requirements demands structural ingenuity, delicate seismic bracing, and meticulous permit navigation.",
+    "scopeParagraph2": "Before altering any partition wall, structural engineers must verify load paths, foundation footing capacities, and floor diaphragm shear strengths. Transitioning from compartmentalized vintage layouts to expansive open-concept volumes frequently requires the installation of concealed steel flitch beams or moment frames integrated seamlessly into ceiling cavities.",
+    "materialTitle": "Engineered Timber, Structural Steel & Breathable Envelopes",
+    "materialParagraph": "Material selection in major renovations balances heritage preservation with high-performance building science. Specifying LVL (laminated veneer lumber) and structural steel allows for column-free spans exceeding 24 feet without ceiling sag. Breathable lime-based mortars, mineral wool acoustic insulation, and vapor-permeable air barriers protect historic masonry walls from trapped interstitial moisture.",
+    "engineeringSpecs": [
+      {
+        "label": "Floor Deflection Tolerance",
+        "value": "L/360 for timber / L/720 for large stone tile"
+      },
+      {
+        "label": "Acoustic Floor Isolation",
+        "value": "IIC 55+ / STC 55+ rated floor-ceiling assemblies"
+      },
+      {
+        "label": "Structural Steel Primer",
+        "value": "Zinc-rich epoxy primer for interior corrosion resistance"
+      },
+      {
+        "label": "Thermal Envelope R-Value",
+        "value": "R-21+ walls / R-49+ roof assemblies minimum"
+      }
+    ],
+    "keyRules": [
+      "Conduct non-destructive testing and laser scanning of existing joists before ordering custom cabinetry or stone slabs.",
+      "Integrate acoustic isolation hangers into ceiling sub-framing to decouple airborne and impact sound between levels.",
+      "Establish strict MEP utility chases early in schematic design to prevent unauthorized drilling through structural beams.",
+      "Apply vapor-permeable liquid applied membranes behind all exterior facade restoration claddings to prevent rot."
+    ]
+  },
+  "diy": {
+    "scopeTitle": "Artisanal Field Crafts & Architectural Fabrication",
+    "scopeParagraph1": "High-end artisanal DIY represents the mastercraft of hands-on architectural detailing. It is not about cheap shortcuts; it is the deliberate application of historic plastering arts, fine custom carpentry, acoustic wall slat fabrication, and bespoke decorative finishes. Mastering these craft disciplines empowers homeowners and designers to achieve bespoke details unavailable through off-the-shelf production.",
+    "scopeParagraph2": "Precision execution demands professional-grade substrate preparation. Applying artisanal finishes like Roman clay or Venetian plaster requires Level 5 drywall smoothing, oil-based stain blocking primers, and stainless steel Venetian trowels with rounded corners to avoid gouging delicate mineral layers.",
+    "materialTitle": "Slaked Lime Plasters, Architectural Fluting & Natural Pigments",
+    "materialParagraph": "Authentic craft methods rely on time-tested mineral formulas. Aged slaked lime plaster cures via carbonation, absorbing carbon dioxide from the air to revert back to limestone rock over decades. Sustainable solid oak and poplar battens mounted onto black acoustic recycled PET felt create custom slatted accent walls that dramatically improve room acoustics while delivering rich tactile texture.",
+    "engineeringSpecs": [
+      {
+        "label": "Drywall Substrate Level",
+        "value": "Level 5 skim coat for mineral plaster finishes"
+      },
+      {
+        "label": "Slat Spacing Geometry",
+        "value": "15 mm slat width / 10 mm acoustic reveal gap"
+      },
+      {
+        "label": "Trowel Metallurgy",
+        "value": "Inox Japanese stainless steel with beveled edges"
+      },
+      {
+        "label": "Plaster Curing Time",
+        "value": "24 hours between successive micro-thin passes"
+      }
+    ],
+    "keyRules": [
+      "Prime bare drywall with quartz-sand aggregate bonding primer before applying authentic mineral lime plasters.",
+      "Pre-drill all hardwood mouldings and trim boards to prevent splitting near delicate mitered corners.",
+      "Burnish Venetian plaster with 2000-grit sandpaper and pure olive oil soap wax for water-resistant silky luster.",
+      "Use high-precision laser levels to verify vertical plumb alignment across every third wood batten in slat walls."
+    ]
+  },
+  "garden-outdoor": {
+    "scopeTitle": "Landscape Architecture & Outdoor Living Pavilions",
+    "scopeParagraph1": "Contemporary architectural design dissolves the boundary between conditioned interior spaces and the natural landscape. Outdoor living rooms, cantilevered steel pergolas, and courtyard gardens must be treated as direct architectural extensions of the main living pavilion. Harmonizing floor levels, extending ceiling planes, and orchestrating sightlines connects occupants intimately with natural elements.",
+    "scopeParagraph2": "Exterior living corridors demand rigorous climate and drainage planning. Exterior terraces require a continuous 2% slope away from the building envelope toward concealed perimeter slot drains. Motorized louvered pergolas must be engineered to withstand local wind loads exceeding 110 mph and incorporate integrated rain sensors that trigger automated closure.",
+    "materialTitle": "Thermal Limestone, Ipe Hardwoods & Marine-Grade Alloys",
+    "materialParagraph": "Outdoor material palettes must endure intense UV radiation, thermal expansion, and freeze-thaw cycles without degrading. Thermal-treated limestone pavers, Brazilian Ipe decking with hidden clip fasteners, and marine-grade 316 stainless steel hardware provide unmatched weather resistance. Corten steel planters develop a protective rusty oxide patina that shields the core steel against corrosion.",
+    "engineeringSpecs": [
+      {
+        "label": "Terrace Drainage Slope",
+        "value": "1/8 to 1/4 inch per linear foot away from facade"
+      },
+      {
+        "label": "Pergola Wind Load Rating",
+        "value": "Engineered to 110+ mph hurricane gusts"
+      },
+      {
+        "label": "Hardware Metallurgy",
+        "value": "Marine-grade 316 stainless steel / solid bronze"
+      },
+      {
+        "label": "Exterior Lighting Ingress",
+        "value": "IP65 minimum for landscape fixtures / IP67 for water"
+      }
+    ],
+    "keyRules": [
+      "Align interior and exterior floor finishes with flush concealed drainage sills to create seamless indoor-outdoor thresholds.",
+      "Specify native, drought-tolerant botanical species paired with subterranean drip irrigation to conserve water.",
+      "Incorporate 24V low-voltage landscape lighting operating at 2700K to softly graze botanical forms without glare.",
+      "Equip all outdoor gas fire tables and summer kitchens with emergency push-button shutoff valves and timers."
+    ]
+  },
+  "small-spaces": {
+    "scopeTitle": "Micro-Luxury Architecture & Spatial Optimization",
+    "scopeParagraph1": "Designing compact residences and micro-apartments requires extraordinary architectural ingenuity. When every square foot is at a premium, architecture shifts toward multi-functional spatial envelopes, concealed storage walls, and elongated optical sightlines. Small spaces do not require compromise; they demand hyper-disciplined joinery and luminous design.",
+    "scopeParagraph2": "Spatial economy relies on eliminating dead circulation corridors. Pocket doors recessed into partition cavities reclaim up to 10 square feet of swing clearance per opening. Floor-to-ceiling millwork towers draw the eye upward, celebrating vertical cubic volume and maximizing storage without encroaching on floor area.",
+    "materialTitle": "Reflective Glass, Concealed Hardware & Integrated Pocket Joinery",
+    "materialParagraph": "Compact interiors thrive on visual lightness and material continuity. Continuous flooring material running uninterrupted across all spaces visually expands the perceived footprint. Back-painted glass partitions, mirrored joinery reveals, and floating furniture pieces elevated on slender steel legs allow light to travel across the entire apartment footprint.",
+    "engineeringSpecs": [
+      {
+        "label": "Pocket Door Clearance Gain",
+        "value": "8 to 10 sq ft reclaimed per interior doorway"
+      },
+      {
+        "label": "Vertical Millwork Reach",
+        "value": "Floor-to-ceiling with upper seasonal drop-down lifts"
+      },
+      {
+        "label": "Floating Furniture Clearance",
+        "value": "8 to 12 inches open below to maximize visible floor"
+      },
+      {
+        "label": "Dual-Purpose Joinery Load",
+        "value": "Heavy-duty 200+ lb undermount drawer slides"
+      }
+    ],
+    "keyRules": [
+      "Utilize identical flooring and paint colors across all adjoining micro rooms to dissolve boundaries optically.",
+      "Install full-height pocket doors with soft-close and soft-open dampers to preserve absolute wall versatility.",
+      "Incorporate integrated pull-out desks and concealed charging drawers inside tall living room cabinetry walls.",
+      "Position mirrors perpendicular to natural window openings to reflect outdoor views and double ambient daylight."
+    ]
+  },
+  "design-trends": {
+    "scopeTitle": "Architectural Forecasts, Quiet Luxury & Biophilia",
+    "scopeParagraph1": "Architectural design trends reflect deeper cultural movements toward sustainability, tactile humanism, and sensory wellness. In contrast to fast, disposable trends, enduring architectural movements emphasize 'Quiet Luxury'—the art of restraint, authentic natural materials, sculptural curves, and biophilic connectivity that respects both the environment and the human spirit.",
+    "scopeParagraph2": "Contemporary residential planning champions circular architecture. Homes are increasingly evaluated on their embodied carbon metrics, thermal envelope efficiency, and passive solar orientation. Fluid, curved spatial partitions replace rigid rectangular geometries, softening circulation flow and promoting intuitive movement through the domestic landscape.",
+    "materialTitle": "Biophilic Minerals, Raw Timber Slabs & Tactile Chromes",
+    "materialParagraph": "Modern trend forecasts highlight raw, unprocessed mineral textures combined with polished industrial precision. Untreated travertine blocks, coarse bouclé wools, brushed nickel accents, and rammed earth feature walls create a rich sensory juxtaposition. Living green walls and internal atrium courtyards bring air purification and tranquil natural sounds directly indoors.",
+    "engineeringSpecs": [
+      {
+        "label": "Embodied Carbon Metric",
+        "value": "< 500 kg CO2e/m2 target for residential design"
+      },
+      {
+        "label": "Glazing U-Factor",
+        "value": "U < 0.20 for high-performance triple glazing"
+      },
+      {
+        "label": "Indoor Air Quality Target",
+        "value": "< 500 ppm CO2 via continuous ERV ventilation"
+      },
+      {
+        "label": "Natural Daylight Factor",
+        "value": "> 2.5% average across all primary living quarters"
+      }
+    ],
+    "keyRules": [
+      "Prioritize materials with Environmental Product Declarations (EPDs) to verify low embodied carbon footprints.",
+      "Incorporate interior glass atriums or lightwells to bring daylight into central rooms with zero exterior walls.",
+      "Specify low-emitting VOC paints, adhesives, and sealants meeting strict GreenGuard Gold certification standards.",
+      "Balance warm organic timber elements with cool brushed steel or nickel hardware for timeless visual tension."
+    ]
+  }
+}

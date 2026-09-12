@@ -5,6 +5,7 @@ import Breadcrumbs from '../../components/Breadcrumbs.astro';
 import Newsletter from '../../components/Newsletter.astro';
 import siteData from '../../data/site.json';
 import articles from '../../data/articles.json';
+import categoryGuides from '../../data/categoryGuides.json';
 
 export function getStaticPaths() {
   return siteData.categories.map(category => ({
@@ -27,6 +28,8 @@ const relatedSpacesArticles = articles
 const otherCategories = siteData.categories
   .filter(c => c.slug !== category.slug)
   .slice(0, 6);
+
+const guide = (categoryGuides as Record<string, any>)[category.slug] || null;
 
 const breadcrumbItems = [
   { name: 'Categories', url: '/' },
@@ -121,6 +124,53 @@ const breadcrumbItems = [
             ))}
           </div>
         </div>
+      )}
+
+      {guide && (
+        <article class="category-editorial-monograph">
+          <div class="section-label-bar">
+            <span class="label-kicker">Architectural Field Monograph</span>
+            <span class="label-line"></span>
+          </div>
+
+          <div class="monograph-grid">
+            <div class="monograph-main">
+              <h2 class="monograph-heading">{guide.scopeTitle}</h2>
+              <p class="monograph-prose">{guide.scopeParagraph1}</p>
+              <p class="monograph-prose">{guide.scopeParagraph2}</p>
+
+              <h3 class="monograph-subheading">{guide.materialTitle}</h3>
+              <p class="monograph-prose">{guide.materialParagraph}</p>
+
+              <div class="monograph-rules-box">
+                <h4 class="rules-box-title">Key Architectural Planning Checklist</h4>
+                <ul class="rules-list">
+                  {guide.keyRules.map((rule: string) => (
+                    <li>{rule}</li>
+                  ))}
+                </ul>
+              </div>
+            </div>
+
+            <aside class="monograph-sidebar">
+              <div class="engineering-specs-card">
+                <span class="specs-kicker">Field Engineering</span>
+                <h3 class="specs-title">Tolerances & Specs</h3>
+                <dl class="specs-dl">
+                  {guide.engineeringSpecs.map((spec: { label: string; value: string }) => (
+                    <div class="spec-row">
+                      <dt class="spec-label">{spec.label}</dt>
+                      <dd class="spec-val">{spec.value}</dd>
+                    </div>
+                  ))}
+                </dl>
+                <div class="specs-advisory">
+                  <p>Adheres to Atrium Livings residential standards and architectural tolerances.</p>
+                </div>
+              </div>
+            </aside>
+          </div>
+        </article>
       )}
 
       <!-- Quick Browse Other Spaces -->
@@ -365,6 +415,159 @@ const breadcrumbItems = [
     transform: translateX(3px);
   }
 
+  /* Category Editorial Monograph */
+  .category-editorial-monograph {
+    background: #FFFFFF;
+    border: 1px solid var(--color-border);
+    border-radius: 8px;
+    padding: 3rem 2.5rem;
+    margin-bottom: 4.5rem;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.02);
+  }
+
+  .monograph-grid {
+    display: grid;
+    grid-template-columns: 1fr 340px;
+    gap: 3.5rem;
+    align-items: start;
+  }
+
+  .monograph-heading {
+    font-family: var(--font-serif);
+    font-size: 2rem;
+    line-height: 1.25;
+    color: var(--color-text-main);
+    margin-bottom: 1.25rem;
+    letter-spacing: -0.01em;
+  }
+
+  .monograph-subheading {
+    font-family: var(--font-serif);
+    font-size: 1.5rem;
+    line-height: 1.3;
+    color: var(--color-text-main);
+    margin-top: 2rem;
+    margin-bottom: 1rem;
+  }
+
+  .monograph-prose {
+    font-size: 1.0625rem;
+    line-height: 1.8;
+    color: var(--color-text-muted);
+    margin-bottom: 1.25rem;
+  }
+
+  .monograph-rules-box {
+    margin-top: 2rem;
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: 6px;
+    padding: 1.75rem 2rem;
+  }
+
+  .rules-box-title {
+    font-size: 0.875rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--color-text-main);
+    margin-bottom: 1rem;
+  }
+
+  .rules-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+
+  .rules-list li {
+    font-size: 0.9375rem;
+    line-height: 1.6;
+    color: var(--color-text-main);
+    position: relative;
+    padding-left: 1.5rem;
+  }
+
+  .rules-list li::before {
+    content: "✓";
+    position: absolute;
+    left: 0;
+    color: var(--color-accent);
+    font-weight: bold;
+  }
+
+  .engineering-specs-card {
+    background: #FAF9F5;
+    border: 1px solid var(--color-border);
+    border-radius: 6px;
+    padding: 2rem 1.75rem;
+    position: sticky;
+    top: 6rem;
+  }
+
+  .specs-kicker {
+    font-size: 0.6875rem;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--color-accent);
+    display: block;
+    margin-bottom: 0.5rem;
+  }
+
+  .specs-title {
+    font-family: var(--font-serif);
+    font-size: 1.35rem;
+    color: var(--color-text-main);
+    margin-bottom: 1.5rem;
+  }
+
+  .specs-dl {
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+    margin: 0 0 1.5rem;
+  }
+
+  .spec-row {
+    border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+    padding-bottom: 0.85rem;
+  }
+
+  .spec-row:last-child {
+    border-bottom: none;
+    padding-bottom: 0;
+  }
+
+  .spec-label {
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--color-text-muted);
+    margin-bottom: 0.25rem;
+  }
+
+  .spec-val {
+    font-size: 0.9375rem;
+    font-weight: 600;
+    color: var(--color-text-main);
+    margin: 0;
+    line-height: 1.4;
+  }
+
+  .specs-advisory {
+    border-top: 1px dashed var(--color-border);
+    padding-top: 1rem;
+    font-size: 0.75rem;
+    line-height: 1.5;
+    color: var(--color-text-muted);
+    font-style: italic;
+  }
+
   .empty-category-notice {
     text-align: center;
     padding: 4rem 1rem;
@@ -381,6 +584,13 @@ const breadcrumbItems = [
   }
 
   @media (max-width: 960px) {
+    .monograph-grid {
+      grid-template-columns: 1fr;
+      gap: 2.5rem;
+    }
+    .engineering-specs-card {
+      position: static;
+    }
     .category-title {
       font-size: 2.5rem;
     }
@@ -395,6 +605,9 @@ const breadcrumbItems = [
   }
 
   @media (max-width: 640px) {
+    .category-editorial-monograph {
+      padding: 2rem 1.25rem;
+    }
     .category-hero-banner {
       padding: 3.5rem 0 3rem;
     }
