@@ -183,26 +183,44 @@ async function generateSingleArticle(customTopic, customCategory) {
   const article = await generateArticle(targetTopic, { category: targetCategory });
 
   // Step 2: Ensure 2 internal links and 1 authoritative external link
-  // Note: We use canonical trailing slashes /${slug}/ to ensure 100% internal SEO consistency
+  // Note: We use canonical trailing slashes /${slug}/ and concise 2-3 word anchor text
   if (existingArticles.length >= 2) {
     const candidate1 = existingArticles[0];
     const candidate2 = existingArticles[1];
 
+    const getConciseAnchor = (cand) => {
+      // 1. Prefer primary target keyword if concise
+      if (cand.keywords && cand.keywords[0]) {
+        const kw = cand.keywords[0].trim().toLowerCase();
+        const kwWords = kw.split(/\s+/).filter(Boolean);
+        if (kwWords.length <= 3 && kw.length <= 25) {
+          return kw;
+        }
+      }
+      // 2. Derive concise 2-3 word phrase from title
+      let title = (cand.title || '').split(':')[0].trim();
+      title = title.replace(/^(how to|how|guide to|designing|mastering|exploring|architectural|crafting the ultimate|crafting|bespoke|professional)\s+/i, '');
+      title = title.replace(/\s+(guide|masterclass|blueprint|ideas|projects|tips|overview|analysis|study|field guide)$/i, '');
+      title = title.replace(/\s+(guide|masterclass|blueprint|ideas|projects|tips)$/i, '');
+      const words = title.trim().split(/\s+/).filter(Boolean);
+      return (words.length > 3 ? words.slice(0, 3) : words).join(' ').toLowerCase();
+    };
+
     if (!article.content.includes(candidate1.slug)) {
-      const candTitle1 = candidate1.title.split(':')[0].trim().toLowerCase();
+      const candAnchor1 = getConciseAnchor(candidate1);
       article.content = article.content.replace(
         /<\/p>/,
-        ` Explore further architectural insights in our guide to <strong><a href="/${candidate1.slug}/">${candTitle1}</a></strong>.</p>`
+        ` Explore further architectural insights in our guide to <a href="/${candidate1.slug}/">${candAnchor1}</a>.</p>`
       );
     }
     if (!article.content.includes(candidate2.slug)) {
-      const candTitle2 = candidate2.title.split(':')[0].trim().toLowerCase();
+      const candAnchor2 = getConciseAnchor(candidate2);
       const pMatches = [...article.content.matchAll(/<\/p>/g)];
       if (pMatches.length >= 3) {
         const thirdPIndex = pMatches[2].index;
         const before = article.content.slice(0, thirdPIndex);
         const after = article.content.slice(thirdPIndex);
-        article.content = before + ` Discover related design principles in our analysis of <strong><a href="/${candidate2.slug}/">${candTitle2}</a></strong>.` + after;
+        article.content = before + ` Discover related spatial principles in our analysis of <a href="/${candidate2.slug}/">${candAnchor2}</a>.` + after;
       }
     }
   }

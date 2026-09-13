@@ -227,11 +227,33 @@ export function getAllUsedImageUrls(existingArticles = []) {
   return used;
 }
 
-// Check if an image URL matches any existing used image (by full URL or Unsplash photo id)
+// Helper to extract a normalized unique photo key from any image URL or ID
+function extractImageKey(urlOrId) {
+  if (!urlOrId || typeof urlOrId !== 'string') return '';
+  // Match standard Unsplash photo pattern: photo-1234567890-abcdef
+  const photoMatch = urlOrId.match(/photo-[a-zA-Z0-9-]+/i);
+  if (photoMatch) return photoMatch[0].toLowerCase();
+  // Strip URL query parameters and hashes
+  const clean = urlOrId.split('?')[0].split('#')[0].trim().toLowerCase();
+  return clean;
+}
+
+// Check if an image URL matches any existing used image (by full URL, photo ID, or key)
 function isImageAlreadyUsed(urlOrId, usedImagesSet) {
   if (!urlOrId) return false;
+  const targetKey = extractImageKey(urlOrId);
+  const targetStr = String(urlOrId).toLowerCase();
+
   for (const used of usedImagesSet) {
-    if (used.includes(urlOrId) || (urlOrId.length > 5 && used.includes(urlOrId))) {
+    if (!used) continue;
+    const usedStr = String(used).toLowerCase();
+    // Direct string match or containment
+    if (usedStr === targetStr || usedStr.includes(targetStr) || targetStr.includes(usedStr)) {
+      return true;
+    }
+    // Match by normalized photo key
+    const usedKey = extractImageKey(used);
+    if (targetKey && usedKey && targetKey === usedKey) {
       return true;
     }
   }
@@ -541,6 +563,23 @@ export function enforceArticleStandards(article, existingArticles = []) {
 
   // 6. STRICT COVER IMAGE LOCK: Image description and caption strictly match the article title
   article.coverAlt = article.title;
+
+  // 7. STRICT IMAGE DEDUPLICATION LOCK: Ensure no image is repeated between cover and body figures
+  if (article.coverImage && article.content) {
+    const coverKey = extractImageKey(article.coverImage);
+    // If any body figure duplicates the cover image, strip or replace it
+    article.content = article.content.replace(/<figure class=["']editorial-figure["']>[\s\S]*?<\/figure>/gi, (figMatch) => {
+      const srcMatch = figMatch.match(/<img[^>]+src=["']([^"']+)["']/i);
+      if (srcMatch && srcMatch[1]) {
+        const bodyKey = extractImageKey(srcMatch[1]);
+        if (bodyKey && coverKey && bodyKey === coverKey) {
+          // Body image duplicates cover image; remove duplicate figure
+          return '';
+        }
+      }
+      return figMatch;
+    });
+  }
 
   return article;
 }
