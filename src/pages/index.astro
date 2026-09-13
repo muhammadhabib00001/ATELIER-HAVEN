@@ -484,6 +484,12 @@ const authors = siteData.authors;
     gap: 2rem;
   }
 
+  .stream-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 2.5rem 2rem;
+  }
+
   .content-sidebar {
     display: flex;
     flex-direction: column;
@@ -595,6 +601,13 @@ const authors = siteData.authors;
     .hero-secondary-grid {
       grid-template-columns: 1fr;
       gap: 1.75rem;
+    }
+  }
+
+  @media (max-width: 640px) {
+    .stream-grid {
+      grid-template-columns: 1fr;
+      gap: 2rem;
     }
   }
 </style>
