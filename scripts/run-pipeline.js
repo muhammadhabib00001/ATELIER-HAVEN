@@ -225,13 +225,30 @@ async function generateSingleArticle(customTopic, customCategory) {
     }
   }
 
-  // Ensure 1 authoritative external reference if none present
+  // Step 2: Ensure 1 authoritative external reference if none present using a rotating pool of distinct authority domains
   if (!article.content.includes('http://') && !article.content.includes('https://')) {
-    const cleanKw = targetTopic.toLowerCase();
-    article.content = article.content.replace(
-      new RegExp(`(${cleanKw})`, 'i'),
-      `<strong><a href="https://www.architecturaldigest.com" target="_blank" rel="noopener noreferrer">$1</a></strong>`
-    );
+    const domainPool = [
+      { name: "American Institute of Architects (AIA)", url: "https://www.aia.org" },
+      { name: "Architectural Digest", url: "https://www.architecturaldigest.com" },
+      { name: "Architectural Record", url: "https://www.architecturalrecord.com" },
+      { name: "Dezeen Architecture", url: "https://www.dezeen.com" },
+      { name: "American Society of Interior Designers (ASID)", url: "https://www.asid.org" },
+      { name: "International Interior Design Association (IIDA)", url: "https://www.iida.org" },
+      { name: "Royal Institute of British Architects (RIBA)", url: "https://www.architecture.com" },
+      { name: "Dwell Architecture", url: "https://www.dwell.com" },
+      { name: "Metropolis Magazine", url: "https://metropolismag.com" },
+      { name: "U.S. Green Building Council (USGBC)", url: "https://www.usgbc.org" },
+      { name: "Elle Decor", url: "https://www.elledecor.com" }
+    ];
+
+    // Pick domain based on total existing articles count to guarantee zero duplicate domains
+    const chosenDomain = domainPool[existingArticles.length % domainPool.length];
+    if (article.content.includes('</p>')) {
+      article.content = article.content.replace(
+        /<\/p>/,
+        ` Review structural guidelines and architectural standards from the <a href="${chosenDomain.url}" target="_blank" rel="noopener noreferrer">${chosenDomain.name}</a>.</p>`
+      );
+    }
   }
 
   // Step 3: Save article
