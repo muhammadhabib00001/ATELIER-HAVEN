@@ -238,7 +238,19 @@ async function generateSingleArticle(customTopic, customCategory) {
       { name: "Dwell Architecture", url: "https://www.dwell.com" },
       { name: "Metropolis Magazine", url: "https://metropolismag.com" },
       { name: "U.S. Green Building Council (USGBC)", url: "https://www.usgbc.org" },
-      { name: "Elle Decor", url: "https://www.elledecor.com" }
+      { name: "Elle Decor", url: "https://www.elledecor.com" },
+      { name: "Interior Design Magazine", url: "https://www.interiordesign.net" },
+      { name: "House Beautiful", url: "https://www.housebeautiful.com" },
+      { name: "Houzz Design", url: "https://www.houzz.com" },
+      { name: "Remodelista", url: "https://www.remodelista.com" },
+      { name: "Design Milk", url: "https://design-milk.com" },
+      { name: "Curbed Architecture", url: "https://www.curbed.com" },
+      { name: "Wallpaper Magazine", url: "https://www.wallpaper.com" },
+      { name: "Domus Architecture", url: "https://www.domusweb.it" },
+      { name: "Frame Magazine", url: "https://www.frame-web.com" },
+      { name: "Azure Magazine", url: "https://www.azuremagazine.com" },
+      { name: "Habitually Chic", url: "https://www.habituallychic.luxury" },
+      { name: "Architectural Lighting", url: "https://www.archlighting.com" }
     ];
 
     // Pick domain based on total existing articles count to guarantee zero duplicate domains
@@ -259,14 +271,24 @@ async function generateSingleArticle(customTopic, customCategory) {
 }
 
 async function run() {
-  const customTopic = process.argv[2] && process.argv[2].trim() ? process.argv[2].trim() : null;
-  const rawCustomCategory = process.argv[3];
-  const isAuto = !rawCustomCategory || rawCustomCategory.trim().toLowerCase() === 'auto';
-  const customCategory = isAuto ? null : (normalizeCategory(rawCustomCategory) || (rawCustomCategory && rawCustomCategory.trim() ? rawCustomCategory.trim() : null));
+  const args = process.argv.slice(2);
+  let customTopic = null;
+  let customCategory = null;
+  let count = 1;
 
-  // Count of articles to generate (default 1, allows up to 5)
-  const rawCount = process.argv[4];
-  const count = Math.max(1, Math.min(parseInt(rawCount, 10) || 1, 5));
+  for (const arg of args) {
+    if (arg.startsWith('--count=')) {
+      count = parseInt(arg.split('=')[1], 10) || 1;
+    } else if (!isNaN(parseInt(arg, 10)) && parseInt(arg, 10) >= 1 && parseInt(arg, 10) <= 10) {
+      count = parseInt(arg, 10);
+    } else if (arg.toLowerCase() !== 'auto' && !customTopic && args.indexOf(arg) === 0 && arg.length > 5) {
+      customTopic = arg.trim();
+    } else if (arg.toLowerCase() !== 'auto' && !customCategory) {
+      customCategory = normalizeCategory(arg) || arg.trim();
+    }
+  }
+
+  count = Math.max(1, Math.min(count, 6));
 
   console.log(`\n========================================`);
   console.log(` Running Article Pipeline: Target Count = ${count}`);
