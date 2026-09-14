@@ -1,16 +1,16 @@
 name: Automated Article Publishing & Google Drive Backup
 
 on:
-  # Runs daily at 00:00 UTC (publishes 6 daily articles automatically)
+  # Runs every 4 hours (00:00, 04:00, 08:00, 12:00, 16:00, 20:00 UTC = exactly 6 articles per 24 hours evenly spaced)
   schedule:
-    - cron: '0 0 * * *'
+    - cron: '0 */4 * * *'
   # Allows manual triggering with optional custom keyword and count (1-6 articles)
   workflow_dispatch:
     inputs:
       count:
-        description: 'Number of articles to generate (default: 6)'
+        description: 'Number of articles to generate (default: 1)'
         required: false
-        default: '6'
+        default: '1'
         type: choice
         options:
           - '1'
@@ -78,7 +78,7 @@ jobs:
           GDRIVE_CLIENT_SECRET: ${{ secrets.GDRIVE_CLIENT_SECRET }}
           GDRIVE_REFRESH_TOKEN: ${{ secrets.GDRIVE_REFRESH_TOKEN }}
         run: |
-          COUNT="${{ github.event.inputs.count || '6' }}"
+          COUNT="${{ github.event.inputs.count || '1' }}"
           node scripts/run-pipeline.js "${{ github.event.inputs.topic }}" "${{ github.event.inputs.category }}" "$COUNT"
 
       - name: Verify Build
