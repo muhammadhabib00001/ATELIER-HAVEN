@@ -581,6 +581,43 @@ export function enforceArticleStandards(article, existingArticles = []) {
     });
   }
 
+  // 8. STRICT EXTERNAL LINK LOCK: Ensure every article has exactly 1 unique high-authority external link
+  if (!article.content.includes('http://') && !article.content.includes('https://')) {
+    const domainPool = [
+      { name: "American Institute of Architects (AIA)", url: "https://www.aia.org" },
+      { name: "Architectural Digest", url: "https://www.architecturaldigest.com" },
+      { name: "Architectural Record", url: "https://www.architecturalrecord.com" },
+      { name: "Dezeen Architecture", url: "https://www.dezeen.com" },
+      { name: "American Society of Interior Designers (ASID)", url: "https://www.asid.org" },
+      { name: "International Interior Design Association (IIDA)", url: "https://www.iida.org" },
+      { name: "Royal Institute of British Architects (RIBA)", url: "https://www.architecture.com" },
+      { name: "Dwell Architecture", url: "https://www.dwell.com" },
+      { name: "Metropolis Magazine", url: "https://metropolismag.com" },
+      { name: "U.S. Green Building Council (USGBC)", url: "https://www.usgbc.org" },
+      { name: "Elle Decor", url: "https://www.elledecor.com" },
+      { name: "Interior Design Magazine", url: "https://www.interiordesign.net" },
+      { name: "House Beautiful", url: "https://www.housebeautiful.com" },
+      { name: "Houzz Design", url: "https://www.houzz.com" },
+      { name: "Remodelista", url: "https://www.remodelista.com" },
+      { name: "Design Milk", url: "https://design-milk.com" },
+      { name: "Curbed Architecture", url: "https://www.curbed.com" },
+      { name: "Wallpaper Magazine", url: "https://www.wallpaper.com" },
+      { name: "Domus Architecture", url: "https://www.domusweb.it" },
+      { name: "Frame Magazine", url: "https://www.frame-web.com" },
+      { name: "Azure Magazine", url: "https://www.azuremagazine.com" },
+      { name: "Habitually Chic", url: "https://www.habituallychic.luxury" },
+      { name: "Architectural Lighting", url: "https://www.archlighting.com" }
+    ];
+
+    const chosenDomain = domainPool[existingArticles.length % domainPool.length];
+    if (article.content.includes('</p>')) {
+      article.content = article.content.replace(
+        /<\/p>/,
+        ` Review structural guidelines and architectural standards from the <a href="${chosenDomain.url}" target="_blank" rel="noopener noreferrer">${chosenDomain.name}</a>.</p>`
+      );
+    }
+  }
+
   return article;
 }
 
