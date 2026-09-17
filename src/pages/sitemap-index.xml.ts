@@ -6,17 +6,11 @@ export const GET: APIRoute = async () => {
   const siteUrl = "https://www.atriumlivings.com";
   const now = new Date().toISOString();
 
-  // Primary indexable pages
+  // Primary indexable pages (High-value content pages only)
   const staticPages = [
     { url: `${siteUrl}/`, priority: '1.0', changefreq: 'daily' },
-    { url: `${siteUrl}/about/`, priority: '0.8', changefreq: 'daily' },
-    { url: `${siteUrl}/contact/`, priority: '0.8', changefreq: 'daily' },
-    { url: `${siteUrl}/editorial-policy/`, priority: '0.8', changefreq: 'daily' },
-    { url: `${siteUrl}/search/`, priority: '0.7', changefreq: 'daily' },
-    { url: `${siteUrl}/privacy-policy/`, priority: '0.5', changefreq: 'monthly' },
-    { url: `${siteUrl}/terms/`, priority: '0.5', changefreq: 'monthly' },
-    { url: `${siteUrl}/cookie-policy/`, priority: '0.5', changefreq: 'monthly' },
-    { url: `${siteUrl}/disclaimer/`, priority: '0.5', changefreq: 'monthly' },
+    { url: `${siteUrl}/about/`, priority: '0.8', changefreq: 'monthly' },
+    { url: `${siteUrl}/contact/`, priority: '0.8', changefreq: 'monthly' },
   ];
 
   const categoryPages = siteData.categories.map((cat: { slug: string }) => ({
