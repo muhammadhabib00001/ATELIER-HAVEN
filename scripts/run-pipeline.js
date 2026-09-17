@@ -101,37 +101,10 @@ async function generateSingleArticle(customTopic, customCategory) {
             }
 
             if (!selectedItem) {
-              // Calculate current distribution of published articles across all official site categories
-              const categoryCounts = {};
-              SITE_CATEGORIES.forEach(cat => { categoryCounts[cat] = 0; });
-              existingArticles.forEach(a => {
-                const cat = normalizeCategory(a.category) || a.category;
-                if (cat) {
-                  categoryCounts[cat] = (categoryCounts[cat] || 0) + 1;
-                }
-              });
-
-              console.log(" Current site category article distribution:", JSON.stringify(categoryCounts));
-
-              // Sort site categories ascending by count (categories with fewest articles first)
-              const sortedCategories = [...SITE_CATEGORIES].sort((a, b) => {
-                return (categoryCounts[a] || 0) - (categoryCounts[b] || 0);
-              });
-
-              // Select the next unpublished keyword belonging to the least-represented category
-              for (const cat of sortedCategories) {
-                const match = unpublishedDriveKeywords.find(item => item.category === cat);
-                if (match) {
-                  selectedItem = match;
-                  console.log(` Category-wise rotation selected "${cat}" (currently ${categoryCounts[cat] || 0} articles on site).`);
-                  break;
-                }
-              }
-
-              // If no match within official categories, pick the first available unpublished keyword
-              if (!selectedItem) {
-                selectedItem = unpublishedDriveKeywords[0];
-              }
+              // Pick a RANDOM unpublished keyword from the list!
+              const randomIndex = Math.floor(Math.random() * unpublishedDriveKeywords.length);
+              selectedItem = unpublishedDriveKeywords[randomIndex];
+              console.log(` Random selection picked keyword #${randomIndex + 1} of ${unpublishedDriveKeywords.length}: "${selectedItem.topic}" (Category: ${selectedItem.category})`);
             }
 
             if (selectedItem) {
