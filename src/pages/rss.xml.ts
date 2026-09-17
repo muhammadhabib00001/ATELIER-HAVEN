@@ -21,7 +21,8 @@ export const GET: APIRoute = async () => {
 
   articles.forEach(art => {
     const pubDate = new Date(art.publishedAt || Date.now()).toUTCString();
-    const coverImage = art.coverImage || `${siteUrl}/favicon.svg`;
+    const rawCover = art.coverImage || `${siteUrl}/favicon.svg`;
+    const coverImage = rawCover.replace(/&/g, '&amp;');
 
     xml += `    <item>
       <title><![CDATA[${art.title}]]></title>
