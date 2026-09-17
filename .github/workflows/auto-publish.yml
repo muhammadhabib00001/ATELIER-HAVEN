@@ -1,9 +1,9 @@
 name: Automated Article Publishing & Google Drive Backup
 
 on:
-  # Runs every 4 hours (00:00, 04:00, 08:00, 12:00, 16:00, 20:00 UTC = exactly 6 articles per 24 hours evenly spaced)
+  # Runs every 8 hours (00:00, 08:00, 16:00 UTC = exactly 3 articles per 24 hours evenly spaced)
   schedule:
-    - cron: '0 */4 * * *'
+    - cron: '0 */8 * * *'
   # Allows manual triggering with optional custom keyword and count (1-6 articles)
   workflow_dispatch:
     inputs:
