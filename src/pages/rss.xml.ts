@@ -5,7 +5,11 @@ export const GET: APIRoute = async () => {
   const siteUrl = "https://www.atriumlivings.com";
 
   let xml = `<?xml version="1.0" encoding="UTF-8"?>
-<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:dc="http://purl.org/dc/elements/1.1/">
+<rss version="2.0" 
+  xmlns:atom="http://www.w3.org/2005/Atom" 
+  xmlns:dc="http://purl.org/dc/elements/1.1/"
+  xmlns:content="http://purl.org/rss/1.0/modules/content/"
+  xmlns:media="http://search.yahoo.com/mrss/">
   <channel>
     <title>Atrium Livings | Architectural &amp; Interior Design Magazine</title>
     <link>${siteUrl}</link>
@@ -16,13 +20,19 @@ export const GET: APIRoute = async () => {
 `;
 
   articles.forEach(art => {
+    const pubDate = new Date(art.publishedAt || Date.now()).toUTCString();
+    const coverImage = art.coverImage || `${siteUrl}/favicon.svg`;
+
     xml += `    <item>
       <title><![CDATA[${art.title}]]></title>
-      <link>${siteUrl}/${art.slug}</link>
-      <guid isPermaLink="true">${siteUrl}/${art.slug}</guid>
-      <description><![CDATA[${art.subtitle}]]></description>
-      <pubDate>${new Date(art.publishedAt).toUTCString()}</pubDate>
+      <link>${siteUrl}/${art.slug}/</link>
+      <guid isPermaLink="true">${siteUrl}/${art.slug}/</guid>
+      <description><![CDATA[${art.subtitle || ''}]]></description>
+      <content:encoded><![CDATA[${art.content || art.subtitle || ''}]]></content:encoded>
+      <dc:creator><![CDATA[${art.author || 'Atrium Livings Editorial Board'}]]></dc:creator>
+      <pubDate>${pubDate}</pubDate>
       <category><![CDATA[${art.category}]]></category>
+      <media:content url="${coverImage}" medium="image" type="image/jpeg" />
     </item>
 `;
   });
@@ -33,7 +43,8 @@ export const GET: APIRoute = async () => {
   return new Response(xml, {
     status: 200,
     headers: {
-      'Content-Type': 'application/xml; charset=utf-8'
+      'Content-Type': 'application/xml; charset=utf-8',
+      'Cache-Control': 'public, max-age=1800'
     }
   });
 };
