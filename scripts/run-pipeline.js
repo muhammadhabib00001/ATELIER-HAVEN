@@ -17,6 +17,7 @@ import path from 'path';
 import { generateArticle, saveArticle } from '../generate-article.js';
 import { uploadToGoogleDrive, getDriveAccessToken } from './backup-to-drive.js';
 import { fetchKeywordsFromDrive, normalizeCategory, detectCategoryFromKeyword } from './fetch-keywords.js';
+import { submitUrlToGoogleIndexing } from './google-index.js';
 
 // Load official categories from site.json
 const siteDataPath = path.resolve("./src/data/site.json");
@@ -240,6 +241,11 @@ async function generateSingleArticle(customTopic, customCategory) {
   saveArticle(article);
 
   console.log(` Article saved successfully: ${article.slug}`);
+
+  // Step 4: Notify Google Indexing API for fast indexing
+  const articleFullUrl = `https://www.atriumlivings.com/${article.slug}/`;
+  await submitUrlToGoogleIndexing(articleFullUrl, 'URL_UPDATED');
+
   return article;
 }
 

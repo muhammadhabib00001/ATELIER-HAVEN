@@ -19,7 +19,7 @@ export async function getDriveAccessToken() {
     const header = { alg: "RS256", typ: "JWT" };
     const claim = {
       iss: sa.client_email,
-      scope: "https://www.googleapis.com/auth/drive https://www.googleapis.com/auth/drive.file https://www.googleapis.com/auth/drive.readonly",
+      scope: "https://www.googleapis.com/auth/indexing https://www.googleapis.com/auth/drive https://www.googleapis.com/auth/drive.file https://www.googleapis.com/auth/drive.readonly",
       aud: "https://oauth2.googleapis.com/token",
       exp: now + 3600,
       iat: now
