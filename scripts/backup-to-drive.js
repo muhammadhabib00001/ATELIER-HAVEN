@@ -7,7 +7,19 @@ import fs from 'fs';
 import path from 'path';
 
 export async function getDriveAccessToken() {
-  const saKey = process.env.GDRIVE_SERVICE_ACCOUNT_KEY || process.env.GCP_SERVICE_ACCOUNT_KEY;
+  let saKey = process.env.GDRIVE_SERVICE_ACCOUNT_KEY || process.env.GCP_SERVICE_ACCOUNT_KEY;
+  
+  // Also check for service-account.json in project root
+  const saFilePath = path.resolve('./service-account.json');
+  if (!saKey && fs.existsSync(saFilePath)) {
+    try {
+      saKey = fs.readFileSync(saFilePath, 'utf8');
+      console.log(' Loaded Service Account from local service-account.json');
+    } catch (e) {
+      // ignore
+    }
+  }
+
   const clientId = process.env.GDRIVE_CLIENT_ID;
   const clientSecret = process.env.GDRIVE_CLIENT_SECRET;
   const refreshToken = process.env.GDRIVE_REFRESH_TOKEN;
