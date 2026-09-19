@@ -4,27 +4,45 @@ import fs from "fs";
 import path from "path";
 import { fileURLToPath } from "url";
 
-// Initialize AI Client:
-// Supports direct Vertex AI OR Gemini Developer API with automatic fallback
-let ai;
-const vertexProject = process.env.GOOGLE_CLOUD_PROJECT || process.env.VERTEX_PROJECT_ID;
-const vertexLocation = process.env.GOOGLE_CLOUD_LOCATION || process.env.VERTEX_LOCATION || "us-central1";
-const geminiApiKey = process.env.GEMINI_API_KEY;
+// Initialize Multi-Key AI Client Pool:
+// Collects GEMINI_API_KEY, GEMINI_API_KEY_2, GEMINI_API_KEY_3, GEMINI_API_KEY_4, GEMINI_API_KEY_5, etc.
+export function getAiClients() {
+  const clients = [];
+  const vertexProject = process.env.GOOGLE_CLOUD_PROJECT || process.env.VERTEX_PROJECT_ID;
+  const vertexLocation = process.env.GOOGLE_CLOUD_LOCATION || process.env.VERTEX_LOCATION || "us-central1";
 
-if (geminiApiKey) {
-  console.log(" Initializing Google GenAI Client via GEMINI_API_KEY...");
-  ai = new GoogleGenAI({ apiKey: geminiApiKey });
-} else if (vertexProject) {
-  console.log(` Initializing Google Cloud Vertex AI Client (Project: ${vertexProject}, Location: ${vertexLocation})...`);
-  ai = new GoogleGenAI({
-    vertexAI: {
-      project: vertexProject,
-      location: vertexLocation
+  // 1. Gather all GEMINI_API_KEY variants from process.env
+  const keyEnvVars = Object.keys(process.env).filter(k => k.startsWith('GEMINI_API_KEY')).sort();
+  for (const envKey of keyEnvVars) {
+    const val = process.env[envKey];
+    if (val && val.trim()) {
+      clients.push({
+        name: envKey,
+        client: new GoogleGenAI({ apiKey: val.trim() })
+      });
     }
-  });
-} else {
-  console.error("Error: Neither GEMINI_API_KEY nor GOOGLE_CLOUD_PROJECT (Vertex AI) is configured.");
-  process.exit(1);
+  }
+
+  // 2. Vertex AI fallback if no direct Gemini API keys found
+  if (clients.length === 0 && vertexProject) {
+    clients.push({
+      name: `VertexAI (${vertexProject})`,
+      client: new GoogleGenAI({
+        vertexAI: {
+          project: vertexProject,
+          location: vertexLocation
+        }
+      })
+    });
+  }
+
+  if (clients.length === 0) {
+    console.error("Error: Neither GEMINI_API_KEY nor GOOGLE_CLOUD_PROJECT (Vertex AI) is configured.");
+    process.exit(1);
+  }
+
+  console.log(` Loaded ${clients.length} active AI API Key Client(s) into fallback rotation pool.`);
+  return clients;
 }
 
 const articlesPath = path.resolve("./src/data/articles.json");
@@ -105,6 +123,7 @@ Format the HTML content meticulously:
 5. Architectural specification cards: <div class="spec-card"><h4>Architectural Specifications</h4><ul><li><strong>Material / Tolerance:</strong> Detail</li>...</ul></div>
 6. High-utility FAQ section: <h2 id="faq-${topic.toLowerCase().replace(/[^a-z0-9]+/g, '-')}">${topic} Frequently Asked Questions</h2> followed by <div class="faq-accordion"><div class="faq-item"><h3>Precise Question incorporating "${topic}"?</h3><p><strong>Direct Key Info on ${topic}.</strong> 1 to 2 concise sentences providing the direct architectural rule, dimension, or specification directly for ${topic}.</p></div>. CRITICAL: Every single FAQ question (<h3>) and answer (<p>) MUST explicitly focus on and incorporate the target keyword "${topic}". Never write generic questions.`;
 
+  const aiClients = getAiClients();
   const modelsToTry = [
     "gemini-2.5-flash",
     "gemini-2.5-flash-lite",
@@ -115,36 +134,49 @@ Format the HTML content meticulously:
   ];
   let response = null;
 
-  // Try each model with retries for temporary spikes or transient internal errors
-  for (const modelName of modelsToTry) {
-    for (let attempt = 1; attempt <= 2; attempt++) {
-      try {
-        console.log(` Attempting with model: ${modelName} (attempt ${attempt})...`);
-        response = await ai.models.generateContent({
-          model: modelName,
-          contents: `Write an exhaustive, SEO-dominant architectural guide about: "${topic}". Category: ${options.category || "interior-design"}. Ensure length strictly exceeds 1,100 words with thorough technical and design depth. Output strictly in JSON.`,
-          config: {
-            systemInstruction: systemPrompt,
-            responseMimeType: "application/json",
-            responseSchema: articleSchema
+  // Iterate across available API Key Clients
+  for (const clientObj of aiClients) {
+    console.log(` Using API Key: [${clientObj.name}]`);
+    const ai = clientObj.client;
+
+    for (const modelName of modelsToTry) {
+      for (let attempt = 1; attempt <= 2; attempt++) {
+        try {
+          console.log(` Attempting with model: ${modelName} (attempt ${attempt})...`);
+          response = await ai.models.generateContent({
+            model: modelName,
+            contents: `Write an exhaustive, SEO-dominant architectural guide about: "${topic}". Category: ${options.category || "interior-design"}. Ensure length strictly exceeds 1,100 words with thorough technical and design depth. Output strictly in JSON.`,
+            config: {
+              systemInstruction: systemPrompt,
+              responseMimeType: "application/json",
+              responseSchema: articleSchema
+            }
+          });
+          if (response && response.text) break;
+        } catch (err) {
+          console.warn(` [${clientObj.name}] ${modelName} attempt ${attempt} issue: ${err.message}`);
+          
+          // If rate limited or quota exceeded, switch key or retry
+          if (err.message.includes("429") || err.message.includes("RESOURCE_EXHAUSTED") || err.message.includes("Quota exceeded")) {
+            console.warn(` Rate limit / Quota reached for ${clientObj.name}. Switching to next API key...`);
+            break; // Break model loop to switch client key
           }
-        });
-        if (response && response.text) break;
-      } catch (err) {
-        console.warn(` ${modelName} attempt ${attempt} issue: ${err.message}`);
-        if (err.message.includes("503") || err.message.includes("500") || err.message.includes("INTERNAL") || err.message.includes("high demand") || err.message.includes("UNAVAILABLE")) {
-          console.log(" Waiting 4 seconds before retry...");
-          await delay(4000);
-        } else {
-          break; // For 404 or unsupported models, immediately try next model
+
+          if (err.message.includes("503") || err.message.includes("500") || err.message.includes("INTERNAL") || err.message.includes("high demand") || err.message.includes("UNAVAILABLE")) {
+            console.log(" Waiting 4 seconds before retry...");
+            await delay(4000);
+          } else {
+            break; // For 404 or unsupported models, immediately try next model
+          }
         }
       }
+      if (response && response.text) break;
     }
     if (response && response.text) break;
   }
 
   if (!response || !response.text) {
-    throw new Error("Unable to complete generation with available models. Please check API credentials and retry.");
+    throw new Error("Unable to complete generation with available API Keys and models. Please check API credentials and retry.");
   }
 
   const generated = JSON.parse(response.text);
