@@ -553,6 +553,62 @@ const articleContent = article.content.replace(/<div class=['"]spec-card['"][\s\
     line-height: 1.35;
   }
 
+  .prose-content :global(h4) {
+    font-family: var(--font-serif);
+    font-size: 1.15rem;
+    font-weight: 700;
+    color: var(--color-text-main);
+    margin-top: 1.75rem;
+    margin-bottom: 0.5rem;
+    line-height: 1.4;
+  }
+
+  .prose-content :global(h5) {
+    font-family: var(--font-sans);
+    font-size: 1.02rem;
+    font-weight: 700;
+    color: var(--color-text-main);
+    margin-top: 1.5rem;
+    margin-bottom: 0.5rem;
+    line-height: 1.4;
+  }
+
+  /* Table styling */
+  .prose-content :global(.table-container) {
+    margin: 2rem 0;
+    overflow-x: auto;
+    border: 1px solid var(--color-border);
+    border-radius: 6px;
+    background: #ffffff;
+  }
+
+  .prose-content :global(.editorial-table) {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.95rem;
+    text-align: left;
+  }
+
+  .prose-content :global(.editorial-table th) {
+    background-color: var(--color-surface-subtle);
+    color: var(--color-text-main);
+    font-weight: 700;
+    padding: 0.85rem 1.15rem;
+    border-bottom: 2px solid var(--color-border);
+    white-space: nowrap;
+  }
+
+  .prose-content :global(.editorial-table td) {
+    padding: 0.85rem 1.15rem;
+    border-bottom: 1px solid var(--color-border);
+    color: #333333;
+    line-height: 1.5;
+  }
+
+  .prose-content :global(.editorial-table tbody tr:hover) {
+    background-color: rgba(0, 0, 0, 0.02);
+  }
+
   .prose-content :global(ul),
   .prose-content :global(ol) {
     margin-bottom: 1.5rem;
