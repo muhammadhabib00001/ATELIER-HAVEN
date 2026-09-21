@@ -44,7 +44,7 @@ const isMoreActive = moreCategories.some(cat => currentPath.startsWith(`/categor
   <!-- 2. Main Brand Bar (True Centered Grid) -->
   <div class="header-brand-bar">
     <div class="container header-brand-inner">
-      <!-- Left side: Menu button -->
+      <!-- Left side: Mobile menu toggle -->
       <div class="header-left-slot">
         <button id="mobileMenuBtn" aria-label="Open navigation menu" class="menu-toggle-btn">
           <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -52,7 +52,6 @@ const isMoreActive = moreCategories.some(cat => currentPath.startsWith(`/categor
             <line x1="3" y1="6" x2="21" y2="6"></line>
             <line x1="3" y1="18" x2="21" y2="18"></line>
           </svg>
-          <span class="menu-btn-label">Menu</span>
         </button>
       </div>
 
@@ -257,28 +256,20 @@ const isMoreActive = moreCategories.some(cat => currentPath.startsWith(`/categor
   }
 
   .menu-toggle-btn {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.45rem;
+    display: none;
     background: transparent;
     border: none;
     cursor: pointer;
     color: var(--color-text-main);
-    padding: 0.35rem 0.6rem;
+    padding: 0.35rem;
     border-radius: 4px;
-    transition: background 0.15s ease, color 0.15s ease;
+    align-items: center;
+    justify-content: center;
+    transition: color 0.15s ease;
   }
 
   .menu-toggle-btn:hover {
-    background: var(--color-surface-subtle);
     color: var(--color-accent);
-  }
-
-  .menu-btn-label {
-    font-size: 0.8125rem;
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 0.06em;
   }
 
   .header-center-slot {
@@ -614,6 +605,10 @@ const isMoreActive = moreCategories.some(cat => currentPath.startsWith(`/categor
 
   /* ===== Responsive Breakpoints ===== */
   @media (max-width: 992px) {
+    .menu-toggle-btn {
+      display: inline-flex;
+    }
+
     .header-nav {
       display: none;
     }
@@ -645,10 +640,6 @@ const isMoreActive = moreCategories.some(cat => currentPath.startsWith(`/categor
     .header-subscribe-btn {
       font-size: 0.75rem;
       padding: 0.45rem 0.85rem;
-    }
-
-    .menu-btn-label {
-      display: none;
     }
   }
 </style>
