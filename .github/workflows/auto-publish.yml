@@ -1,9 +1,9 @@
 name: Automated Article Publishing & Google Drive Backup
 
 on:
-  # Runs every 8 hours (00:00, 08:00, 16:00 UTC = exactly 3 articles per 24 hours evenly spaced)
+  # Runs every 12 hours (00:00, 12:00 UTC = exactly 2 articles per 24 hours evenly spaced)
   schedule:
-    - cron: '0 */8 * * *'
+    - cron: '0 */12 * * *'
   # Allows manual triggering with optional custom keyword and count (1-6 articles)
   workflow_dispatch:
     inputs:
@@ -84,6 +84,9 @@ jobs:
         run: |
           COUNT="${{ github.event.inputs.count || '1' }}"
           node scripts/run-pipeline.js "${{ github.event.inputs.topic }}" "${{ github.event.inputs.category }}" "$COUNT"
+
+      - name: Validate Article Standards
+        run: npm run validate
 
       - name: Verify Build
         run: npm run build

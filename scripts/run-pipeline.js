@@ -158,81 +158,62 @@ async function generateSingleArticle(customTopic, customCategory) {
 
   // Step 2: Ensure 2 internal links and 1 authoritative external link
   // Note: We use canonical trailing slashes /${slug}/ and concise 2-3 word anchor text
-  if (existingArticles.length >= 2) {
-    const candidate1 = existingArticles[0];
-    const candidate2 = existingArticles[1];
+  // Step 2: Ensure exactly 2 internal links and 1 authoritative external link
+  // Use live published articles or valid categories to prevent 404s
+  const linkCandidates = [];
+  if (existingArticles.length > 0) {
+    linkCandidates.push({
+      url: `/${existingArticles[0].slug}/`,
+      anchor: existingArticles[0].keywords?.[0] || 'interior styling tips'
+    });
+  }
+  if (existingArticles.length > 1) {
+    linkCandidates.push({
+      url: `/${existingArticles[1].slug}/`,
+      anchor: existingArticles[1].keywords?.[0] || 'furniture layout ideas'
+    });
+  } else {
+    // Fallback to active category to guarantee 0 dead links
+    linkCandidates.push({
+      url: `/category/${targetCategory || 'bedroom'}/`,
+      anchor: `${targetCategory || 'bedroom'} design ideas`
+    });
+  }
 
-    const getConciseAnchor = (cand) => {
-      // 1. Prefer primary target keyword if concise
-      if (cand.keywords && cand.keywords[0]) {
-        const kw = cand.keywords[0].trim().toLowerCase();
-        const kwWords = kw.split(/\s+/).filter(Boolean);
-        if (kwWords.length <= 3 && kw.length <= 25) {
-          return kw;
-        }
-      }
-      // 2. Derive concise 2-3 word phrase from title
-      let title = (cand.title || '').split(':')[0].trim();
-      title = title.replace(/^(how to|how|guide to|designing|mastering|exploring|architectural|crafting the ultimate|crafting|bespoke|professional)\s+/i, '');
-      title = title.replace(/\s+(guide|masterclass|blueprint|ideas|projects|tips|overview|analysis|study|field guide)$/i, '');
-      title = title.replace(/\s+(guide|masterclass|blueprint|ideas|projects|tips)$/i, '');
-      const words = title.trim().split(/\s+/).filter(Boolean);
-      return (words.length > 3 ? words.slice(0, 3) : words).join(' ').toLowerCase();
-    };
-
-    if (!article.content.includes(candidate1.slug)) {
-      const candAnchor1 = getConciseAnchor(candidate1);
-      article.content = article.content.replace(
-        /<\/p>/,
-        ` Explore further architectural insights in our guide to <a href="/${candidate1.slug}/">${candAnchor1}</a>.</p>`
-      );
-    }
-    if (!article.content.includes(candidate2.slug)) {
-      const candAnchor2 = getConciseAnchor(candidate2);
-      const pMatches = [...article.content.matchAll(/<\/p>/g)];
-      if (pMatches.length >= 3) {
-        const thirdPIndex = pMatches[2].index;
-        const before = article.content.slice(0, thirdPIndex);
-        const after = article.content.slice(thirdPIndex);
-        article.content = before + ` Discover related spatial principles in our analysis of <a href="/${candidate2.slug}/">${candAnchor2}</a>.` + after;
-      }
+  // Inject natural internal links if not already present
+  if (!article.content.includes(linkCandidates[0].url)) {
+    article.content = article.content.replace(
+      /<\/p>/,
+      ` Review helpful tips in our guide to <a href="${linkCandidates[0].url}">${linkCandidates[0].anchor}</a>.</p>`
+    );
+  }
+  if (!article.content.includes(linkCandidates[1].url)) {
+    const pMatches = [...article.content.matchAll(/<\/p>/g)];
+    if (pMatches.length >= 3) {
+      const thirdPIndex = pMatches[2].index;
+      const before = article.content.slice(0, thirdPIndex);
+      const after = article.content.slice(thirdPIndex);
+      article.content = before + ` Explore related concepts in our <a href="${linkCandidates[1].url}">${linkCandidates[1].anchor}</a> guide.` + after;
     }
   }
 
-  // Step 2: Ensure 1 authoritative external reference if none present using a rotating pool of distinct authority domains
+  // Ensure 1 authoritative external reference if none present using a rotating pool
   if (!article.content.includes('http://') && !article.content.includes('https://')) {
     const domainPool = [
-      { name: "American Institute of Architects (AIA)", url: "https://www.aia.org" },
+      { name: "Sleep Foundation", url: "https://www.sleepfoundation.org" },
       { name: "Architectural Digest", url: "https://www.architecturaldigest.com" },
-      { name: "Architectural Record", url: "https://www.architecturalrecord.com" },
-      { name: "Dezeen Architecture", url: "https://www.dezeen.com" },
-      { name: "American Society of Interior Designers (ASID)", url: "https://www.asid.org" },
-      { name: "International Interior Design Association (IIDA)", url: "https://www.iida.org" },
-      { name: "Royal Institute of British Architects (RIBA)", url: "https://www.architecture.com" },
-      { name: "Dwell Architecture", url: "https://www.dwell.com" },
-      { name: "Metropolis Magazine", url: "https://metropolismag.com" },
-      { name: "U.S. Green Building Council (USGBC)", url: "https://www.usgbc.org" },
+      { name: "American Society of Interior Designers", url: "https://www.asid.org" },
+      { name: "Consumer Reports", url: "https://www.consumerreports.org" },
+      { name: "Dwell Design", url: "https://www.dwell.com" },
       { name: "Elle Decor", url: "https://www.elledecor.com" },
-      { name: "Interior Design Magazine", url: "https://www.interiordesign.net" },
-      { name: "House Beautiful", url: "https://www.housebeautiful.com" },
-      { name: "Houzz Design", url: "https://www.houzz.com" },
-      { name: "Remodelista", url: "https://www.remodelista.com" },
-      { name: "Design Milk", url: "https://design-milk.com" },
-      { name: "Curbed Architecture", url: "https://www.curbed.com" },
-      { name: "Wallpaper Magazine", url: "https://www.wallpaper.com" },
-      { name: "Domus Architecture", url: "https://www.domusweb.it" },
-      { name: "Frame Magazine", url: "https://www.frame-web.com" },
-      { name: "Azure Magazine", url: "https://www.azuremagazine.com" },
-      { name: "Habitually Chic", url: "https://www.habituallychic.luxury" },
-      { name: "Architectural Lighting", url: "https://www.archlighting.com" }
+      { name: "House Beautiful", url: "https://www.housebeautiful.com" }
     ];
 
-    // Pick domain based on total existing articles count to guarantee zero duplicate domains
     const chosenDomain = domainPool[existingArticles.length % domainPool.length];
     if (article.content.includes('</p>')) {
       article.content = article.content.replace(
         /<\/p>/,
-        ` Review structural guidelines and architectural standards from the <a href="${chosenDomain.url}" target="_blank" rel="noopener noreferrer">${chosenDomain.name}</a>.</p>`
+        ` Consult recommended design standards from <a href="${chosenDomain.url}" target="_blank" rel="noopener noreferrer">${chosenDomain.name}</a>.</p>`
       );
     }
   }
