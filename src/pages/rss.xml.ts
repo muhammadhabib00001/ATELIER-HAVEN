@@ -11,9 +11,9 @@ export const GET: APIRoute = async () => {
   xmlns:content="http://purl.org/rss/1.0/modules/content/"
   xmlns:media="http://search.yahoo.com/mrss/">
   <channel>
-    <title>Atrium Livings | Architectural &amp; Interior Design Magazine</title>
+    <title>Atrium Livings | Home Decor &amp; DIY Magazine</title>
     <link>${siteUrl}</link>
-    <description>The Definitive Digital Journal of Modern Architecture, Interior Spaces &amp; Artful Living.</description>
+    <description>Your Inspiring Digital Magazine for Home Decor, DIY Projects &amp; Creative Living.</description>
     <language>en-us</language>
     <lastBuildDate>${new Date().toUTCString()}</lastBuildDate>
     <atom:link href="${siteUrl}/rss.xml" rel="self" type="application/rss+xml"/>

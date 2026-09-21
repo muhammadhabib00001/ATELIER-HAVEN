@@ -1,7 +1,7 @@
 {
-  "title": "Atrium Livings | Architecture & Interior Design Information Guide",
-  "tagline": "The Comprehensive Information Resource for Architecture, Interior Design & Home Planning",
-  "description": "Atrium Livings is an authoritative architectural and interior design information resource offering comprehensive guides on modern kitchens, bathrooms, spatial layouts, material tolerances, and home renovations.",
+  "title": "Atrium Livings | Home Decor & DIY Magazine",
+  "tagline": "Your Inspiring Digital Magazine for Home Decor, DIY Projects & Creative Living",
+  "description": "Atrium Livings is an inspiring home decor and DIY magazine offering creative decor ideas, hands-on DIY tutorials, interior styling guides, and home improvement inspiration.",
   "siteUrl": "https://www.atriumlivings.com",
   "publisher": {
     "name": "Atrium Livings Media Group",
@@ -26,96 +26,96 @@
     {
       "slug": "kitchen",
       "name": "Kitchen",
-      "title": "Kitchen Architecture, Cabinetry & Culinary Design",
-      "description": "Explore high-end kitchen layouts, bespoke fluted cabinetry, marble slab islands, and luxury smart culinary spaces designed for seamless entertaining.",
+      "title": "Kitchen Decor, Cabinetry & DIY Styling",
+      "description": "Explore kitchen styling ideas, open shelving, cabinet makeovers, marble accents, and functional DIY kitchen organization.",
       "cover": "https://images.unsplash.com/photo-1556911220-e15b29be8c8f?auto=format&fit=crop&w=1200&q=80",
       "color": "#8B4513"
     },
     {
       "slug": "bathroom",
       "name": "Bathroom",
-      "title": "Bathroom Sanctuaries, Tile Architecture & Spa Fixtures",
-      "description": "From space-efficient powder rooms to travertine wet rooms, discover bathroom floor tile patterns, floating stone vanities, and tactile brassware.",
+      "title": "Bathroom Decor, Tile Ideas & Spa Styling",
+      "description": "From small powder room makeovers to tranquil bath retreats, discover stylish tile accents, vanity decor, and spa-inspired touches.",
       "cover": "https://images.unsplash.com/photo-1552321554-5fefe8c9ef14?auto=format&fit=crop&w=1200&q=80",
       "color": "#2F4F4F"
     },
     {
       "slug": "living-room",
       "name": "Living Room",
-      "title": "Living Rooms: Organic Modern & Warm Minimalist Lounges",
-      "description": "Curate cohesive living room seating zones, sculptural statement fireplaces, layered 2700K ambient lighting, and bespoke media joinery.",
+      "title": "Living Room Decor, Cozy Styling & Furniture Layouts",
+      "description": "Curate warm, welcoming living rooms with cozy seating arrangements, gallery walls, ambient lighting, and stylish decor.",
       "cover": "https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?auto=format&fit=crop&w=1200&q=80",
       "color": "#5C4033"
     },
     {
       "slug": "bedroom",
       "name": "Bedroom",
-      "title": "Primary Bedroom Suites & Acoustic Comfort Palettes",
-      "description": "Transform restful quarters with upholstered acoustic headboards, pure Belgian linen bedding, recessed mood lighting, and serene plaster finishes.",
+      "title": "Bedroom Decor, Bedding & Relaxing Retreats",
+      "description": "Create a restful sanctuary with layered bedding, stylish headboards, soothing color palettes, and cozy bedroom decor accents.",
       "cover": "https://images.unsplash.com/photo-1616594039964-ae9021a400a0?auto=format&fit=crop&w=1200&q=80",
       "color": "#4A3B32"
     },
     {
       "slug": "home-decor",
       "name": "Home Decor",
-      "title": "Home Decor, Ceramic Vessels & Textile Styling",
-      "description": "The art of the final layer: artisanal stone accessories, handmade stoneware, gallery wall compositions, and textural woolen throws.",
+      "title": "Home Decor, Ceramic Accents & Textile Styling",
+      "description": "The art of styling: artisanal decorative pieces, handmade ceramics, gallery wall arrangements, and cozy textural accents.",
       "cover": "https://images.unsplash.com/photo-1513694203232-719a280e022f?auto=format&fit=crop&w=1200&q=80",
       "color": "#9E5A38"
     },
     {
       "slug": "furniture",
       "name": "Furniture",
-      "title": "Modern Furniture Classics & Sustainable Woodcraft",
-      "description": "In-depth analyses of iconic mid-century silhouettes, curved bouclé sofas, solid walnut dining tables, and heirloom custom joinery.",
+      "title": "Furniture Styling, Mid-Century Classics & Upcycling",
+      "description": "Guides to curating statement sofas, vintage wooden dining tables, furniture flips, and timeless furniture pieces.",
       "cover": "https://images.unsplash.com/photo-1586023492125-27b2c045efd7?auto=format&fit=crop&w=1200&q=80",
       "color": "#704214"
     },
     {
       "slug": "lighting",
       "name": "Lighting",
-      "title": "Architectural Lighting: Pendants & Concealed LEDs",
-      "description": "Mastering the 3 layers of illumination: ambient, task, and accent lighting with dim-to-warm 2700K illumination and alabaster fixtures.",
+      "title": "Home Lighting: Pendants, Lamps & Ambient Glow",
+      "description": "Master lighting in every room with statement pendants, cozy table lamps, stylish sconces, and warm ambient glow.",
       "cover": "https://images.unsplash.com/photo-1513506003901-1e6a229e2d15?auto=format&fit=crop&w=1200&q=80",
       "color": "#B8860B"
     },
     {
       "slug": "renovation",
       "name": "Renovation",
-      "title": "Renovation Chronicles: Structural Overhaul Guides",
-      "description": "Authoritative architectural guidelines for load-bearing modifications, permit workflows, realistic cost breakdowns, and general contractor collaboration.",
+      "title": "Renovation Chronicles: Home Makeovers & DIY Guides",
+      "description": "Practical advice for home renovations, room makeovers, smart budgeting, and working with contractors on your dream home.",
       "cover": "https://images.unsplash.com/photo-1503387762-592deb58ef4e?auto=format&fit=crop&w=1200&q=80",
       "color": "#36454F"
     },
     {
       "slug": "diy",
       "name": "DIY",
-      "title": "Artisanal DIY: Fluting & Custom Plaster Finishes",
-      "description": "Step-by-step masterclasses in limewash application, bespoke slatted acoustic panel fabrication, and custom architectural mouldings.",
+      "title": "DIY Projects: Creative Home Decor & Crafts",
+      "description": "Step-by-step DIY home decor tutorials, painted furniture flips, accent wall treatments, and easy weekend craft projects.",
       "cover": "https://images.unsplash.com/photo-1581783342308-f792dbdd27c5?auto=format&fit=crop&w=1200&q=80",
       "color": "#6B8E23"
     },
     {
       "slug": "garden-outdoor",
       "name": "Garden & Outdoor",
-      "title": "Courtyards, Pergolas & Architectural Landscapes",
-      "description": "Blur the boundaries between indoors and nature with thermal limestone terraces, cantilevered steel pergolas, and native botanical gardens.",
+      "title": "Garden & Outdoor: Patios, Plants & Porch Decor",
+      "description": "Transform your outdoor spaces with cozy patio decor, container gardening, outdoor DIY projects, and porch styling.",
       "cover": "https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&w=1200&q=80",
       "color": "#2E8B57"
     },
     {
       "slug": "small-spaces",
       "name": "Small Spaces",
-      "title": "Small Space Architecture: Joinery & Micro-Luxury",
-      "description": "Micro-luxury spatial planning: pocket joinery, concealed beds, visual sightline elongation, and multi-functional architectural furniture.",
+      "title": "Small Space Living: Smart Decor & Storage Ideas",
+      "description": "Clever small-space decor solutions: multifunctional furniture, vertical storage, studio styling, and clutter-free living tips.",
       "cover": "https://images.unsplash.com/photo-1505691938895-1758d7feb511?auto=format&fit=crop&w=1200&q=80",
       "color": "#4682B4"
     },
     {
       "slug": "design-trends",
       "name": "Design Trends",
-      "title": "Global Design Forecasts, Biophilia & Tactile Textures",
-      "description": "Forecast reports evaluating quiet luxury, fluted surfaces, warm earth minerals, retro chromes, and sustainable biophilic architecture.",
+      "title": "Home Decor Trends, Color Palettes & Textures",
+      "description": "Explore the latest home decor trends, seasonal styling tips, warm minimalist palettes, and budget-friendly decor updates.",
       "cover": "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1200&q=80",
       "color": "#800020"
     }
@@ -123,34 +123,34 @@
   "authors": [
     {
       "slug": "elena-vance",
-      "name": "Elena Vance, AIA",
-      "role": "Editor-in-Chief & Lead Architect",
-      "bio": "Elena Vance is a licensed architectural designer (AIA) with over 16 years of experience in residential restoration and passive home design across San Francisco and Milan. Her work has been showcased at the Venice Architecture Biennale.",
-      "credentials": "M.Arch Harvard GSD, AIA, LEED AP BD+C",
+      "name": "Elena Vance",
+      "role": "Editor-in-Chief & Interior Stylist",
+      "bio": "Elena is an interior stylist and home decor editor with over 16 years of experience in residential decoration, home staging, and modern interior styling across San Francisco and Milan.",
+      "credentials": "Senior Interior Stylist & Decor Specialist",
       "avatar": "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=400&q=80",
       "social": {
-        "twitter": "https://twitter.com/elenavance_arch",
-        "linkedin": "https://linkedin.com/in/elenavance-arch"
+        "twitter": "https://twitter.com/elenavance_style",
+        "linkedin": "https://linkedin.com/in/elenavance-style"
       }
     },
     {
       "slug": "marcus-reid",
       "name": "Marcus Reid",
-      "role": "Senior Materials & Renovation Editor",
-      "bio": "Marcus specializes in heritage joinery, sustainable timber curation, and precision residential renovation budgeting. With a background in structural engineering and architectural preservation, he dissects contractor specifications with rigorous technical clarity.",
-      "credentials": "B.Eng Structural Design, Member of Association for Preservation Technology",
+      "role": "Senior DIY & Home Improvement Editor",
+      "bio": "Marcus specializes in hands-on DIY projects, woodworking, furniture flips, and practical home improvements. He shares clear, accessible guides for homeowners tackling their own renovations.",
+      "credentials": "DIY Maker & Woodworking Craftsman",
       "avatar": "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=400&q=80",
       "social": {
-        "twitter": "https://twitter.com/marcusreid_design",
-        "linkedin": "https://linkedin.com/in/marcusreid-renovation"
+        "twitter": "https://twitter.com/marcusreid_diy",
+        "linkedin": "https://linkedin.com/in/marcusreid-diy"
       }
     },
     {
       "slug": "charlotte-dupuis",
       "name": "Charlotte Dupuis",
-      "role": "Style Director & Fine Arts Curator",
-      "bio": "Based between Paris and New York, Charlotte curates decorative objects, vintage mid-century furniture acquisitions, and contemporary ceramic installations. She regularly consults for premier international boutique hotels.",
-      "credentials": "B.A. Art History Sorbonne Paris IV, Contributing Critic at Milan Furniture Fair",
+      "role": "Style Director & Decor Curator",
+      "bio": "Based between Paris and New York, Charlotte curates decorative objects, vintage flea market finds, textile styling, and contemporary home accents.",
+      "credentials": "Decor Stylist & Contributing Home Decor Critic",
       "avatar": "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=400&q=80",
       "social": {
         "instagram": "https://instagram.com/charlottedupuis_curates",

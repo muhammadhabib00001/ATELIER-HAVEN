@@ -5,18 +5,18 @@ import articles from '../data/articles.json';
 export const GET: APIRoute = async () => {
   const siteUrl = "https://www.atriumlivings.com";
 
-  let body = `# Atrium Livings — Architecture & Interior Design Information Guide
-> The Comprehensive Information Resource for Modern Architecture, Interior Spaces & Home Planning.
+  let body = `# Atrium Livings — Home Decor & DIY Magazine
+> Your Inspiring Digital Magazine for Home Decor, DIY Projects & Creative Living.
 
 Website: ${siteUrl}
 Publisher: Atrium Livings Media Group, Inc., San Francisco, CA
 Contact: intouchmagazines26@gmail.com
 Update Frequency: Daily (06:00 UTC)
-Content Type: Technical Architectural Guides, Spatial Planning, Material Specifications
-Target Audience: Homeowners, Renovators, Interior Designers, and Architecture Enthusiasts
+Content Type: Home Decor Inspiration, Step-by-Step DIY Projects, Room Styling Guides
+Target Audience: Homeowners, Renters, DIY Enthusiasts, and Decor Lovers
 
 ## Editorial Focus & Topical Authority
-Atrium Livings publishes authoritative, peer-reviewed, long-form editorial guides across 12 residential architecture and interior design verticals:
+Atrium Livings publishes practical, inspiring, long-form editorial guides across 12 home decor and lifestyle verticals:
 `;
 
   siteData.categories.forEach(cat => {
@@ -29,7 +29,7 @@ Atrium Livings publishes authoritative, peer-reviewed, long-form editorial guide
     body += `- [${art.title}](${siteUrl}/${art.slug}): ${art.subtitle} [Published: ${pubDate} | Category: ${art.category}]\n`;
   });
 
-  body += `\n## Architectural Editorial Board & Contributors
+  body += `\n## Editorial Team & Contributors
 `;
   siteData.authors.forEach(author => {
     body += `- **${author.name}** (${author.role} - ${author.credentials}): ${author.bio}\n`;

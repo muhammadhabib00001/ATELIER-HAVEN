@@ -18,9 +18,9 @@ const breadcrumbItems = [
   <section class="contact-hero">
     <div class="container contact-container">
       <span class="contact-kicker">Connect With Us</span>
-      <h1 class="contact-headline">Editorial Inquiries & Project Submissions</h1>
+      <h1 class="contact-headline">Editorial Inquiries & Home Submissions</h1>
       <p class="contact-lead">
-        We welcome submissions of newly completed private residences, historic restorations, architectural monographs, and academic research papers.
+        We welcome home tours, DIY project pitches, room makeover stories, and reader styling questions.
       </p>
     </div>
   </section>
@@ -29,10 +29,10 @@ const breadcrumbItems = [
     <div class="container contact-grid">
       <!-- Contact Info / Bureaus -->
       <div class="contact-info-col">
-        <h2 class="col-title">Publishing Bureaus</h2>
+        <h2 class="col-title">Publishing Desk</h2>
 
         <div class="info-block">
-          <h3>Editorial & Information Desk</h3>
+          <h3>Editorial Desk</h3>
           <p>
             Atrium Livings Media Group<br />
             742 Montgomery St, Suite 400<br />
@@ -54,45 +54,45 @@ const breadcrumbItems = [
       <!-- Submission Interactive Form -->
       <div class="contact-form-col">
         <div class="form-card">
-          <h2 class="form-card-title">Send a Direct Message or Project Pitch</h2>
-          <p class="form-card-desc">Our managing editors review all communications within two business days.</p>
+          <h2 class="form-card-title">Send a Message or Project Pitch</h2>
+          <p class="form-card-desc">Our editors review all messages within two business days.</p>
 
           <form class="contact-form" onsubmit="event.preventDefault(); document.getElementById('contactFeedback').style.display = 'block'; this.reset();">
             <div class="form-group">
-              <label for="contactName">Full Name / Studio Name *</label>
-              <input type="text" id="contactName" required placeholder="e.g. Maya Lin / Studio K Architecture" class="form-input" />
+              <label for="contactName">Your Name *</label>
+              <input type="text" id="contactName" required placeholder="e.g. Maya Lin" class="form-input" />
             </div>
 
             <div class="form-group">
-              <label for="contactEmail">Professional Email *</label>
-              <input type="email" id="contactEmail" required placeholder="name@studio.com" class="form-input" />
+              <label for="contactEmail">Email Address *</label>
+              <input type="email" id="contactEmail" required placeholder="name@example.com" class="form-input" />
             </div>
 
             <div class="form-group">
-              <label for="inquiryType">Inquiry Department *</label>
+              <label for="inquiryType">Inquiry Topic *</label>
               <select id="inquiryType" required class="form-select">
-                <option value="project-submission">Residential Project Submission for Feature</option>
-                <option value="editorial-letter">Letter to the Editor / Feedback</option>
-                <option value="press-release">Press Release / Book Review Copy</option>
-                <option value="advertising">AdSense / Curated Sponsorship Inquiries</option>
-                <option value="correction">Fact-Checking / Editorial Correction</option>
+                <option value="project-submission">Home Tour or DIY Project Submission</option>
+                <option value="editorial-letter">Letter to the Editor / Decor Question</option>
+                <option value="press-release">Press Release / Product Review</option>
+                <option value="advertising">Advertising & Brand Sponsorship</option>
+                <option value="correction">Editorial Correction / Feedback</option>
               </select>
             </div>
 
             <div class="form-group">
-              <label for="projectLink">Dropbox / Google Drive Portfolio Link (Optional)</label>
+              <label for="projectLink">Photo Link / Portfolio URL (Optional)</label>
               <input type="url" id="projectLink" placeholder="https://..." class="form-input" />
             </div>
 
             <div class="form-group">
-              <label for="contactMessage">Message / Architectural Abstract *</label>
-              <textarea id="contactMessage" rows="5" required placeholder="Please describe the architectural scope, material palette, location, and photo credits..." class="form-textarea"></textarea>
+              <label for="contactMessage">Message / Project Details *</label>
+              <textarea id="contactMessage" rows="5" required placeholder="Please describe your home decor project, DIY makeover, or question..." class="form-textarea"></textarea>
             </div>
 
-            <button type="submit" class="btn-primary form-submit-btn">Transmit Inquiry</button>
+            <button type="submit" class="btn-primary form-submit-btn">Send Message</button>
 
             <div id="contactFeedback" class="form-feedback">
-              Thank you. Your message has been received by the Atrium Livings editorial board.
+              Thank you. Your message has been received by the Atrium Livings editorial team.
             </div>
           </form>
         </div>
@@ -103,35 +103,35 @@ const breadcrumbItems = [
   <section class="contact-guidelines-section">
     <div class="container contact-guidelines-container">
       <div class="guidelines-card">
-        <span class="guidelines-kicker">Submission Protocol & Peer Review</span>
-        <h2 class="guidelines-title">Architectural Submission Criteria & Technical Standards</h2>
+        <span class="guidelines-kicker">Submission Guidelines</span>
+        <h2 class="guidelines-title">Home Tour & DIY Submission Guidelines</h2>
         <p class="guidelines-lead">
-          Atrium Livings maintains rigorous editorial guidelines for all featured residential projects, case studies, and photographic essays. We prioritize authenticity, technical clarity, and exceptional spatial execution over cosmetic staging.
+          Atrium Livings celebrates real homes, creative DIY tutorials, and inspiring room makeovers. We love spaces that show warmth, personality, and practical creativity.
         </p>
 
         <div class="guidelines-grid">
           <div class="guideline-col">
-            <h3>1. Photography & Drawing Requirements</h3>
+            <h3>1. Photography & Room Views</h3>
             <p>
-              Submissions must include high-resolution architectural photography (minimum 3000px wide) capturing broad spatial contexts, elevation sightlines, and macro material joinery. We strongly encourage accompanying dimensioned floor plans, section drawings, and clearance diagrams illustrating circulation vectors.
+              Submissions should include clear, high-resolution photos capturing overall room layouts, before-and-after views, and close-up styling details with good natural light.
             </p>
           </div>
           <div class="guideline-col">
-            <h3>2. Material Specifications & Sourcing</h3>
+            <h3>2. Project Steps & Materials</h3>
             <p>
-              Please supply an explicit material schedule detailing stone provenance (quarry name and finish), timber species and cut, hardware plating methodologies (PVD vs. electroplated), and photometric lighting parameters (Kelvin scale and CRI ratings).
+              For DIY submissions, please include the step-by-step process, tools needed, paint color names, and approximate budget or cost breakdown.
             </p>
           </div>
           <div class="guideline-col">
-            <h3>3. Complete Project Credits</h3>
+            <h3>3. Full Credits & Sources</h3>
             <p>
-              To honor collaborative architectural practice, full credits must be provided for the lead architect of record, structural engineer, interior designer, general contractor, landscape architect, and architectural photographer.
+              Please provide credits for the homeowner, decorator, DIY maker, and photographer, along with any key product sources readers might ask about.
             </p>
           </div>
           <div class="guideline-col">
-            <h3>4. Response Times & Exclusive Previews</h3>
+            <h3>4. Review Process</h3>
             <p>
-              Our editorial review board evaluates incoming monographs on a weekly rolling basis. While exclusive premieres receive priority placement across our primary cover features, we welcome previously published works exhibiting exceptional enduring craft.
+              Our editorial team reviews submissions on a rolling basis. We will reach out if your home or DIY project is selected for a feature in our magazine!
             </p>
           </div>
         </div>

@@ -22,8 +22,8 @@ const searchableData = articles.map(art => ({
 ---
 
 <BaseLayout
-  title="Search Architectural Archive | Atrium Livings"
-  description="Search across our comprehensive editorial index of luxury kitchen designs, small bathroom tile plans, Japandi living spaces, and renovation guides."
+  title="Search Home Decor & DIY Guides | Atrium Livings"
+  description="Search across our editorial index of home decor ideas, DIY tutorials, kitchen designs, bathroom updates, and living room styling guides."
   breadcrumbs={breadcrumbItems}
   noindex={true}
 >
@@ -33,8 +33,8 @@ const searchableData = articles.map(art => ({
     <div class="container search-container">
       <header class="search-header">
         <span class="search-kicker">Magazine Index</span>
-        <h1 class="search-title">Search Architectural Folios</h1>
-        <p class="search-lead">Explore specifications, bathroom tile dimensions, floor plans, and material guides.</p>
+        <h1 class="search-title">Search Articles & DIY Guides</h1>
+        <p class="search-lead">Explore room makeovers, DIY tutorials, decor ideas, and styling guides.</p>
 
         <!-- Search Input Form -->
         <div class="search-input-wrapper">
@@ -103,7 +103,7 @@ const searchableData = articles.map(art => ({
     if (items.length === 0) {
       grid.innerHTML = `
         <div class="no-results">
-          <p>No matching architectural guides found. Try searching for "bathroom", "kitchen", "lighting", or "renovation".</p>
+          <p>No matching guides found. Try searching for "bedroom", "kitchen", "diy", or "living room".</p>
         </div>
       `;
       return;

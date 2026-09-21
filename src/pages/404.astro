@@ -8,16 +8,16 @@ const categories = siteData.categories.slice(0, 6);
 ---
 
 <BaseLayout
-  title="Page Not Located | Atrium Livings"
-  description="The architectural page or specification document you requested could not be located."
+  title="Page Not Found | Atrium Livings"
+  description="The page or guide you requested could not be found."
   noindex={true}
 >
   <section class="not-found-section">
     <div class="container not-found-container">
-      <span class="error-code">404 Architecture Index</span>
-      <h1 class="error-title">This Space Has Been Redesigned</h1>
+      <span class="error-code">404 Error</span>
+      <h1 class="error-title">Page Not Found</h1>
       <p class="error-lead">
-        The floor plan, article, or material guide you are looking for has either relocated to a new wing or no longer exists in our permanent archive.
+        The article or home decor guide you are looking for may have been moved or is no longer available.
       </p>
 
       <!-- Quick Search Bar -->
@@ -34,7 +34,7 @@ const categories = siteData.categories.slice(0, 6);
 
       <!-- Recommended Popular Portals -->
       <div class="error-nav-section">
-        <h2 class="error-subheading">Or Explore Featured Design Niches</h2>
+        <h2 class="error-subheading">Or Explore Popular Topics</h2>
         <div class="cat-pill-group">
           {categories.map(cat => (
             <a href={`/category/${cat.slug}`} class="cat-pill">{cat.name}</a>
