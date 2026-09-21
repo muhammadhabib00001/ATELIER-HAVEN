@@ -84,7 +84,7 @@ const articleSchema = {
     },
     content: {
       type: Type.STRING,
-      description: "Comprehensive, high-utility HTML article content STRICTLY between 1,050 and 1,150 words in total length. Never exceed 1,200 words. Never write under 1,000 words. Must feature at least 5 in-depth <h2> sections, a 40-60 word Featured Snippet answer below the first <h2>, a structured comparison/spec table inside <div class=\"table-container\"><table class=\"editorial-table\">...</table></div>, and exactly 3 FAQ items. CRITICAL: NEVER include hyphens or em dashes in headings or body prose, and never use banned AI words."
+      description: "Comprehensive, high-utility HTML article content STRICTLY between 1,050 and 1,150 words in total length. Never exceed 1,200 words. Never write under 1,000 words. Must strictly follow the locked Atrium Livings editorial blueprint identically: (1) Open with an immersive <p class=\"lead-paragraph\"> hook; (2) First <h2> MUST be 'The Quick Formula to [Action]' immediately followed by a 40-60 word Featured Snippet answer; (3) Feature 5-6 structured <h2> sections with deep nested <h3>, <h4>, and <h5> hierarchy; (4) Include at least one <div class=\"editorial-quote\"><blockquote>...</blockquote><cite>Author Name, Title</cite></div>; (5) Include a high-utility comparison/spec table inside <div class=\"table-container\"><table class=\"editorial-table\">...</table></div> preceded by an intro sentence; (6) Exactly 3 FAQ items wrapped in <div class=\"faq-accordion\"><div class=\"faq-item\"><h3>...</h3><p><strong>Direct Bold Answer.</strong> Rest of answer...</p></div></div>; (7) Conclude with an actionable checklist section <h2 id=\"your-[topic]-checklist\">Your [Topic] Checklist</h2>. CRITICAL: NEVER include hyphens or em dashes in headings or body prose, and never use banned AI words."
     }
   },
   required: [
@@ -132,20 +132,40 @@ NEVER use any of the following words or phrases in any heading, quote, table, or
 ZERO EM DASHES (0 TOLERANCE):
 NEVER use em dashes (—) or double hyphens (--). Use commas, colons, parentheses, or separate sentences instead.
 
-CRITICAL SEO & LAYOUT RULES:
-1. Primary Target Keyword: MUST be explicitly and prominently featured in ALL key places:
-   - Article Headline (title)
-   - Meta Title (seoTitle)
-   - Article Summary Subtitle (subtitle): MUST directly feature the primary keyword.
-   - Meta Description (seoDescription): MUST directly feature the primary keyword within the first 100 characters (max 160 characters total).
-   - Cover Image Heading & Description (coverAlt): MUST match the article title exactly.
-2. Title and seoTitle: MUST BE STRICTLY BETWEEN 55 AND 60 CHARACTERS IN TOTAL LENGTH. Do not exceed 60 characters and do not be under 55 characters.
-3. Headings: NEVER use hyphens or dashes in ANY heading (<h1>, <h2>, <h3>, <h4>) or TOC title.
-4. Featured Snippet Formula: Directly below the first relevant <h2>, include a 40-60 word direct, definitive answer targeting Google's Featured Snippet box.
-5. Structured Reference Matrix Table: Include at least one high-utility specification/comparison table wrapped in:
-   <div class="table-container"><table class="editorial-table"><thead><tr><th>Component / Area</th><th>Recommended Specification</th><th>Practical Design Rule</th></tr></thead><tbody>...</tbody></table></div>
-6. FAQ Section: Exactly 3 targeted questions using <h3> and direct bolded <p> answers addressing high-intent queries.
-7. Section & Depth Requirements: Provide at least 5 to 6 dedicated <h2> sections. Each <h2> section MUST contain at least 2 to 3 substantive, descriptive paragraphs (each 70 to 90 words). This ensures a rich, complete guide that meets the 1,050 to 1,150 word standard.`;
+CRITICAL EDITORIAL STRUCTURE BLUEPRINT (MANDATORY FOR EVERY ARTICLE):
+Every article MUST follow this exact structural architecture modeled after our benchmark guide:
+1. Lead Paragraph Hook: Open with a vivid, evocative narrative scene setting the tone, wrapped in <p class="lead-paragraph">.
+2. First <h2> & Featured Snippet: The very first <h2> MUST be titled "The Quick Formula to [Action / Outcome]" followed immediately by a definitive, direct 40 to 60 word answer targeting Google's Featured Snippet box.
+3. Deep Heading Hierarchy: Include 5 to 6 dedicated <h2> sections. Under thematic sections, provide deep nested hierarchy (e.g. <h2> -> <h3> -> <h4> -> <h5>). Never skip heading levels. NEVER use hyphens or dashes in any heading.
+4. Editorial Quote Block: Include at least one high-authority editorial quote block:
+   <div class="editorial-quote">
+     <blockquote>A compelling interior installation balances tactile material layers with calm room proportions and soft ambient lighting.</blockquote>
+     <cite>Elena Vance, Senior Interior Editor</cite>
+   </div>
+5. Structured Reference Matrix Table: Include at least one high-utility specification or clearance matrix table, preceded by an introductory sentence, wrapped in:
+   <div class="table-container">
+     <table class="editorial-table">
+       <thead><tr><th>Component / Area</th><th>Recommended Specification</th><th>Practical Application Rule</th></tr></thead>
+       <tbody>...</tbody>
+     </table>
+   </div>
+6. FAQ Accordion: Conclude the core discussion with exactly 3 targeted questions using <h3> and bolded direct answers, wrapped in:
+   <div class="faq-accordion">
+     <div class="faq-item"><h3>Question 1?</h3><p><strong>Direct definitive answer in bold.</strong> Detailed practical explanation...</p></div>
+     <div class="faq-item"><h3>Question 2?</h3><p><strong>Direct definitive answer in bold.</strong> Detailed practical explanation...</p></div>
+     <div class="faq-item"><h3>Question 3?</h3><p><strong>Direct definitive answer in bold.</strong> Detailed practical explanation...</p></div>
+   </div>
+7. Concluding Checklist: The final section MUST be an actionable checklist heading: <h2 id="your-[topic]-checklist">Your [Topic] Checklist</h2> providing 3 to 4 clear, practical takeaways.
+
+CRITICAL SEO RULES:
+- Primary Target Keyword: MUST be explicitly and prominently featured in:
+  * Article Headline (title)
+  * Meta Title (seoTitle)
+  * Article Summary Subtitle (subtitle)
+  * Meta Description (seoDescription): within the first 100 characters (max 160 chars total)
+  * Cover Image Description (coverAlt): matches title exactly
+- Title and seoTitle: MUST BE STRICTLY BETWEEN 55 AND 60 CHARACTERS IN TOTAL LENGTH.
+- Total Word Count: STRICTLY 1,050 to 1,150 words.`;
 
   const aiClients = getAiClients();
   const modelsToTry = [
@@ -526,7 +546,8 @@ export function enforceArticleStandards(article, existingArticles = []) {
 
   const purgeBanned = (str) => {
     if (!str || typeof str !== 'string') return str;
-    let res = str;
+    // Protect publication name Architectural Digest by converting to Elle Decor
+    let res = str.replace(/Architectural\s+Digest/gi, 'Elle Decor');
     for (const item of BANNED_MAP) {
       res = res.replace(item.regex, item.replaceWith);
     }
@@ -536,15 +557,35 @@ export function enforceArticleStandards(article, existingArticles = []) {
   // 1. Strict title length: 55-60 characters, no banned words
   let title = purgeBanned(cleanEmDashes((article.title || '').replace(/-/g, ' ').replace(/\s+/g, ' ').trim()));
   if (title.length < 55) {
-    const padSuffixes = ['Modern Design Guide', 'Interior Decor Guide', 'Design Ideas and Plans', 'Spatial Layout Guide'];
+    const padSuffixes = [
+      ': Master Guide',
+      ': Complete Guide',
+      ': Editorial Guide',
+      ' for Luxury Homes',
+      ': Designer Guide',
+      ' for Modern Homes',
+      ': Master Plan',
+      ': Design Guide'
+    ];
+    let padded = false;
     for (const s of padSuffixes) {
-      if (!title.includes(s) && (title + ': ' + s).length <= 60 && (title + ': ' + s).length >= 55) {
-        title = title + ': ' + s;
+      if (!title.includes(s) && (title + s).length <= 60 && (title + s).length >= 55) {
+        title = title + s;
+        padded = true;
         break;
       }
     }
-    while (title.length < 55) {
-      title = title + ' Ideas';
+    if (!padded) {
+      const padWords = ['Master', 'Design', 'Guide', 'Blueprint', 'Manual', 'Plan'];
+      for (const w of padWords) {
+        if (!title.includes(w) && (title + ' ' + w).length <= 60) {
+          title = title + ' ' + w;
+        }
+        if (title.length >= 55) break;
+      }
+      while (title.length < 55) {
+        title = title + ' Plan';
+      }
     }
     if (title.length > 60) {
       title = title.slice(0, 60);
@@ -640,7 +681,22 @@ export function enforceArticleStandards(article, existingArticles = []) {
   }
   article.seoDescription = seoDescription;
 
-  // 6. Ensure Editorial Table is present
+  // 6A. Ensure Lead Paragraph class is applied to first <p>
+  if (!article.content.includes('class="lead-paragraph"')) {
+    article.content = article.content.replace(/<p>/i, '<p class="lead-paragraph">');
+  }
+
+  // 6B. Ensure Editorial Quote Block is present
+  if (!article.content.includes('editorial-quote')) {
+    const quoteHtml = `\n<div class="editorial-quote">\n  <blockquote>A successful master plan balances tactile material layers with calm room proportions and soft ambient lighting.</blockquote>\n  <cite>Elena Vance, Senior Interior Editor</cite>\n</div>\n`;
+    const pMatches = [...article.content.matchAll(/<\/p>/g)];
+    if (pMatches.length >= 4) {
+      const insertAt = pMatches[3].index;
+      article.content = article.content.slice(0, insertAt) + quoteHtml + article.content.slice(insertAt);
+    }
+  }
+
+  // 6C. Ensure Editorial Table is present
   const hasTable = article.content.includes('<table') && article.content.includes('editorial-table') && article.content.includes('table-container');
   if (!hasTable) {
     const tableHtml = `\n<div class="table-container">\n  <table class="editorial-table">\n    <thead>\n      <tr>\n        <th>Design Element</th>\n        <th>Recommended Specification</th>\n        <th>Practical Application</th>\n      </tr>\n    </thead>\n    <tbody>\n      <tr>\n        <td><strong>Clearance Spacing</strong></td>\n        <td>36 inches clear perimeter</td>\n        <td>Maintain comfortable walking paths around all furniture.</td>\n      </tr>\n      <tr>\n        <td><strong>Surface Material</strong></td>\n        <td>Satin or low-sheen finish</td>\n        <td>Provides durable protection with easy maintenance.</td>\n      </tr>\n      <tr>\n        <td><strong>Lighting Warmth</strong></td>\n        <td>2700K to 3000K warm LED</td>\n        <td>Accentuates natural tones without glare.</td>\n      </tr>\n      <tr>\n        <td><strong>Room Proportion</strong></td>\n        <td>60-30-10 distribution rule</td>\n        <td>Balances dominant tones with secondary accents.</td>\n      </tr>\n    </tbody>\n  </table>\n</div>\n`;
@@ -658,15 +714,50 @@ export function enforceArticleStandards(article, existingArticles = []) {
     }
   }
 
+  // 6D. Ensure FAQ Accordion wrappers are applied
+  if (article.content.includes('frequently asked') || article.content.includes('faq')) {
+    if (!article.content.includes('faq-accordion')) {
+      article.content = article.content.replace(/(<h2[^>]*>(?:[^<]*frequently\s+asked[^<]*|[^<]*faq[^<]*)<\/h2>)([\s\S]*?)(?=<h2|$)/i, (match, h2, body) => {
+        let items = '';
+        const itemRegex = /<h3>([\s\S]*?)<\/h3>\s*<p>([\s\S]*?)<\/p>/gi;
+        let m;
+        while ((m = itemRegex.exec(body)) !== null) {
+          let ans = m[2].trim();
+          if (!ans.startsWith('<strong>')) {
+            const firstDot = ans.indexOf('.');
+            if (firstDot !== -1 && firstDot < 120) {
+              ans = `<strong>${ans.slice(0, firstDot + 1)}</strong> ${ans.slice(firstDot + 1).trim()}`;
+            }
+          }
+          items += `  <div class="faq-item">\n    <h3>${m[1].trim()}</h3>\n    <p>${ans}</p>\n  </div>\n`;
+        }
+        if (items) {
+          return `${h2}\n<div class="faq-accordion">\n${items}</div>\n`;
+        }
+        return match;
+      });
+    }
+  }
+
+  // 6E. Ensure Final Section is an Actionable Checklist
+  const allH2Matches = [...article.content.matchAll(/<h2([^>]*)>([\s\S]*?)<\/h2>/gi)];
+  const lastH2Match = allH2Matches[allH2Matches.length - 1];
+  if (lastH2Match && !lastH2Match[2].toLowerCase().includes('checklist')) {
+    const checklistId = `your-${article.slug}-checklist`;
+    const checklistHeading = `Your ${shortTitle} Checklist`;
+    const checklistHtml = `\n<h2 id="${checklistId}">${checklistHeading}</h2>\n<p>Executing a successful ${shortTitle.toLowerCase()} installation comes down to preparation and disciplined execution. Review walkway clearances, verify lighting warmths, and invest in resilient natural materials that provide lasting beauty across your home.</p>\n`;
+    article.content += checklistHtml;
+  }
+
   // 7. Ensure EXACTLY 1 External Link
   const extLinkMatches = [...article.content.matchAll(/<a\s+[^>]*href=["'](https?:\/\/[^"']+)["'][^>]*>([\s\S]*?)<\/a>/gi)];
   if (extLinkMatches.length === 0) {
     const domainPool = [
       { name: "Sleep Foundation", url: "https://www.sleepfoundation.org" },
-      { name: "Architectural Digest", url: "https://www.architecturaldigest.com" },
+      { name: "Elle Decor", url: "https://www.elledecor.com" },
       { name: "American Society of Interior Designers", url: "https://www.asid.org" },
       { name: "Consumer Reports", url: "https://www.consumerreports.org" },
-      { name: "Elle Decor", url: "https://www.elledecor.com" }
+      { name: "Dwell", url: "https://www.dwell.com" }
     ];
     const chosen = domainPool[existingArticles.length % domainPool.length];
     const pMatches = [...article.content.matchAll(/<\/p>/g)];
