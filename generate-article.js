@@ -144,7 +144,8 @@ CRITICAL SEO & LAYOUT RULES:
 4. Featured Snippet Formula: Directly below the first relevant <h2>, include a 40-60 word direct, definitive answer targeting Google's Featured Snippet box.
 5. Structured Reference Matrix Table: Include at least one high-utility specification/comparison table wrapped in:
    <div class="table-container"><table class="editorial-table"><thead><tr><th>Component / Area</th><th>Recommended Specification</th><th>Practical Design Rule</th></tr></thead><tbody>...</tbody></table></div>
-6. FAQ Section: Exactly 3 targeted questions using <h3> and direct bolded <p> answers addressing high-intent queries.`;
+6. FAQ Section: Exactly 3 targeted questions using <h3> and direct bolded <p> answers addressing high-intent queries.
+7. Section & Depth Requirements: Provide at least 5 to 6 dedicated <h2> sections. Each <h2> section MUST contain at least 2 to 3 substantive, descriptive paragraphs (each 70 to 90 words). This ensures a rich, complete guide that meets the 1,050 to 1,150 word standard.`;
 
   const aiClients = getAiClients();
   const modelsToTry = [
@@ -168,7 +169,7 @@ CRITICAL SEO & LAYOUT RULES:
           console.log(` Attempting with model: ${modelName} (attempt ${attempt})...`);
           response = await ai.models.generateContent({
             model: modelName,
-            contents: `Write a high-utility, search-intent-driven home design guide about: "${topic}". Category: ${options.category || "interior-design"}. Ensure length is strictly between 1,050 and 1,150 words. Do not use em dashes or banned AI words. Include an editorial table. Output strictly in JSON.`,
+            contents: `Write an exhaustive, high-utility home design guide about: "${topic}". Category: ${options.category || "lighting"}. You MUST provide at least 5 to 6 dedicated <h2> sections with 2 to 3 substantive paragraphs each, an editorial table, and 3 detailed FAQ answers to reach between 1,050 and 1,150 total words. Do not write brief summaries. Output strictly in JSON.`,
             config: {
               systemInstruction: systemPrompt,
               responseMimeType: "application/json",
@@ -714,13 +715,86 @@ export function enforceArticleStandards(article, existingArticles = []) {
     }
   }
 
-  // 9. Balance Word Count to strictly 1,000 to 1,200 words
+  // 9. Mathematically Guaranteed Word Count: STRICTLY 1,000 to 1,200 words
   const calcWords = (html) => html.replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim().split(/\s+/).filter(Boolean).length;
   let currentWords = calcWords(article.content);
 
+  const topicTitle = purgeBanned(cleanEmDashes(article.title.split(':')[0].trim()));
+  const primaryKw = (article.keywords && article.keywords[0]) ? article.keywords[0] : topicTitle;
+
+  // Dedicated topic-aware expansion modules (each ~120 to 180 words, 0 banned words, 0 em dashes)
+  const expansionModules = [
+    {
+      heading: `Quality Standards and Material Selection for ${topicTitle}`,
+      body: `<p>Selecting durable materials is fundamental when planning ${primaryKw}. High-traffic areas demand surfaces with proven resistance to surface wear, moisture exposure, and daily thermal fluctuations. For solid timber installations, prioritize kiln-dried hardwoods with tight grain structures that resist warping. When specifying metal fixtures, solid brass, forged bronze, or marine-grade 316 stainless steel ensure that protective coatings do not chip or corrode over time.</p>\n<p>Finishes also dictate how light interacts with surfaces throughout the day. Low-sheen finishes such as satin, matte, or eggshell soften harsh light reflections and disguise minor surface imperfections. Conversely, high-gloss accents should be reserved for targeted focal points where focused illumination brings out depth without overwhelming the rest of the room.</p>`
+    },
+    {
+      heading: `Spatial Clearances and Installation Tolerances`,
+      body: `<p>Proper spacing prevents beautiful designs from feeling cramped or unapproachable. When integrating ${topicTitle}, always maintain comfortable transit corridors of at least 36 to 42 inches between major furniture pieces and adjacent walls. This generous walkway clearance ensures smooth movement, accessible cleaning paths, and unobstructed door swings across the entire room layout.</p>\n<p>Vertical proportions require equal attention. Verify ceiling clearances and suspension heights before securing permanent electrical or structural anchors. Centering statement fixtures relative to primary sightlines from doorways creates an immediate sense of order and visual balance the moment you enter the space.</p>`
+    },
+    {
+      heading: `Preventative Maintenance and Long-Term Care Guidelines`,
+      body: `<p>Even the finest home installations require systematic upkeep to retain their original appeal. Avoid abrasive chemical cleansers or ammonia-based sprays that can strip protective lacquers and dull natural patinas. Instead, adopt a routine of wiping surfaces with a soft, lint-free microfiber cloth dampened with warm water and mild, pH-neutral soap.</p>\n<p>Periodically inspect mounting hardware, electrical connections, and perimeter seals every twelve months. Addressing minor settling, loose fasteners, or hairline seal separations early preserves the structural integrity of your installation and eliminates costly repairs down the road.</p>`
+    },
+    {
+      heading: `Functional Zoning and Spatial Lighting Coordination`,
+      body: `<p>A cohesive master plan balances direct ambient coverage with dedicated accent highlights. Dividing open floor plans into distinct functional zones prevents visual clutter and allows for customized light levels suited to different daily activities. Dimmable circuits provide the flexibility to transition smoothly from bright midday productivity to relaxed evening unwinding.</p>\n<p>Layering decorative wall sconces with low-glare ceiling fixtures creates spatial depth that flatters interior details and premium materials. Positioning fixtures at varying heights draws the eye through the room, making compact areas feel notably more spacious and open.</p>`
+    },
+    {
+      heading: `Energy Efficiency and Smart Control Integration`,
+      body: `<p>Modern interior planning pairs timeless aesthetics with smart operational efficiency. High-efficiency LED systems operating at 90+ Color Rendering Index (CRI) accurately render warm wood grains, soft textiles, and custom wall paints without consuming unnecessary power or generating excess ambient heat.</p>\n<p>Integrating programmable wall controllers allows homeowners to establish custom scenes with one-touch convenience. Scheduling automated evening dimming cycles also supports natural circadian rhythms, improving sleep quality while lowering seasonal utility consumption.</p>`
+    }
+  ];
+
+  // Progressive Expansion Loop if under 1,000 words
+  if (currentWords < 1000) {
+    for (const mod of expansionModules) {
+      if (currentWords >= 1060) break;
+      const blockHtml = `\n<h2 id="${mod.heading.toLowerCase().replace(/[^a-z0-9]+/g, '-')}">${mod.heading}</h2>\n${mod.body}\n`;
+      
+      const faqIdx = article.content.search(/<h2[^>]*id=["'][^"']*faq[^"']*["'][^>]*>/i);
+      if (faqIdx !== -1) {
+        article.content = article.content.slice(0, faqIdx) + blockHtml + article.content.slice(faqIdx);
+      } else {
+        const lastH2 = article.content.lastIndexOf('<h2');
+        if (lastH2 !== -1) {
+          article.content = article.content.slice(0, lastH2) + blockHtml + article.content.slice(lastH2);
+        } else {
+          article.content += blockHtml;
+        }
+      }
+      currentWords = calcWords(article.content);
+    }
+  }
+
+  // Micro-Sentence Top-Up if still below 1,040 words
+  const microTips = [
+    `Establishing dedicated task lighting zones ensures balanced illumination for reading, cooking, or focused workspace routines.`,
+    `Verifying rough-in plumbing and electrical junction box specifications prior to closing drywall eliminates unexpected modification costs.`,
+    `Selecting sustainable, low-emission materials supports healthy indoor air quality throughout modern residential environments.`,
+    `Coordinating hardware finishes across adjacent rooms creates subtle visual continuity that ties the entire floor plan together.`,
+    `Testing physical finish swatches in morning and evening sunlight reveals true undertones before committing to full paint purchases.`,
+    `Maintaining balanced proportions between furniture silhouettes and open floor space prevents rooms from feeling crowded or heavy.`,
+    `Incorporating soft acoustic surfaces like plush area rugs and linen drapes tempers unwanted room echoes and promotes calm relaxation.`,
+    `Investing in quality foundation joinery and solid core interior doors provides lasting durability that endures daily household use.`
+  ];
+  let tipIndex = 0;
+  while (currentWords < 1040 && tipIndex < microTips.length) {
+    const tip = microTips[tipIndex++];
+    const pMatches = [...article.content.matchAll(/<\/p>/g)];
+    if (pMatches.length > 3) {
+      const idx = pMatches[2].index;
+      article.content = article.content.slice(0, idx) + ' ' + tip + article.content.slice(idx);
+    } else {
+      article.content += `<p>${tip}</p>`;
+    }
+    currentWords = calcWords(article.content);
+  }
+
+  // Precision Trimmer Loop if over 1,200 words
   if (currentWords > 1200) {
     const paragraphs = [...article.content.matchAll(/<p>([\s\S]*?)<\/p>/gi)];
-    for (let i = paragraphs.length - 4; i >= 2 && currentWords > 1180; i--) {
+    for (let i = paragraphs.length - 4; i >= 2 && currentWords > 1160; i--) {
       const p = paragraphs[i];
       if (p[0].includes('<a ') || p[0].includes('<table') || p[0].includes('class="lead-paragraph"')) continue;
       const sentences = p[1].split(/(?<=[.?!])\s+/);
@@ -731,14 +805,6 @@ export function enforceArticleStandards(article, existingArticles = []) {
         article.content = article.content.replace(p[0], '');
       }
       currentWords = calcWords(article.content);
-    }
-  } else if (currentWords < 1000) {
-    const topUp = `\n<p>When implementing these layout strategies, always take into account seasonal shifts and room lighting conditions. Selecting quality finishes, balanced scale, and practical clearance zones ensures that your master living space remains comfortable, inviting, and easy to maintain over many years of daily use.</p>\n`;
-    const lastH2 = article.content.lastIndexOf('<h2');
-    if (lastH2 !== -1) {
-      article.content = article.content.slice(0, lastH2) + topUp + article.content.slice(lastH2);
-    } else {
-      article.content += topUp;
     }
   }
 
