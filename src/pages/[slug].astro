@@ -239,33 +239,35 @@ const articleContent = article.content.replace(/<div class=['"]spec-card['"][\s\
         )}
 
         <!-- More in Category Widget -->
-        <div class="sidebar-widget">
-          <div class="widget-header">
-            <span class="widget-title">More in {category.name}</span>
+        {sidebarArticles.length > 0 && (
+          <div class="sidebar-widget">
+            <div class="widget-header">
+              <span class="widget-title">More in {category.name}</span>
+            </div>
+            <div class="sidebar-articles-list">
+              {sidebarArticles.map(art => (
+                <a href={`/${art.slug}/`} class="sidebar-card-link">
+                  <div class="sidebar-card-img-wrap">
+                    <img
+                      src={art.coverImage}
+                      alt={art.title}
+                      width="90"
+                      height="60"
+                      loading="lazy"
+                      class="sidebar-card-img"
+                      crossorigin="anonymous"
+                      referrerpolicy="no-referrer-when-downgrade"
+                    />
+                  </div>
+                  <div class="sidebar-card-text">
+                    <h4 class="sidebar-card-title">{art.title}</h4>
+                    <span class="sidebar-card-time">{art.readTime}</span>
+                  </div>
+                </a>
+              ))}
+            </div>
           </div>
-          <div class="sidebar-articles-list">
-            {sidebarArticles.map(art => (
-              <a href={`/${art.slug}/`} class="sidebar-card-link">
-                <div class="sidebar-card-img-wrap">
-                  <img
-                    src={art.coverImage}
-                    alt={art.title}
-                    width="90"
-                    height="60"
-                    loading="lazy"
-                    class="sidebar-card-img"
-                    crossorigin="anonymous"
-                    referrerpolicy="no-referrer-when-downgrade"
-                  />
-                </div>
-                <div class="sidebar-card-text">
-                  <h4 class="sidebar-card-title">{art.title}</h4>
-                  <span class="sidebar-card-time">{art.readTime}</span>
-                </div>
-              </a>
-            ))}
-          </div>
-        </div>
+        )}
 
         <!-- Mini Newsletter Widget -->
         <div class="sidebar-widget nl-widget">

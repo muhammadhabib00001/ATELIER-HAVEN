@@ -36,7 +36,7 @@ const categories = siteData.categories;
   {heroArticle && (
     <section class="hero-section">
       <div class="container">
-        <div class="hero-layout">
+        <div class={`hero-layout ${heroStack.length === 0 ? 'hero-single' : ''}`}>
           <!-- Left: large hero card -->
           <div class="hero-main">
             <a href={`/${heroArticle.slug}/`} class="hero-image-link">
@@ -68,22 +68,24 @@ const categories = siteData.categories;
           </div>
 
           <!-- Right: stacked articles -->
-          <aside class="hero-stack">
-            <div class="hero-stack-header">
-              <span class="stack-label">Latest</span>
-            </div>
-            {heroStack.map(art => (
-              <div class="stack-item">
-                <a href={`/category/${art.category}/`} class="stack-cat">
-                  {siteData.categories.find(c => c.slug === art.category)?.name || art.category}
-                </a>
-                <h3 class="stack-title">
-                  <a href={`/${art.slug}/`}>{art.title}</a>
-                </h3>
-                <span class="stack-time">{art.readTime}</span>
+          {heroStack.length > 0 && (
+            <aside class="hero-stack">
+              <div class="hero-stack-header">
+                <span class="stack-label">Latest</span>
               </div>
-            ))}
-          </aside>
+              {heroStack.map(art => (
+                <div class="stack-item">
+                  <a href={`/category/${art.category}/`} class="stack-cat">
+                    {siteData.categories.find(c => c.slug === art.category)?.name || art.category}
+                  </a>
+                  <h3 class="stack-title">
+                    <a href={`/${art.slug}/`}>{art.title}</a>
+                  </h3>
+                  <span class="stack-time">{art.readTime}</span>
+                </div>
+              ))}
+            </aside>
+          )}
         </div>
       </div>
     </section>
@@ -235,6 +237,12 @@ const categories = siteData.categories;
     grid-template-columns: 1fr 300px;
     gap: 1.5rem;
     align-items: start;
+  }
+
+  .hero-layout.hero-single {
+    grid-template-columns: 1fr;
+    max-width: 1000px;
+    margin: 0 auto;
   }
 
   /* Hero main image card */
