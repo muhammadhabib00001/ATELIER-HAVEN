@@ -6,109 +6,96 @@ const categories = siteData.categories;
 ---
 
 <footer class="site-footer">
-  <div class="container footer-grid">
-    <!-- Brand / Mission -->
-    <div class="footer-col brand-col">
-      <div class="footer-brand-wrap">
-        <svg class="footer-emblem-svg" viewBox="0 0 44 46" width="28" height="29" fill="none" aria-hidden="true">
-          <defs>
-            <linearGradient id="ftGold" x1="0%" y1="0%" x2="100%" y2="100%">
-              <stop offset="0%" stop-color="#E2BA4B" />
-              <stop offset="50%" stop-color="#D4AF37" />
-              <stop offset="100%" stop-color="#8C6212" />
-            </linearGradient>
-            <linearGradient id="ftDark" x1="0%" y1="0%" x2="0%" y2="100%">
-              <stop offset="0%" stop-color="#2D2824" />
-              <stop offset="100%" stop-color="#141210" />
-            </linearGradient>
-          </defs>
-          <polygon points="22,3 41,16 41,40 3,40 3,16" fill="url(#ftDark)" stroke="url(#ftGold)" stroke-width="1.6" />
-          <path d="M12,40 L12,24 C12,18 16.5,13.5 22,13.5 C27.5,13.5 32,18 32,24 L32,40" fill="none" stroke="url(#ftGold)" stroke-width="2" />
-          <polygon points="22,9 35,40 29.5,40 22,23 14.5,40 9,40" fill="url(#ftGold)" fill-opacity="0.3" stroke="url(#ftGold)" stroke-width="1" />
-          <rect x="20" y="12" width="4" height="3.5" fill="url(#ftGold)" rx="0.5" />
-          <rect x="1" y="40" width="42" height="3" fill="url(#ftGold)" rx="0.5" />
-        </svg>
-        <span class="footer-logo">ATRIUM <span class="footer-logo-accent">LIVINGS</span></span>
+  <!-- Newsletter strip inside footer top -->
+  <div class="footer-newsletter-strip">
+    <div class="container footer-newsletter-inner">
+      <div class="footer-nl-text">
+        <strong>Get the latest home & design tips delivered to your inbox.</strong>
+        <span>Join over 65,000 readers.</span>
       </div>
-      <p class="footer-mission">
-        An authoritative informational resource and editorial guide dedicated to architectural design, interior planning, spatial dimensions, and home renovation.
-      </p>
-      <div class="footer-meta-badges">
-        <span class="badge-issn">Informational Architecture & Interior Design Guide</span>
-      </div>
-      <div class="footer-social">
-        <a href="https://twitter.com/atriumlivings" target="_blank" rel="noopener noreferrer" aria-label="Twitter">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
-            <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
-          </svg>
-        </a>
-        <a href="https://pinterest.com/atriumlivings" target="_blank" rel="noopener noreferrer" aria-label="Pinterest">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
-            <path d="M12 0C5.373 0 0 5.372 0 12c0 5.084 3.163 9.426 7.627 11.174-.105-.949-.2-2.405.042-3.441.218-.937 1.407-5.965 1.407-5.965s-.359-.719-.359-1.782c0-1.668.967-2.914 2.171-2.914 1.023 0 1.518.769 1.518 1.69 0 1.029-.655 2.568-.994 3.995-.283 1.194.599 2.169 1.777 2.169 2.133 0 3.772-2.249 3.772-5.495 0-2.873-2.064-4.882-5.012-4.882-3.414 0-5.418 2.561-5.418 5.207 0 1.031.397 2.138.893 2.738.098.119.112.224.083.345-.09.375-.293 1.199-.334 1.366-.053.225-.177.268-.409.16-1.523-.71-2.474-2.936-2.474-4.726 0-3.85 2.798-7.39 8.067-7.39 4.236 0 7.529 3.018 7.529 7.054 0 4.21-2.654 7.6-6.337 7.6-1.238 0-2.402-.644-2.801-1.406l-.763 2.91c-.276 1.059-1.026 2.388-1.528 3.199C9.888 23.776 10.918 24 12 24c6.627 0 12-5.373 12-12 0-6.628-5.373-12-12-12z"/>
-          </svg>
-        </a>
-        <a href="https://instagram.com/atriumlivings" target="_blank" rel="noopener noreferrer" aria-label="Instagram">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
-            <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/>
-          </svg>
-        </a>
-      </div>
-    </div>
-
-    <!-- Categories Column 1: Interior Spaces -->
-    <div class="footer-col">
-      <span class="footer-col-heading">Living Spaces</span>
-      <ul class="footer-nav">
-        <li><a href="/category/kitchen/">Kitchen Design & Planning</a></li>
-        <li><a href="/category/bathroom/">Bathroom Layouts & Sanctuaries</a></li>
-        <li><a href="/category/living-room/">Living Room & Workspaces</a></li>
-        <li><a href="/category/bedroom/">Bedroom Design & Suites</a></li>
-        <li><a href="/category/home-decor/">Home Decor & Styling</a></li>
-        <li><a href="/category/small-spaces/">Small Space Architecture</a></li>
-      </ul>
-    </div>
-
-    <!-- Categories Column 2: Architecture & Craft -->
-    <div class="footer-col">
-      <span class="footer-col-heading">Architecture & Craft</span>
-      <ul class="footer-nav">
-        <li><a href="/category/furniture/">Furniture & Bespoke Joinery</a></li>
-        <li><a href="/category/lighting/">Architectural Lighting Design</a></li>
-        <li><a href="/category/renovation/">Renovation & Structural Planning</a></li>
-        <li><a href="/category/diy/">Artisanal DIY & Finishes</a></li>
-        <li><a href="/category/garden-outdoor/">Garden & Outdoor Living</a></li>
-        <li><a href="/category/design-trends/">Design Trends & Forecasts</a></li>
-      </ul>
-    </div>
-
-    <!-- Publication & Legal -->
-    <div class="footer-col">
-      <span class="footer-col-heading">Trust & Governance</span>
-      <ul class="footer-nav">
-        <li><a href="/about/">About Atrium Livings</a></li>
-        <li><a href="/about/#editorial-masthead">Editorial Masthead</a></li>
-        <li><a href="/author/elena-vance/">Elena Vance, AIA</a></li>
-        <li><a href="/author/marcus-reid/">Marcus Reid</a></li>
-        <li><a href="/author/charlotte-dupuis/">Charlotte Dupuis</a></li>
-        <li><a href="/editorial-policy/">Editorial Standards & Fact-Check</a></li>
-        <li><a href="/contact/">Pitch & Press Contact</a></li>
-        <li><a href="/privacy-policy/">Privacy Policy (GDPR / CCPA)</a></li>
-        <li><a href="/terms/">Terms of Service</a></li>
-        <li><a href="/cookie-policy/">Cookie Preferences</a></li>
-        <li><a href="/disclaimer/">Advertising & FTC Disclosures</a></li>
-      </ul>
+      <form class="footer-nl-form" onsubmit="event.preventDefault(); alert('Thank you for subscribing!');">
+        <input type="email" placeholder="Enter your email" required aria-label="Email for newsletter" class="footer-nl-input" />
+        <button type="submit" class="footer-nl-btn">Subscribe</button>
+      </form>
     </div>
   </div>
 
-  <!-- Bottom legal bar -->
-  <div class="footer-bottom">
-    <div class="container footer-bottom-flex">
-      <div class="footer-copy">
-        &copy; {currentYear} Atrium Livings Media Group, Inc. All rights reserved. Registered architectural publication.
+  <!-- Main footer grid -->
+  <div class="footer-main">
+    <div class="container footer-grid">
+      <!-- Brand column -->
+      <div class="footer-col brand-col">
+        <a href="/" class="footer-logo-link">
+          <span class="footer-logo-text">ATRIUM<span class="footer-logo-accent"> LIVINGS</span></span>
+        </a>
+        <p class="footer-about">
+          An expert informational guide covering home design, interior planning, architecture, and renovation. Published by Atrium Livings Media Group.
+        </p>
+        <div class="footer-social-row">
+          <a href="https://twitter.com/atriumlivings" target="_blank" rel="noopener noreferrer" aria-label="Twitter" class="footer-social-link">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+          </a>
+          <a href="https://pinterest.com/atriumlivings" target="_blank" rel="noopener noreferrer" aria-label="Pinterest" class="footer-social-link">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.373 0 0 5.372 0 12c0 5.084 3.163 9.426 7.627 11.174-.105-.949-.2-2.405.042-3.441.218-.937 1.407-5.965 1.407-5.965s-.359-.719-.359-1.782c0-1.668.967-2.914 2.171-2.914 1.023 0 1.518.769 1.518 1.69 0 1.029-.655 2.568-.994 3.995-.283 1.194.599 2.169 1.777 2.169 2.133 0 3.772-2.249 3.772-5.495 0-2.873-2.064-4.882-5.012-4.882-3.414 0-5.418 2.561-5.418 5.207 0 1.031.397 2.138.893 2.738.098.119.112.224.083.345-.09.375-.293 1.199-.334 1.366-.053.225-.177.268-.409.16-1.523-.71-2.474-2.936-2.474-4.726 0-3.85 2.798-7.39 8.067-7.39 4.236 0 7.529 3.018 7.529 7.054 0 4.21-2.654 7.6-6.337 7.6-1.238 0-2.402-.644-2.801-1.406l-.763 2.91c-.276 1.059-1.026 2.388-1.528 3.199C9.888 23.776 10.918 24 12 24c6.627 0 12-5.373 12-12 0-6.628-5.373-12-12-12z"/></svg>
+          </a>
+          <a href="https://instagram.com/atriumlivings" target="_blank" rel="noopener noreferrer" aria-label="Instagram" class="footer-social-link">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
+          </a>
+        </div>
       </div>
-      <div class="footer-links-bottom">
-        <a href="/rss.xml" class="rss-link">RSS Feed</a>
-        <a href="/sitemap-index.xml" class="sitemap-link">Sitemap</a>
+
+      <!-- Living Spaces -->
+      <div class="footer-col">
+        <h3 class="footer-col-title">Living Spaces</h3>
+        <ul class="footer-nav-list">
+          <li><a href="/category/kitchen/">Kitchen Design</a></li>
+          <li><a href="/category/bathroom/">Bathroom & Sanctuaries</a></li>
+          <li><a href="/category/living-room/">Living Room</a></li>
+          <li><a href="/category/bedroom/">Bedroom Design</a></li>
+          <li><a href="/category/home-decor/">Home Decor</a></li>
+          <li><a href="/category/small-spaces/">Small Spaces</a></li>
+        </ul>
+      </div>
+
+      <!-- Architecture & Craft -->
+      <div class="footer-col">
+        <h3 class="footer-col-title">Design & Craft</h3>
+        <ul class="footer-nav-list">
+          <li><a href="/category/furniture/">Furniture</a></li>
+          <li><a href="/category/lighting/">Lighting Design</a></li>
+          <li><a href="/category/renovation/">Renovation</a></li>
+          <li><a href="/category/diy/">DIY Projects</a></li>
+          <li><a href="/category/garden-outdoor/">Garden & Outdoor</a></li>
+          <li><a href="/category/design-trends/">Design Trends</a></li>
+        </ul>
+      </div>
+
+      <!-- Trust & Legal -->
+      <div class="footer-col">
+        <h3 class="footer-col-title">About Us</h3>
+        <ul class="footer-nav-list">
+          <li><a href="/about/">About Atrium Livings</a></li>
+          <li><a href="/author/elena-vance/">Elena Vance, AIA</a></li>
+          <li><a href="/author/marcus-reid/">Marcus Reid</a></li>
+          <li><a href="/editorial-policy/">Editorial Standards</a></li>
+          <li><a href="/contact/">Contact Us</a></li>
+          <li><a href="/privacy-policy/">Privacy Policy</a></li>
+          <li><a href="/terms/">Terms of Service</a></li>
+          <li><a href="/disclaimer/">Disclosures</a></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- Bottom bar -->
+  <div class="footer-bottom-bar">
+    <div class="container footer-bottom-inner">
+      <span class="footer-copy">&copy; {currentYear} Atrium Livings Media Group, Inc. All rights reserved.</span>
+      <div class="footer-bottom-links">
+        <a href="/privacy-policy/">Privacy</a>
+        <a href="/cookie-policy/">Cookies</a>
+        <a href="/rss.xml">RSS</a>
+        <a href="/sitemap-index.xml">Sitemap</a>
       </div>
     </div>
   </div>
@@ -116,131 +103,196 @@ const categories = siteData.categories;
 
 <style>
   .site-footer {
-    background-color: var(--color-surface);
-    border-top: 1px solid var(--color-border);
-    margin-top: 5rem;
-    padding-top: 4rem;
+    margin-top: 4rem;
+    background-color: #1f2937;
+    color: #d1d5db;
+  }
+
+  /* Newsletter strip */
+  .footer-newsletter-strip {
+    background-color: var(--color-accent);
+    padding: 1.5rem 0;
+  }
+
+  .footer-newsletter-inner {
+    display: flex;
+    align-items: center;
+    gap: 2rem;
+    flex-wrap: wrap;
+  }
+
+  .footer-nl-text {
+    flex: 1;
+    min-width: 200px;
+    color: #ffffff;
+    font-size: 0.9375rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.15rem;
+  }
+
+  .footer-nl-text strong {
+    font-weight: 700;
+  }
+
+  .footer-nl-text span {
+    font-size: 0.8125rem;
+    opacity: 0.88;
+  }
+
+  .footer-nl-form {
+    display: flex;
+    gap: 0.5rem;
+    flex-shrink: 0;
+  }
+
+  .footer-nl-input {
+    padding: 0.6rem 1rem;
+    font-size: 0.875rem;
+    border: none;
+    border-radius: 3px;
+    min-width: 220px;
+    background: #fff;
+    color: #1a1a1a;
+    outline: none;
+  }
+
+  .footer-nl-btn {
+    padding: 0.6rem 1.25rem;
+    font-size: 0.875rem;
+    font-weight: 700;
+    background-color: #1a1a1a;
+    color: #ffffff;
+    border: none;
+    border-radius: 3px;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: background-color 0.15s ease;
+  }
+
+  .footer-nl-btn:hover {
+    background-color: #000000;
+  }
+
+  /* Main footer */
+  .footer-main {
+    padding: 3.5rem 0 2.5rem;
   }
 
   .footer-grid {
     display: grid;
-    grid-template-columns: 2fr 1.2fr 1.2fr 1.4fr;
-    gap: 3rem;
-    padding-bottom: 3.5rem;
+    grid-template-columns: 1.6fr 1fr 1fr 1fr;
+    gap: 2.5rem;
   }
 
-  .footer-brand-wrap {
-    display: flex;
-    align-items: center;
-    gap: 0.85rem;
+  /* Brand column */
+  .footer-logo-link {
+    display: inline-block;
     margin-bottom: 1rem;
+    text-decoration: none;
   }
 
-  .footer-emblem-svg {
-    flex-shrink: 0;
-  }
-
-  .footer-logo {
-    font-family: var(--font-brand);
-    font-size: 1.4rem;
+  .footer-logo-text {
+    font-size: 1.25rem;
     font-weight: 700;
-    letter-spacing: 0.2em;
-    color: var(--color-text-main);
-    display: block;
+    letter-spacing: 0.14em;
+    color: #ffffff;
   }
 
   .footer-logo-accent {
-    font-weight: 500;
-    color: #9E6B28;
-    letter-spacing: 0.18em;
+    color: #86efac;
+    font-weight: 400;
   }
 
-  .footer-mission {
-    font-size: 0.875rem;
-    color: var(--color-text-muted);
-    line-height: 1.6;
+  .footer-about {
+    font-size: 0.8125rem;
+    color: #9ca3af;
+    line-height: 1.65;
     margin-bottom: 1.25rem;
-    max-width: 320px;
+    max-width: 280px;
   }
 
-  .badge-issn {
-    display: inline-block;
-    font-size: 0.6875rem;
-    font-weight: 600;
-    letter-spacing: 0.08em;
-    color: var(--color-text-light);
-    text-transform: uppercase;
-    margin-bottom: 1.25rem;
-  }
-
-  .footer-social {
+  .footer-social-row {
     display: flex;
-    gap: 1rem;
-    color: var(--color-text-muted);
+    gap: 0.75rem;
   }
 
-  .footer-social a:hover {
-    color: var(--color-accent);
+  .footer-social-link {
+    color: #9ca3af;
+    display: flex;
+    align-items: center;
+    transition: color 0.15s ease;
   }
 
-  .footer-col-heading {
-    display: block;
+  .footer-social-link:hover {
+    color: #ffffff;
+  }
+
+  /* Link columns */
+  .footer-col-title {
     font-size: 0.75rem;
     font-weight: 700;
     text-transform: uppercase;
-    letter-spacing: 0.12em;
-    color: var(--color-text-main);
+    letter-spacing: 0.1em;
+    color: #ffffff;
     margin-bottom: 1.25rem;
   }
 
-  .footer-nav {
+  .footer-nav-list {
     list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
   }
 
-  .footer-nav li {
-    margin-bottom: 0.65rem;
-  }
-
-  .footer-nav a {
+  .footer-nav-list a {
     font-size: 0.8125rem;
-    color: var(--color-text-muted);
+    color: #9ca3af;
+    text-decoration: none;
+    transition: color 0.15s ease;
   }
 
-  .footer-nav a:hover {
-    color: var(--color-accent);
+  .footer-nav-list a:hover {
+    color: #ffffff;
   }
 
-  .footer-bottom {
-    background-color: var(--color-surface-subtle);
-    border-top: 1px solid var(--color-border);
-    padding: 1.25rem 0;
-    font-size: 0.75rem;
-    color: var(--color-text-light);
+  /* Bottom bar */
+  .footer-bottom-bar {
+    border-top: 1px solid #374151;
+    padding: 1.1rem 0;
+    background-color: #111827;
   }
 
-  .footer-bottom-flex {
+  .footer-bottom-inner {
     display: flex;
     justify-content: space-between;
     align-items: center;
     flex-wrap: wrap;
-    gap: 1rem;
+    gap: 0.75rem;
   }
 
-  .footer-links-bottom {
+  .footer-copy {
+    font-size: 0.75rem;
+    color: #6b7280;
+  }
+
+  .footer-bottom-links {
     display: flex;
-    align-items: center;
     gap: 1.25rem;
   }
 
-.rss-link, .sitemap-link {
-    color: var(--color-text-muted);
+  .footer-bottom-links a {
+    font-size: 0.75rem;
+    color: #6b7280;
+    text-decoration: none;
+    transition: color 0.15s ease;
   }
 
-  .rss-link:hover, .sitemap-link:hover {
-    color: var(--color-accent);
+  .footer-bottom-links a:hover {
+    color: #d1d5db;
   }
 
-  @media (max-width: 992px) {
+  @media (max-width: 960px) {
     .footer-grid {
       grid-template-columns: 1fr 1fr;
       gap: 2rem;
@@ -248,9 +300,37 @@ const categories = siteData.categories;
     .brand-col {
       grid-column: span 2;
     }
+    .footer-about {
+      max-width: 100%;
+    }
   }
 
-  @media (max-width: 600px) {
+  @media (max-width: 640px) {
+    .footer-newsletter-inner {
+      flex-direction: column;
+      gap: 1rem;
+      align-items: flex-start;
+    }
+    .footer-nl-form {
+      width: 100%;
+    }
+    .footer-nl-input {
+      min-width: 0;
+      flex: 1;
+    }
+    .footer-grid {
+      grid-template-columns: 1fr 1fr;
+    }
+    .brand-col {
+      grid-column: span 2;
+    }
+    .footer-bottom-inner {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+  }
+
+  @media (max-width: 400px) {
     .footer-grid {
       grid-template-columns: 1fr;
     }

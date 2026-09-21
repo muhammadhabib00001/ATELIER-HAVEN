@@ -5,147 +5,113 @@ import Newsletter from '../components/Newsletter.astro';
 import siteData from '../data/site.json';
 import articles from '../data/articles.json';
 
-// Strict Homepage Deduplication Set: No article repeats anywhere on the page
-const usedSlugs = new Set();
+// Strict deduplication
+const usedSlugs = new Set<string>();
 
-// 1. Lead Cover Hero Article
+// Hero article
 const heroArticle = articles.find(a => a.featured) || articles[0] || null;
-if (heroArticle) {
-  usedSlugs.add(heroArticle.slug);
-}
+if (heroArticle) usedSlugs.add(heroArticle.slug);
 
-// 2. Two Hero Secondary Latest Articles to eliminate hero gaps
-const heroSecondary = articles
-  .filter(a => !usedSlugs.has(a.slug))
-  .slice(0, 2);
-heroSecondary.forEach(a => usedSlugs.add(a.slug));
+// Hero right-column stack (3 articles)
+const heroStack = articles.filter(a => !usedSlugs.has(a.slug)).slice(0, 3);
+heroStack.forEach(a => usedSlugs.add(a.slug));
 
-// 3. Trending Dispatch Articles (Hero Sidebar)
-// Prioritize trending articles, then fallback to other published articles so the sidebar is never empty
-const trendingArticles = [];
-const trendingCandidates = articles.filter(a => a.trending && a.slug !== heroArticle?.slug);
-trendingArticles.push(...trendingCandidates.slice(0, 4));
+// Featured row (3 cards)
+const featuredRow = articles.filter(a => !usedSlugs.has(a.slug)).slice(0, 3);
+featuredRow.forEach(a => usedSlugs.add(a.slug));
 
-if (trendingArticles.length < 4 && articles.length > 0) {
-  const extra = articles
-    .filter(a => a.slug !== heroArticle?.slug && !trendingArticles.some(t => t.slug === a.slug))
-    .slice(0, 4 - trendingArticles.length);
-  trendingArticles.push(...extra);
-}
-
-// If there are still fewer articles than desired (e.g. only 1-3 total published), fill with available articles
-if (trendingArticles.length === 0 && articles.length > 0) {
-  trendingArticles.push(...articles.slice(0, 4));
-}
-
-// 4. Editor's Essential Reads (3 Curated Cards)
-const subFeatured = articles
-  .filter(a => !usedSlugs.has(a.slug))
-  .slice(0, 3);
-subFeatured.forEach(a => usedSlugs.add(a.slug));
-
-// 5. Latest Published Architecture & Spaces (Remaining Chronological Articles)
-const latestRemaining = articles
-  .filter(a => !usedSlugs.has(a.slug));
+// Latest grid (remaining)
+const latestArticles = articles.filter(a => !usedSlugs.has(a.slug));
 
 const categories = siteData.categories;
-const authors = siteData.authors;
 ---
 
 <BaseLayout
-  title="Atrium Livings | Architecture & Spatial Design Guide"
-  description="Comprehensive informational resource for modern architecture, residential interior planning, material tolerances, and spatial design guides."
+  title="Atrium Livings | Architecture & Home Design Guide"
+  description="Expert home design advice covering architecture, interior planning, kitchen, bathroom, renovation, and outdoor living. Practical guides from certified architects."
   jsonLdType="website"
 >
-  <!-- Editorial Lead Hero Section -->
-  <section class="hero-section">
-    <div class="container">
-      <div class="hero-header-label">
-        <h1 class="edition-tag">Architecture & Interior Design Information Guide</h1>
-      </div>
 
-      {heroArticle ? (
-        <div class="hero-grid">
-          <div class="hero-primary">
-            <ArticleCard article={heroArticle} variant="hero" priority={true} />
-
-            <!-- Two Latest Supporting Articles to fill all gaps -->
-            {heroSecondary.length > 0 && (
-              <div class="hero-secondary-grid">
-                {heroSecondary.map(art => (
-                  <ArticleCard article={art} variant="standard" />
-                ))}
+  <!-- Top Hero Section -->
+  {heroArticle && (
+    <section class="hero-section">
+      <div class="container">
+        <div class="hero-layout">
+          <!-- Left: large hero card -->
+          <div class="hero-main">
+            <a href={`/${heroArticle.slug}/`} class="hero-image-link">
+              <div class="hero-image-wrap">
+                <img
+                  src={heroArticle.coverImage}
+                  alt={heroArticle.coverAlt || heroArticle.title}
+                  loading="eager"
+                  fetchpriority="high"
+                  width="1200"
+                  height="800"
+                  class="hero-img"
+                  crossorigin="anonymous"
+                  referrerpolicy="no-referrer-when-downgrade"
+                />
+                <div class="hero-image-overlay"></div>
+                <div class="hero-image-content">
+                  <a href={`/category/${heroArticle.category}/`} class="hero-category-badge">
+                    {siteData.categories.find(c => c.slug === heroArticle.category)?.name || heroArticle.category}
+                  </a>
+                  <h1 class="hero-title">
+                    <a href={`/${heroArticle.slug}/`}>{heroArticle.title}</a>
+                  </h1>
+                  <p class="hero-excerpt">{heroArticle.subtitle}</p>
+                  <span class="hero-readtime">{heroArticle.readTime}</span>
+                </div>
               </div>
-            )}
+            </a>
           </div>
 
-          <aside class="hero-sidebar">
-            <div class="sidebar-header">
-              <h2 class="sidebar-title">Trending Dispatch</h2>
-              <span class="trending-pulse"></span>
+          <!-- Right: stacked articles -->
+          <aside class="hero-stack">
+            <div class="hero-stack-header">
+              <span class="stack-label">Latest</span>
             </div>
-            <div class="trending-list">
-              {trendingArticles.map((art, index) => (
-                <div class="trending-compact-item">
-                  <span class="trending-num">{String(index + 1).padStart(2, '0')}</span>
-                  <div class="trending-compact-content">
-                    <a href={`/category/${art.category}`} class="trending-cat">{art.category}</a>
-                    <h3 class="trending-compact-title">
-                      <a href={`/${art.slug}`}>{art.title}</a>
-                    </h3>
-                    <span class="trending-time">{art.readTime}</span>
-                  </div>
-                </div>
-              ))}
-            </div>
+            {heroStack.map(art => (
+              <div class="stack-item">
+                <a href={`/category/${art.category}/`} class="stack-cat">
+                  {siteData.categories.find(c => c.slug === art.category)?.name || art.category}
+                </a>
+                <h3 class="stack-title">
+                  <a href={`/${art.slug}/`}>{art.title}</a>
+                </h3>
+                <span class="stack-time">{art.readTime}</span>
+              </div>
+            ))}
           </aside>
         </div>
-      ) : (
-        <div class="empty-magazine-notice">
-          <h2>Upcoming Architectural Edition</h2>
-          <p>Our editorial board is preparing upcoming technical monographs, spatial layouts, and luxury material guides. New articles are being published shortly.</p>
-        </div>
-      )}
-    </div>
-  </section>
-
-  <!-- Curated Category Carousel Bar -->
-  <section class="category-strip">
-    <div class="container">
-      <div class="strip-header">
-        <h2 class="strip-heading">Explore Architectural Spaces</h2>
-        <a href="/category/kitchen/" class="strip-all-link">Browse All 12 Categories &rarr;</a>
       </div>
-      <div class="category-pills">
+    </section>
+  )}
+
+  <!-- Category tab strip -->
+  <section class="category-tab-strip">
+    <div class="container">
+      <div class="cat-tabs-scroll">
         {categories.map(cat => (
-          <a href={`/category/${cat.slug}/`} class="cat-card-mini">
-            <div class="cat-mini-img-wrap">
-              <img src={cat.cover} alt={cat.name} loading="lazy" width="80" height="80" class="cat-mini-img" />
-            </div>
-            <div class="cat-mini-info">
-              <span class="cat-mini-name">{cat.name}</span>
-              <span class="cat-mini-sub">{cat.slug}</span>
-            </div>
+          <a href={`/category/${cat.slug}/`} class="cat-tab">
+            {cat.name}
           </a>
         ))}
       </div>
     </div>
   </section>
 
-  <!-- Editor's Curated Stories Grid (Only rendered if articles are allocated) -->
-  {subFeatured.length > 0 && (
-    <section class="editorial-picks-section">
+  <!-- Featured 3-column row -->
+  {featuredRow.length > 0 && (
+    <section class="featured-row-section">
       <div class="container">
-        <div class="section-title-bar">
-          <div>
-            <span class="section-kicker">Curated Curation</span>
-            <h2 class="section-title">Editor's Essential Reads</h2>
-          </div>
-          <div class="title-decor-line"></div>
+        <div class="section-bar">
+          <span class="section-bar-label">Editor's Picks</span>
+          <div class="section-bar-line"></div>
         </div>
-
-        <div class="editorial-grid">
-          {subFeatured.map(art => (
+        <div class="three-col-grid">
+          {featuredRow.map(art => (
             <ArticleCard article={art} variant="standard" />
           ))}
         </div>
@@ -153,461 +119,517 @@ const authors = siteData.authors;
     </section>
   )}
 
-  <!-- Dual Layout: Latest Stories + Curated Sidebar -->
-  {latestRemaining.length > 0 && (
-    <section class="latest-section">
-      <div class="container main-content-layout">
-        <!-- Main Column: Latest Articles -->
-        <div class="main-stream">
-          <div class="section-title-bar">
-            <div>
-              <span class="section-kicker">Chronological Folio</span>
-              <h2 class="section-title">Latest Published Architecture & Spaces</h2>
-            </div>
-            <div class="title-decor-line"></div>
+  <!-- Newsletter inline -->
+  <Newsletter />
+
+  <!-- Latest articles section -->
+  {latestArticles.length > 0 && (
+    <section class="latest-articles-section">
+      <div class="container latest-layout">
+
+        <!-- Main article stream -->
+        <div class="articles-stream">
+          <div class="section-bar">
+            <span class="section-bar-label">Latest Articles</span>
+            <div class="section-bar-line"></div>
           </div>
 
-          <div class="stream-grid">
-            {latestRemaining.map(art => (
-              <ArticleCard article={art} variant="standard" />
-            ))}
-          </div>
+          <!-- First article: horizontal layout -->
+          {latestArticles.slice(0, 1).map(art => (
+            <div class="stream-featured-item">
+              <ArticleCard article={art} variant="hero" />
+            </div>
+          ))}
+
+          <!-- Rest as 2-col grid -->
+          {latestArticles.slice(1).length > 0 && (
+            <div class="stream-two-col">
+              {latestArticles.slice(1).map(art => (
+                <ArticleCard article={art} variant="standard" />
+              ))}
+            </div>
+          )}
         </div>
 
-        <!-- Right Column: Sidebar -->
-        <aside class="content-sidebar">
-          <!-- Masthead Lead Spotlight -->
-          <div class="sidebar-card author-spotlight">
-            <span class="sidebar-card-kicker">Masthead Spotlight</span>
-            <div class="author-spotlight-inner">
-              <img src={authors[0].avatar} alt={authors[0].name} width="80" height="80" class="spotlight-avatar" />
-              <h3 class="spotlight-name">{authors[0].name}</h3>
-              <span class="spotlight-role">{authors[0].role}</span>
-              <p class="spotlight-bio">{authors[0].bio}</p>
-              <a href={`/author/${authors[0].slug}/`} class="spotlight-link">View Published Folio &rarr;</a>
+        <!-- Sidebar -->
+        <aside class="articles-sidebar">
+          <!-- Popular topics -->
+          <div class="sidebar-widget">
+            <div class="sidebar-widget-title">Popular Topics</div>
+            <div class="sidebar-topic-list">
+              {categories.slice(0, 8).map(cat => (
+                <a href={`/category/${cat.slug}/`} class="sidebar-topic-link">
+                  <span class="topic-name">{cat.name}</span>
+                  <span class="topic-arrow">›</span>
+                </a>
+              ))}
             </div>
           </div>
 
-          <!-- E-E-A-T Architectural Trust Guarantee -->
-          <div class="sidebar-card eeat-card">
-            <div class="eeat-badge-icon">
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
-              </svg>
-            </div>
-            <h3 class="eeat-title">Architect-Verified Standards</h3>
-            <p class="eeat-desc">
-              Every specification, clearance dimension, and structural renovation guide published in Atrium Livings is reviewed by certified architects and historic preservation specialists.
+          <!-- About widget -->
+          <div class="sidebar-widget about-widget">
+            <div class="sidebar-widget-title">About This Site</div>
+            <p class="sidebar-about-text">
+              Atrium Livings publishes expert home design and architecture guides reviewed by certified architects and interior design specialists.
             </p>
-            <a href="/editorial-policy/" class="eeat-link">Read our Editorial Policy & Fact-Checking &rarr;</a>
+            <a href="/about/" class="sidebar-about-link">Learn more about us →</a>
+          </div>
+
+          <!-- Trust widget -->
+          <div class="sidebar-widget trust-widget">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="trust-icon">
+              <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+            </svg>
+            <p class="trust-text">
+              Every article is reviewed by a licensed architect or certified design professional before publication.
+            </p>
+            <a href="/editorial-policy/" class="sidebar-about-link">Our editorial process →</a>
           </div>
         </aside>
+
       </div>
     </section>
   )}
 
-  <!-- Newsletter Section -->
-  <div class="container">
-    <Newsletter />
-  </div>
 </BaseLayout>
 
 <style>
+  /* ===== Hero Section ===== */
   .hero-section {
-    padding-top: 1.5rem;
-    padding-bottom: 3rem;
+    padding: 1.5rem 0 2.5rem;
   }
 
-  .hero-header-label {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    border-bottom: 1px solid var(--color-border);
-    padding-bottom: 0.75rem;
-    margin-bottom: 2rem;
-    font-size: 0.75rem;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 0.12em;
-  }
-
-  .edition-tag {
-    color: var(--color-accent);
-    font-size: 0.75rem;
-    font-weight: 700;
-    margin: 0;
-    line-height: inherit;
-    letter-spacing: inherit;
-    text-transform: inherit;
-  }
-
-  .hero-date {
-    color: var(--color-text-light);
-  }
-
-  .hero-grid {
+  .hero-layout {
     display: grid;
-    grid-template-columns: 2.2fr 1fr;
-    gap: 3.5rem;
+    grid-template-columns: 1fr 300px;
+    gap: 1.5rem;
+    align-items: start;
   }
 
-  .hero-primary {
-    display: flex;
-    flex-direction: column;
+  /* Hero main image card */
+  .hero-image-link {
+    display: block;
+    text-decoration: none;
   }
 
-  .hero-secondary-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 2rem;
-    margin-top: 2.5rem;
-    padding-top: 2.5rem;
-    border-top: 1px solid var(--color-border);
-  }
-
-  .hero-sidebar {
-    background-color: var(--color-surface);
-    border: 1px solid var(--color-border);
-    border-radius: 6px;
-    padding: 1.75rem;
-    height: fit-content;
-  }
-
-  .sidebar-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding-bottom: 1rem;
-    border-bottom: 1px solid var(--color-border);
-    margin-bottom: 1.25rem;
-  }
-
-  .sidebar-title {
-    font-family: var(--font-serif);
-    font-size: 1.15rem;
-    font-weight: 700;
-  }
-
-  .trending-pulse {
-    width: 8px;
-    height: 8px;
-    background-color: #E53E3E;
-    border-radius: 50%;
-    animation: pulse 1.8s infinite;
-  }
-
-  @keyframes pulse {
-    0% { transform: scale(0.9); opacity: 0.8; }
-    50% { transform: scale(1.3); opacity: 1; }
-    100% { transform: scale(0.9); opacity: 0.8; }
-  }
-
-  .trending-list {
-    display: flex;
-    flex-direction: column;
-    gap: 1.35rem;
-  }
-
-  .trending-compact-item {
-    display: flex;
-    gap: 1rem;
-    align-items: flex-start;
-  }
-
-  .trending-num {
-    font-family: var(--font-serif);
-    font-size: 1.35rem;
-    font-weight: 800;
-    color: var(--color-border-dark);
-    line-height: 1;
-  }
-
-  .trending-compact-content {
-    flex: 1;
-  }
-
-  .trending-cat {
-    font-size: 0.625rem;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 0.1em;
-    color: var(--color-accent);
-  }
-
-  .trending-compact-title {
-    font-family: var(--font-serif);
-    font-size: 0.9375rem;
-    font-weight: 700;
-    line-height: 1.35;
-    margin: 0.25rem 0 0.35rem;
-  }
-
-  .trending-compact-title a:hover {
-    color: var(--color-accent);
-  }
-
-  .trending-time {
-    font-size: 0.6875rem;
-    color: var(--color-text-light);
-  }
-
-  /* Category Strip */
-  .category-strip {
-    background-color: var(--color-surface-subtle);
-    border-top: 1px solid var(--color-border);
-    border-bottom: 1px solid var(--color-border);
-    padding: 3rem 0;
-    margin: 3rem 0;
-  }
-
-  .strip-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 1.75rem;
-  }
-
-  .strip-heading {
-    font-family: var(--font-serif);
-    font-size: 1.5rem;
-    font-weight: 700;
-  }
-
-  .strip-all-link {
-    font-size: 0.8125rem;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 0.08em;
-    color: var(--color-accent);
-  }
-
-  .category-pills {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
-    gap: 1rem;
-  }
-
-  .cat-card-mini {
-    display: flex;
-    align-items: center;
-    gap: 0.85rem;
-    background-color: #FFFFFF;
-    border: 1px solid var(--color-border);
-    border-radius: 6px;
-    padding: 0.65rem 0.85rem;
-    transition: all 0.2s ease;
-  }
-
-  .cat-card-mini:hover {
-    border-color: var(--color-text-main);
-    transform: translateY(-2px);
-    box-shadow: 0 6px 16px rgba(0,0,0,0.04);
-  }
-
-  .cat-mini-img-wrap {
-    width: 44px;
-    height: 44px;
-    border-radius: 4px;
+  .hero-image-wrap {
+    position: relative;
+    aspect-ratio: 3 / 2;
     overflow: hidden;
-    flex-shrink: 0;
+    background: #e0e0e0;
   }
 
-  .cat-mini-img {
+  .hero-img {
     width: 100%;
     height: 100%;
     object-fit: cover;
+    display: block;
+    transition: opacity 0.2s ease;
   }
 
-  .cat-mini-info {
-    display: flex;
-    flex-direction: column;
+  .hero-image-link:hover .hero-img {
+    opacity: 0.96;
   }
 
-  .cat-mini-name {
-    font-size: 0.8125rem;
-    font-weight: 700;
-    color: var(--color-text-main);
+  .hero-image-overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      to top,
+      rgba(0, 0, 0, 0.82) 0%,
+      rgba(0, 0, 0, 0.35) 50%,
+      transparent 100%
+    );
+    pointer-events: none;
   }
 
-  .cat-mini-sub {
-    font-size: 0.6875rem;
-    color: var(--color-text-light);
-    text-transform: capitalize;
+  .hero-image-content {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 1.75rem 1.5rem;
+    color: #fff;
   }
 
-  /* Editorial Picks */
-  .editorial-picks-section {
-    padding: 2.5rem 0;
-  }
-
-  .section-title-bar {
-    margin-bottom: 2rem;
-  }
-
-  .section-kicker {
+  .hero-category-badge {
     display: inline-block;
     font-size: 0.6875rem;
     font-weight: 700;
+    letter-spacing: 0.1em;
     text-transform: uppercase;
-    letter-spacing: 0.14em;
-    color: var(--color-accent);
-    margin-bottom: 0.25rem;
+    color: #86efac;
+    margin-bottom: 0.5rem;
+    text-decoration: none;
   }
 
-  .section-title {
+  .hero-category-badge:hover {
+    color: #ffffff;
+  }
+
+  .hero-title {
     font-family: var(--font-serif);
-    font-size: 1.85rem;
+    font-size: 1.65rem;
     font-weight: 700;
-    color: var(--color-text-main);
-  }
-
-  .editorial-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 2.5rem;
-  }
-
-  /* Main / Sidebar Dual Layout */
-  .latest-section {
-    padding: 3rem 0;
-  }
-
-  .main-content-layout {
-    display: grid;
-    grid-template-columns: 2.2fr 1fr;
-    gap: 3.5rem;
-  }
-
-  .articles-vertical-stack {
-    display: flex;
-    flex-direction: column;
-    gap: 2rem;
-  }
-
-  .stream-grid {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 2.5rem 2rem;
-  }
-
-  .content-sidebar {
-    display: flex;
-    flex-direction: column;
-    gap: 2.5rem;
-  }
-
-  .sidebar-card {
-    background-color: var(--color-surface);
-    border: 1px solid var(--color-border);
-    border-radius: 6px;
-    padding: 1.75rem;
-  }
-
-  .sidebar-card-kicker {
-    font-size: 0.6875rem;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 0.12em;
-    color: var(--color-text-light);
-    display: block;
-    margin-bottom: 1rem;
-  }
-
-  .author-spotlight-inner {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    text-align: center;
-  }
-
-  .spotlight-avatar {
-    border-radius: 50%;
-    margin-bottom: 1rem;
-    object-fit: cover;
-    border: 2px solid var(--color-border);
-  }
-
-  .spotlight-name {
-    font-family: var(--font-serif);
-    font-size: 1.15rem;
-    font-weight: 700;
-    margin-bottom: 0.25rem;
-  }
-
-  .spotlight-role {
-    font-size: 0.75rem;
-    color: var(--color-accent);
-    font-weight: 600;
-    margin-bottom: 0.75rem;
-  }
-
-  .spotlight-bio {
-    font-size: 0.8125rem;
-    color: var(--color-text-muted);
-    line-height: 1.5;
-    margin-bottom: 1.25rem;
-  }
-
-  .spotlight-link {
-    font-size: 0.75rem;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 0.08em;
-    color: var(--color-dark);
-  }
-
-  .spotlight-link:hover {
-    color: var(--color-accent);
-  }
-
-  .eeat-card {
-    background-color: #FAF8F2;
-    border-color: #E2DBD0;
-  }
-
-  .eeat-badge-icon {
-    color: var(--color-accent);
-    margin-bottom: 0.75rem;
-  }
-
-  .eeat-title {
-    font-family: var(--font-serif);
-    font-size: 1.1rem;
-    font-weight: 700;
+    line-height: 1.25;
+    color: #ffffff;
     margin-bottom: 0.5rem;
   }
 
-  .eeat-desc {
-    font-size: 0.8125rem;
-    color: var(--color-text-muted);
-    line-height: 1.55;
-    margin-bottom: 1rem;
+  .hero-title a {
+    color: #ffffff;
+    text-decoration: none;
   }
 
-  .eeat-link {
+  .hero-title a:hover {
+    text-decoration: underline;
+  }
+
+  .hero-excerpt {
+    font-size: 0.9rem;
+    color: rgba(255,255,255,0.85);
+    line-height: 1.5;
+    margin-bottom: 0.6rem;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  .hero-readtime {
+    font-size: 0.6875rem;
+    color: rgba(255,255,255,0.65);
+    font-weight: 500;
+    letter-spacing: 0.04em;
+  }
+
+  /* Right stack */
+  .hero-stack {
+    display: flex;
+    flex-direction: column;
+    border-left: 1px solid var(--color-border);
+    padding-left: 1.5rem;
+  }
+
+  .hero-stack-header {
+    margin-bottom: 1rem;
+    padding-bottom: 0.6rem;
+    border-bottom: 2px solid var(--color-text-main);
+  }
+
+  .stack-label {
     font-size: 0.75rem;
     font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--color-text-main);
+  }
+
+  .stack-item {
+    padding: 0.85rem 0;
+    border-bottom: 1px solid var(--color-border);
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+  }
+
+  .stack-item:last-child {
+    border-bottom: none;
+  }
+
+  .stack-cat {
+    font-size: 0.625rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--color-accent);
+    text-decoration: none;
+  }
+
+  .stack-cat:hover {
+    text-decoration: underline;
+  }
+
+  .stack-title {
+    font-size: 0.9375rem;
+    font-weight: 700;
+    line-height: 1.35;
+    color: var(--color-text-main);
+  }
+
+  .stack-title a {
+    color: inherit;
+    text-decoration: none;
+  }
+
+  .stack-title a:hover {
     color: var(--color-accent);
   }
 
-  @media (max-width: 992px) {
-    .hero-grid, .main-content-layout {
-      grid-template-columns: 1fr;
+  .stack-time {
+    font-size: 0.6875rem;
+    color: var(--color-text-light);
+  }
+
+  /* ===== Category Tab Strip ===== */
+  .category-tab-strip {
+    border-top: 1px solid var(--color-border);
+    border-bottom: 1px solid var(--color-border);
+    background: var(--color-surface-subtle);
+    padding: 0;
+    margin: 1rem 0 2.5rem;
+    overflow: hidden;
+  }
+
+  .cat-tabs-scroll {
+    display: flex;
+    overflow-x: auto;
+    scrollbar-width: none;
+    gap: 0;
+  }
+
+  .cat-tabs-scroll::-webkit-scrollbar {
+    display: none;
+  }
+
+  .cat-tab {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.75rem 1.1rem;
+    font-size: 0.8125rem;
+    font-weight: 600;
+    color: var(--color-text-muted);
+    text-decoration: none;
+    white-space: nowrap;
+    border-bottom: 3px solid transparent;
+    transition: color 0.15s ease, border-color 0.15s ease;
+  }
+
+  .cat-tab:hover {
+    color: var(--color-accent);
+    border-bottom-color: var(--color-accent);
+  }
+
+  /* ===== Section bar ===== */
+  .section-bar {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .section-bar-label {
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--color-text-main);
+    white-space: nowrap;
+    padding-bottom: 0;
+    border-bottom: 2px solid var(--color-text-main);
+    padding-bottom: 0.4rem;
+  }
+
+  .section-bar-line {
+    flex: 1;
+    height: 1px;
+    background: var(--color-border);
+  }
+
+  /* ===== Featured row ===== */
+  .featured-row-section {
+    padding: 0 0 2.5rem;
+  }
+
+  .three-col-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2rem;
+  }
+
+  /* ===== Latest articles layout ===== */
+  .latest-articles-section {
+    padding: 0 0 3rem;
+  }
+
+  .latest-layout {
+    display: grid;
+    grid-template-columns: 1fr 280px;
+    gap: 3rem;
+    align-items: start;
+  }
+
+  .stream-featured-item {
+    margin-bottom: 2.5rem;
+    padding-bottom: 2.5rem;
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  .stream-two-col {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 2rem 1.75rem;
+  }
+
+  /* ===== Sidebar ===== */
+  .articles-sidebar {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+    position: sticky;
+    top: 1.5rem;
+  }
+
+  .sidebar-widget {
+    border: 1px solid var(--color-border);
+    padding: 1.25rem;
+    background: #ffffff;
+  }
+
+  .sidebar-widget-title {
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--color-text-main);
+    margin-bottom: 0.85rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 2px solid var(--color-text-main);
+  }
+
+  .sidebar-topic-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+  }
+
+  .sidebar-topic-link {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.5rem 0;
+    font-size: 0.875rem;
+    color: var(--color-text-muted);
+    text-decoration: none;
+    border-bottom: 1px solid var(--color-border);
+    transition: color 0.15s ease;
+  }
+
+  .sidebar-topic-link:last-child {
+    border-bottom: none;
+  }
+
+  .sidebar-topic-link:hover {
+    color: var(--color-accent);
+  }
+
+  .topic-name {
+    font-weight: 500;
+  }
+
+  .topic-arrow {
+    color: var(--color-text-light);
+    font-size: 1rem;
+  }
+
+  .sidebar-about-text {
+    font-size: 0.8125rem;
+    color: var(--color-text-muted);
+    line-height: 1.6;
+    margin-bottom: 0.75rem;
+  }
+
+  .sidebar-about-link {
+    font-size: 0.8125rem;
+    font-weight: 700;
+    color: var(--color-accent);
+    text-decoration: none;
+  }
+
+  .sidebar-about-link:hover {
+    text-decoration: underline;
+  }
+
+  .trust-widget {
+    background-color: var(--color-surface-subtle);
+    border-color: var(--color-border);
+  }
+
+  .trust-icon {
+    color: var(--color-accent);
+    margin-bottom: 0.65rem;
+  }
+
+  .trust-text {
+    font-size: 0.8125rem;
+    color: var(--color-text-muted);
+    line-height: 1.55;
+    margin-bottom: 0.75rem;
+  }
+
+  /* ===== Responsive ===== */
+  @media (max-width: 1024px) {
+    .latest-layout {
+      grid-template-columns: 1fr 240px;
       gap: 2rem;
-    }
-    .editorial-grid {
-      grid-template-columns: 1fr;
-    }
-    .hero-secondary-grid {
-      grid-template-columns: 1fr;
-      gap: 1.75rem;
     }
   }
 
-  @media (max-width: 640px) {
-    .stream-grid {
+  @media (max-width: 860px) {
+    .hero-layout {
       grid-template-columns: 1fr;
-      gap: 2rem;
+    }
+    .hero-stack {
+      border-left: none;
+      padding-left: 0;
+      border-top: 1px solid var(--color-border);
+      padding-top: 1.25rem;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1rem;
+    }
+    .hero-stack-header {
+      grid-column: span 3;
+      margin-bottom: 0;
+    }
+    .stack-item {
+      border-bottom: none;
+      border-right: 1px solid var(--color-border);
+      padding-right: 1rem;
+    }
+    .stack-item:last-child {
+      border-right: none;
+    }
+    .three-col-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+    .latest-layout {
+      grid-template-columns: 1fr;
+    }
+    .articles-sidebar {
+      position: static;
+    }
+  }
+
+  @media (max-width: 600px) {
+    .three-col-grid {
+      grid-template-columns: 1fr;
+    }
+    .stream-two-col {
+      grid-template-columns: 1fr;
+    }
+    .hero-stack {
+      grid-template-columns: 1fr;
+    }
+    .hero-stack-header {
+      grid-column: span 1;
+    }
+    .stack-item {
+      border-right: none;
+      border-bottom: 1px solid var(--color-border);
+    }
+    .hero-title {
+      font-size: 1.35rem;
     }
   }
 </style>
