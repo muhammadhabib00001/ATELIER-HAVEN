@@ -84,7 +84,7 @@ const articleSchema = {
     },
     content: {
       type: Type.STRING,
-      description: "Comprehensive, exhaustive semantic HTML content of AT LEAST 1,000 to 1,200 words. Must feature at least 5 in-depth <h2> sections, practical dimension tolerances, material trade-offs, expert quotes, spec cards, and FAQ accordion. CRITICAL: NEVER include hyphens or dashes inside any heading (h1-h6) tags."
+      description: "Comprehensive, high-utility HTML article content STRICTLY between 1,050 and 1,150 words in total length. Never exceed 1,200 words. Never write under 1,000 words. Must feature at least 5 in-depth <h2> sections, a 40-60 word Featured Snippet answer below the first <h2>, a structured comparison/spec table inside <div class=\"table-container\"><table class=\"editorial-table\">...</table></div>, and exactly 3 FAQ items. CRITICAL: NEVER include hyphens or em dashes in headings or body prose, and never use banned AI words."
     }
   },
   required: [
@@ -99,29 +99,52 @@ const delay = (ms) => new Promise(res => setTimeout(res, ms));
 export async function generateArticle(topic, options = {}) {
   console.log(`\n Generating article for topic: "${topic}"...`);
   
-  const systemPrompt = `You are a world-class architectural writer and luxury interior design consultant for "Atrium Livings".
-CRITICAL REQUIREMENT: The written HTML article content MUST be a MINIMUM of 1,000 to 1,200 words in length. Never write brief summaries. Be thorough, technical, analytical, and highly descriptive.
-Include rich architectural vocabulary, material specifications (psi, DCOF, janka ratings, kelvin color temperatures, clearance dimensions in inches and millimeters).
+  const systemPrompt = `You are a professional master craftsman, senior interior designer, and high-level home decor writer for "Atrium Livings".
+CRITICAL REQUIREMENT: The written HTML article content MUST be STRICTLY between 1,050 and 1,150 words in total length. Never write less than 1,000 words. Never write more than 1,200 words.
+Tone & Perspective: 100% human editorial voice with natural burstiness (a dynamic mix of punchy short statements and descriptive multi-clause sentences; sentence length standard deviation > 4.5). Practical, high-utility, search-intent-driven, high CTR, high CPC, and zero AI fluff.
 
-CRITICAL SEO RULES:
+STRICTLY BANNED WORDS & PHRASES (0 TOLERANCE):
+NEVER use any of the following words or phrases in any heading, quote, table, or body paragraph:
+- delve
+- testament
+- tapestry
+- game-changer
+- more than just
+- in conclusion
+- furthermore
+- architectural
+- elevate
+- beacon
+- realm
+- embark
+- meticulous
+- crucial
+- essential
+- seamless
+- nestled
+- whispers of
+- symphony
+- dance of
+- look no further
+- let's explore
+- in today's world
+
+ZERO EM DASHES (0 TOLERANCE):
+NEVER use em dashes (—) or double hyphens (--). Use commas, colons, parentheses, or separate sentences instead.
+
+CRITICAL SEO & LAYOUT RULES:
 1. Primary Target Keyword: MUST be explicitly and prominently featured in ALL key places:
    - Article Headline (title)
    - Meta Title (seoTitle)
-   - Article Summary Subtitle (subtitle): MUST directly start with or feature the primary keyword, describing the essential design takeaway.
+   - Article Summary Subtitle (subtitle): MUST directly feature the primary keyword.
    - Meta Description (seoDescription): MUST directly feature the primary keyword within the first 100 characters (max 160 characters total).
    - Cover Image Heading & Description (coverAlt): MUST match the article title exactly.
 2. Title and seoTitle: MUST BE STRICTLY BETWEEN 55 AND 60 CHARACTERS IN TOTAL LENGTH. Do not exceed 60 characters and do not be under 55 characters.
-3. Headings: NEVER use hyphens or dashes in ANY heading (<h1>, <h2>, <h3>, <h4>) or TOC title. Use words or commas instead (e.g., use "Dim to Warm", "Room by Room", "Zero Threshold").
-4. Uniqueness: Ensure every <h2> and <h3> heading is completely unique, creative, and specific to this article topic. Never use generic repeated headings like "Frequently Asked Questions" without prefixing with the topic (e.g. use "${topic} Frequently Asked Questions").
-5. Cover Image Heading (coverAlt): STRICTLY match the article title.
-
-Format the HTML content meticulously:
-1. <p class="lead-paragraph"> for an authoritative, evocative opening analysis setting the spatial thesis.
-2. At least 5 to 6 dedicated <h2> sections with IDs strictly matching the 'toc' array (with 0 hyphens or dashes in the visible heading text).
-3. Under each <h2>, provide 2 to 4 detailed paragraphs exploring principles, structural framing, plumbing/electrical considerations, and tactile materiality.
-4. At least one prominent editorial quote: <div class="editorial-quote"><blockquote>...</blockquote><cite>— Architect Name, AIA</cite></div>
-5. Architectural specification cards: <div class="spec-card"><h4>Architectural Specifications</h4><ul><li><strong>Material / Tolerance:</strong> Detail</li>...</ul></div>
-6. High-utility FAQ section: <h2 id="faq-${topic.toLowerCase().replace(/[^a-z0-9]+/g, '-')}">${topic} Frequently Asked Questions</h2> followed by <div class="faq-accordion"><div class="faq-item"><h3>Precise Question incorporating "${topic}"?</h3><p><strong>Direct Key Info on ${topic}.</strong> 1 to 2 concise sentences providing the direct architectural rule, dimension, or specification directly for ${topic}.</p></div>. CRITICAL: Every single FAQ question (<h3>) and answer (<p>) MUST explicitly focus on and incorporate the target keyword "${topic}". Never write generic questions.`;
+3. Headings: NEVER use hyphens or dashes in ANY heading (<h1>, <h2>, <h3>, <h4>) or TOC title.
+4. Featured Snippet Formula: Directly below the first relevant <h2>, include a 40-60 word direct, definitive answer targeting Google's Featured Snippet box.
+5. Structured Reference Matrix Table: Include at least one high-utility specification/comparison table wrapped in:
+   <div class="table-container"><table class="editorial-table"><thead><tr><th>Component / Area</th><th>Recommended Specification</th><th>Practical Design Rule</th></tr></thead><tbody>...</tbody></table></div>
+6. FAQ Section: Exactly 3 targeted questions using <h3> and direct bolded <p> answers addressing high-intent queries.`;
 
   const aiClients = getAiClients();
   const modelsToTry = [
@@ -145,7 +168,7 @@ Format the HTML content meticulously:
           console.log(` Attempting with model: ${modelName} (attempt ${attempt})...`);
           response = await ai.models.generateContent({
             model: modelName,
-            contents: `Write an exhaustive, SEO-dominant architectural guide about: "${topic}". Category: ${options.category || "interior-design"}. Ensure length strictly exceeds 1,100 words with thorough technical and design depth. Output strictly in JSON.`,
+            contents: `Write a high-utility, search-intent-driven home design guide about: "${topic}". Category: ${options.category || "interior-design"}. Ensure length is strictly between 1,050 and 1,150 words. Do not use em dashes or banned AI words. Include an editorial table. Output strictly in JSON.`,
             config: {
               systemInstruction: systemPrompt,
               responseMimeType: "application/json",
@@ -455,10 +478,64 @@ export function enforceArticleStandards(article, existingArticles = []) {
     matches.forEach(m => existingHeadingTexts.add(m[2].replace(/<[^>]+>/g, '').trim().toLowerCase()));
   });
 
-  // 1. Strict title length: 55-60 characters
-  let title = (article.title || '').replace(/-/g, ' ').replace(/\s+/g, ' ').trim();
+  // Helper: Remove all em dashes and double hyphens
+  const cleanEmDashes = (str) => {
+    if (!str || typeof str !== 'string') return str;
+    return str
+      .replace(/—/g, ', ')
+      .replace(/&mdash;/g, ', ')
+      .replace(/\s+--\s+/g, ', ')
+      .replace(/--/g, '-');
+  };
+
+  // Helper: Replace all banned AI words
+  const BANNED_MAP = [
+    { regex: /\barchitectural\b/gi, replaceWith: 'structural' },
+    { regex: /\belevate\b/gi, replaceWith: 'enhance' },
+    { regex: /\belevates\b/gi, replaceWith: 'enhances' },
+    { regex: /\belevated\b/gi, replaceWith: 'refined' },
+    { regex: /\belevating\b/gi, replaceWith: 'enhancing' },
+    { regex: /\brealm\b/gi, replaceWith: 'space' },
+    { regex: /\bmeticulous\b/gi, replaceWith: 'thorough' },
+    { regex: /\bmeticulously\b/gi, replaceWith: 'carefully' },
+    { regex: /\bcrucial\b/gi, replaceWith: 'important' },
+    { regex: /\bessential\b/gi, replaceWith: 'recommended' },
+    { regex: /\bseamless\b/gi, replaceWith: 'smooth' },
+    { regex: /\bseamlessly\b/gi, replaceWith: 'smoothly' },
+    { regex: /\bnestled\b/gi, replaceWith: 'positioned' },
+    { regex: /\bgame-changer\b/gi, replaceWith: 'major breakthrough' },
+    { regex: /\bgame changer\b/gi, replaceWith: 'major breakthrough' },
+    { regex: /\btestament\b/gi, replaceWith: 'proof' },
+    { regex: /\bdelve\b/gi, replaceWith: 'explore' },
+    { regex: /\bdelves\b/gi, replaceWith: 'explores' },
+    { regex: /\bdelving\b/gi, replaceWith: 'exploring' },
+    { regex: /\btapestry\b/gi, replaceWith: 'blend' },
+    { regex: /\bmore than just\b/gi, replaceWith: 'beyond' },
+    { regex: /\bin conclusion\b/gi, replaceWith: 'in summary' },
+    { regex: /\bfurthermore\b/gi, replaceWith: 'in addition' },
+    { regex: /\bwhispers of\b/gi, replaceWith: 'hints of' },
+    { regex: /\bsymphony\b/gi, replaceWith: 'combination' },
+    { regex: /\bdance of\b/gi, replaceWith: 'balance of' },
+    { regex: /\blook no further\b/gi, replaceWith: 'consider this' },
+    { regex: /\blet's explore\b/gi, replaceWith: 'we examine' },
+    { regex: /\bin today's world\b/gi, replaceWith: 'today' },
+    { regex: /\bbeacon\b/gi, replaceWith: 'benchmark' },
+    { regex: /\bembark\b/gi, replaceWith: 'begin' }
+  ];
+
+  const purgeBanned = (str) => {
+    if (!str || typeof str !== 'string') return str;
+    let res = str;
+    for (const item of BANNED_MAP) {
+      res = res.replace(item.regex, item.replaceWith);
+    }
+    return res;
+  };
+
+  // 1. Strict title length: 55-60 characters, no banned words
+  let title = purgeBanned(cleanEmDashes((article.title || '').replace(/-/g, ' ').replace(/\s+/g, ' ').trim()));
   if (title.length < 55) {
-    const padSuffixes = ['Architectural Guide', 'Modern Design Masterclass', 'Design Ideas & Plans', 'Luxury Spatial Guide'];
+    const padSuffixes = ['Modern Design Guide', 'Interior Decor Guide', 'Design Ideas and Plans', 'Spatial Layout Guide'];
     for (const s of padSuffixes) {
       if (!title.includes(s) && (title + ': ' + s).length <= 60 && (title + ': ' + s).length >= 55) {
         title = title + ': ' + s;
@@ -486,22 +563,29 @@ export function enforceArticleStandards(article, existingArticles = []) {
   }
   article.title = title;
   article.seoTitle = title;
+  article.coverAlt = title;
 
-  // 2. Remove all hyphens/dashes from all headings
+  // 2. Clean em dashes and banned words across content and metadata
+  article.content = purgeBanned(cleanEmDashes(article.content));
+  article.subtitle = purgeBanned(cleanEmDashes(article.subtitle || ''));
+  article.seoDescription = purgeBanned(cleanEmDashes(article.seoDescription || ''));
+
+  // 3. Remove all hyphens/dashes from all headings
   article.content = article.content.replace(/<h([1-6])([^>]*)>([\s\S]*?)<\/h\1>/gi, (match, level, attrs, text) => {
-    const cleanText = text.replace(/-/g, ' ').replace(/\s+/g, ' ').trim();
+    let cleanText = text.replace(/-/g, ' ').replace(/\s+/g, ' ').trim();
+    cleanText = purgeBanned(cleanEmDashes(cleanText));
     return `<h${level}${attrs}>${cleanText}</h${level}>`;
   });
 
   if (article.toc && Array.isArray(article.toc)) {
     article.toc.forEach(item => {
       if (item.title) {
-        item.title = item.title.replace(/-/g, ' ').replace(/\s+/g, ' ').trim();
+        item.title = purgeBanned(cleanEmDashes(item.title.replace(/-/g, ' ').replace(/\s+/g, ' ').trim()));
       }
     });
   }
 
-  // 3. Make FAQ and Specification headings unique across the whole site
+  // 4. Ensure FAQ and Specification headings are unique
   const shortTitle = article.title.split(':')[0].trim();
   const uniqueFaqId = `faq-${article.slug}`;
   const uniqueFaqHeading = `${shortTitle} Frequently Asked Questions`;
@@ -517,7 +601,6 @@ export function enforceArticleStandards(article, existingArticles = []) {
   article.content = article.content.replace(/<h2 id=["']faq["']>Frequently Asked Questions<\/h2>/gi, `<h2 id="${uniqueFaqId}">${uniqueFaqHeading}</h2>`);
   article.content = article.content.replace(/<h4>Architectural Specifications<\/h4>/gi, `<h4>${shortTitle} Specifications</h4>`);
   article.content = article.content.replace(/<h4>Architectural & Material Specifications<\/h4>/gi, `<h4>${shortTitle} Material Specifications</h4>`);
-  article.content = article.content.replace(/<h4>Architectural Specification Matrix<\/h4>/gi, `<h4>${shortTitle} Specification Matrix</h4>`);
 
   // Ensure no other heading duplicates any existing heading
   article.content = article.content.replace(/<h([1-6])([^>]*)>([\s\S]*?)<\/h\1>/gi, (match, level, attrs, text) => {
@@ -530,17 +613,14 @@ export function enforceArticleStandards(article, existingArticles = []) {
     return match;
   });
 
-  // 4. STRICT SEO LOCK: Ensure Subtitle (Summary) and Meta Description match with primary target keyword
+  // 5. Ensure Subtitle & SEO Description feature the primary keyword
   const primaryKeyword = (article.keywords && article.keywords[0]) ? article.keywords[0].trim() : shortTitle;
   const primaryKwLower = primaryKeyword.toLowerCase();
 
-  // Lock Subtitle (Summary): Must explicitly feature the primary keyword
-  let subtitle = (article.subtitle || '').replace(/-/g, ' ').replace(/\s+/g, ' ').trim();
+  let subtitle = article.subtitle;
   if (!subtitle.toLowerCase().includes(primaryKwLower)) {
-    // Lock keyword into the summary seamlessly
     subtitle = `${primaryKeyword}: ${subtitle}`;
   }
-  // Trim summary if over 160 characters
   if (subtitle.length > 160) {
     const truncated = subtitle.slice(0, 157);
     const lastSp = truncated.lastIndexOf(' ');
@@ -548,10 +628,9 @@ export function enforceArticleStandards(article, existingArticles = []) {
   }
   article.subtitle = subtitle;
 
-  // Lock Meta Description: Must explicitly feature the primary keyword within 160 characters
-  let seoDescription = (article.seoDescription || '').replace(/-/g, ' ').replace(/\s+/g, ' ').trim();
+  let seoDescription = article.seoDescription;
   if (!seoDescription.toLowerCase().includes(primaryKwLower)) {
-    seoDescription = `Comprehensive guide to ${primaryKeyword}: explore spatial layouts, architectural material specifications, and expert design solutions.`;
+    seoDescription = `Comprehensive design guide to ${primaryKeyword}: explore spatial layouts, material recommendations, and practical styling solutions.`;
   }
   if (seoDescription.length > 160) {
     const truncated = seoDescription.slice(0, 157);
@@ -560,95 +639,115 @@ export function enforceArticleStandards(article, existingArticles = []) {
   }
   article.seoDescription = seoDescription;
 
-  // 5. STRICT FAQ KEYWORD LOCK: Ensure every FAQ question (<h3>) and answer (<p>) explicitly contains the primary target keyword
-  const faqAccordionRegex = /<div class=["']faq-accordion["']>([\s\S]*?)<\/div>/i;
-  const faqMatch = article.content.match(faqAccordionRegex);
-  if (faqMatch) {
-    let faqContent = faqMatch[1];
-    faqContent = faqContent.replace(/<div class=["']faq-item["']>([\s\S]*?)<\/div>/gi, (itemMatch, itemInner) => {
-      let updatedItem = itemInner;
-      // Check <h3>
-      const qMatch = updatedItem.match(/<h3>([\s\S]*?)<\/h3>/i);
-      if (qMatch) {
-        const qText = qMatch[1].trim();
-        if (!qText.toLowerCase().includes(primaryKwLower)) {
-          // Prepend or integrate primary keyword naturally
-          const cleanQ = qText.replace(/\?$/, '');
-          const newQ = `In ${primaryKeyword}, ${cleanQ.charAt(0).toLowerCase() + cleanQ.slice(1)}?`;
-          updatedItem = updatedItem.replace(qMatch[0], `<h3>${newQ}</h3>`);
-        }
+  // 6. Ensure Editorial Table is present
+  const hasTable = article.content.includes('<table') && article.content.includes('editorial-table') && article.content.includes('table-container');
+  if (!hasTable) {
+    const tableHtml = `\n<div class="table-container">\n  <table class="editorial-table">\n    <thead>\n      <tr>\n        <th>Design Element</th>\n        <th>Recommended Specification</th>\n        <th>Practical Application</th>\n      </tr>\n    </thead>\n    <tbody>\n      <tr>\n        <td><strong>Clearance Spacing</strong></td>\n        <td>36 inches clear perimeter</td>\n        <td>Maintain comfortable walking paths around all furniture.</td>\n      </tr>\n      <tr>\n        <td><strong>Surface Material</strong></td>\n        <td>Satin or low-sheen finish</td>\n        <td>Provides durable protection with easy maintenance.</td>\n      </tr>\n      <tr>\n        <td><strong>Lighting Warmth</strong></td>\n        <td>2700K to 3000K warm LED</td>\n        <td>Accentuates natural tones without glare.</td>\n      </tr>\n      <tr>\n        <td><strong>Room Proportion</strong></td>\n        <td>60-30-10 distribution rule</td>\n        <td>Balances dominant tones with secondary accents.</td>\n      </tr>\n    </tbody>\n  </table>\n</div>\n`;
+
+    const faqIdx = article.content.search(/<h2[^>]*id=["'][^"']*faq[^"']*["'][^>]*>/i);
+    if (faqIdx !== -1) {
+      article.content = article.content.slice(0, faqIdx) + tableHtml + article.content.slice(faqIdx);
+    } else {
+      const lastH2 = article.content.lastIndexOf('<h2');
+      if (lastH2 !== -1) {
+        article.content = article.content.slice(0, lastH2) + tableHtml + article.content.slice(lastH2);
+      } else {
+        article.content += tableHtml;
       }
-      // Check <p>
-      const pMatch = updatedItem.match(/<p>([\s\S]*?)<\/p>/i);
-      if (pMatch) {
-        const pText = pMatch[1].trim();
-        if (!pText.toLowerCase().includes(primaryKwLower)) {
-          // Append reference to primary keyword naturally if missing
-          const newP = pText.replace(/\.$/, '') + ` when planning luxury ${primaryKeyword}.`;
-          updatedItem = updatedItem.replace(pMatch[0], `<p>${newP}</p>`);
-        }
-      }
-      return `<div class="faq-item">${updatedItem}</div>`;
-    });
-    article.content = article.content.replace(faqMatch[0], `<div class="faq-accordion">${faqContent}</div>`);
-  }
-
-  // 6. STRICT COVER IMAGE LOCK: Image description and caption strictly match the article title
-  article.coverAlt = article.title;
-
-  // 7. STRICT IMAGE DEDUPLICATION LOCK: Ensure no image is repeated between cover and body figures
-  if (article.coverImage && article.content) {
-    const coverKey = extractImageKey(article.coverImage);
-    // If any body figure duplicates the cover image, strip or replace it
-    article.content = article.content.replace(/<figure class=["']editorial-figure["']>[\s\S]*?<\/figure>/gi, (figMatch) => {
-      const srcMatch = figMatch.match(/<img[^>]+src=["']([^"']+)["']/i);
-      if (srcMatch && srcMatch[1]) {
-        const bodyKey = extractImageKey(srcMatch[1]);
-        if (bodyKey && coverKey && bodyKey === coverKey) {
-          // Body image duplicates cover image; remove duplicate figure
-          return '';
-        }
-      }
-      return figMatch;
-    });
-  }
-
-  // 8. STRICT EXTERNAL LINK LOCK: Ensure every article has exactly 1 unique high-authority external link
-  if (!article.content.includes('http://') && !article.content.includes('https://')) {
-    const domainPool = [
-      { name: "American Institute of Architects (AIA)", url: "https://www.aia.org" },
-      { name: "Architectural Digest", url: "https://www.architecturaldigest.com" },
-      { name: "Architectural Record", url: "https://www.architecturalrecord.com" },
-      { name: "Dezeen Architecture", url: "https://www.dezeen.com" },
-      { name: "American Society of Interior Designers (ASID)", url: "https://www.asid.org" },
-      { name: "International Interior Design Association (IIDA)", url: "https://www.iida.org" },
-      { name: "Royal Institute of British Architects (RIBA)", url: "https://www.architecture.com" },
-      { name: "Dwell Architecture", url: "https://www.dwell.com" },
-      { name: "Metropolis Magazine", url: "https://metropolismag.com" },
-      { name: "U.S. Green Building Council (USGBC)", url: "https://www.usgbc.org" },
-      { name: "Elle Decor", url: "https://www.elledecor.com" },
-      { name: "Interior Design Magazine", url: "https://www.interiordesign.net" },
-      { name: "House Beautiful", url: "https://www.housebeautiful.com" },
-      { name: "Houzz Design", url: "https://www.houzz.com" },
-      { name: "Remodelista", url: "https://www.remodelista.com" },
-      { name: "Design Milk", url: "https://design-milk.com" },
-      { name: "Curbed Architecture", url: "https://www.curbed.com" },
-      { name: "Wallpaper Magazine", url: "https://www.wallpaper.com" },
-      { name: "Domus Architecture", url: "https://www.domusweb.it" },
-      { name: "Frame Magazine", url: "https://www.frame-web.com" },
-      { name: "Azure Magazine", url: "https://www.azuremagazine.com" },
-      { name: "Habitually Chic", url: "https://www.habituallychic.luxury" },
-      { name: "Architectural Lighting", url: "https://www.archlighting.com" }
-    ];
-
-    const chosenDomain = domainPool[existingArticles.length % domainPool.length];
-    if (article.content.includes('</p>')) {
-      article.content = article.content.replace(
-        /<\/p>/,
-        ` Review structural guidelines and architectural standards from the <a href="${chosenDomain.url}" target="_blank" rel="noopener noreferrer">${chosenDomain.name}</a>.</p>`
-      );
     }
   }
+
+  // 7. Ensure EXACTLY 1 External Link
+  const extLinkMatches = [...article.content.matchAll(/<a\s+[^>]*href=["'](https?:\/\/[^"']+)["'][^>]*>([\s\S]*?)<\/a>/gi)];
+  if (extLinkMatches.length === 0) {
+    const domainPool = [
+      { name: "Sleep Foundation", url: "https://www.sleepfoundation.org" },
+      { name: "Architectural Digest", url: "https://www.architecturaldigest.com" },
+      { name: "American Society of Interior Designers", url: "https://www.asid.org" },
+      { name: "Consumer Reports", url: "https://www.consumerreports.org" },
+      { name: "Elle Decor", url: "https://www.elledecor.com" }
+    ];
+    const chosen = domainPool[existingArticles.length % domainPool.length];
+    const pMatches = [...article.content.matchAll(/<\/p>/g)];
+    if (pMatches.length >= 2) {
+      const insertAt = pMatches[1].index;
+      article.content = article.content.slice(0, insertAt) +
+        ` Industry recommendations from <a href="${chosen.url}" target="_blank" rel="noopener noreferrer">${chosen.name}</a> suggest testing material samples before full installation.` +
+        article.content.slice(insertAt);
+    }
+  } else if (extLinkMatches.length > 1) {
+    // Keep first, strip subsequent external link tags
+    for (let i = 1; i < extLinkMatches.length; i++) {
+      article.content = article.content.replace(extLinkMatches[i][0], extLinkMatches[i][2]);
+    }
+  }
+
+  // 8. Ensure EXACTLY 2 Natural Internal Links
+  const intLinkMatches = [...article.content.matchAll(/<a\s+[^>]*href=["'](\/(?!https?)[^"']*)["'][^>]*>([\s\S]*?)<\/a>/gi)];
+  if (intLinkMatches.length > 2) {
+    for (let i = 2; i < intLinkMatches.length; i++) {
+      article.content = article.content.replace(intLinkMatches[i][0], intLinkMatches[i][2]);
+    }
+  } else if (intLinkMatches.length < 2) {
+    const targetCategory = article.category || 'bedroom';
+    const fallbackOptions = [
+      { url: `/category/${targetCategory}/`, text: `${targetCategory} decorating ideas` },
+      { url: `/category/furniture/`, text: `furniture layout principles` }
+    ];
+    if (existingArticles.length > 0 && existingArticles[0].slug !== article.slug) {
+      fallbackOptions.unshift({ url: `/${existingArticles[0].slug}/`, text: existingArticles[0].title.split(':')[0].toLowerCase() });
+    }
+
+    let pMatches = [...article.content.matchAll(/<\/p>/g)];
+    let count = intLinkMatches.length;
+    for (const opt of fallbackOptions) {
+      if (count >= 2) break;
+      if (article.content.includes(`href="${opt.url}"`)) continue;
+      const targetP = pMatches.length > (3 + count) ? pMatches[2 + count].index : (pMatches.length > 1 ? pMatches[1].index : -1);
+      if (targetP !== -1) {
+        article.content = article.content.slice(0, targetP) +
+          ` For more ideas, explore our <a href="${opt.url}">${opt.text}</a>.` +
+          article.content.slice(targetP);
+        count++;
+        pMatches = [...article.content.matchAll(/<\/p>/g)];
+      }
+    }
+  }
+
+  // 9. Balance Word Count to strictly 1,000 to 1,200 words
+  const calcWords = (html) => html.replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim().split(/\s+/).filter(Boolean).length;
+  let currentWords = calcWords(article.content);
+
+  if (currentWords > 1200) {
+    const paragraphs = [...article.content.matchAll(/<p>([\s\S]*?)<\/p>/gi)];
+    for (let i = paragraphs.length - 4; i >= 2 && currentWords > 1180; i--) {
+      const p = paragraphs[i];
+      if (p[0].includes('<a ') || p[0].includes('<table') || p[0].includes('class="lead-paragraph"')) continue;
+      const sentences = p[1].split(/(?<=[.?!])\s+/);
+      if (sentences.length > 2) {
+        const shorter = `<p>${sentences.slice(0, 2).join(' ')}</p>`;
+        article.content = article.content.replace(p[0], shorter);
+      } else {
+        article.content = article.content.replace(p[0], '');
+      }
+      currentWords = calcWords(article.content);
+    }
+  } else if (currentWords < 1000) {
+    const topUp = `\n<p>When implementing these layout strategies, always take into account seasonal shifts and room lighting conditions. Selecting quality finishes, balanced scale, and practical clearance zones ensures that your master living space remains comfortable, inviting, and easy to maintain over many years of daily use.</p>\n`;
+    const lastH2 = article.content.lastIndexOf('<h2');
+    if (lastH2 !== -1) {
+      article.content = article.content.slice(0, lastH2) + topUp + article.content.slice(lastH2);
+    } else {
+      article.content += topUp;
+    }
+  }
+
+  // Final purge of banned words and em dashes across all content
+  article.content = purgeBanned(cleanEmDashes(article.content));
+  article.title = purgeBanned(cleanEmDashes(article.title));
+  article.seoTitle = purgeBanned(cleanEmDashes(article.seoTitle));
+  article.subtitle = purgeBanned(cleanEmDashes(article.subtitle));
+  article.seoDescription = purgeBanned(cleanEmDashes(article.seoDescription));
 
   return article;
 }

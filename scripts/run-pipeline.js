@@ -156,69 +156,7 @@ async function generateSingleArticle(customTopic, customCategory) {
   // Step 1: Generate article via Gemini / Vertex AI
   const article = await generateArticle(targetTopic, { category: targetCategory });
 
-  // Step 2: Ensure 2 internal links and 1 authoritative external link
-  // Note: We use canonical trailing slashes /${slug}/ and concise 2-3 word anchor text
-  // Step 2: Ensure exactly 2 internal links and 1 authoritative external link
-  // Use live published articles or valid categories to prevent 404s
-  const linkCandidates = [];
-  if (existingArticles.length > 0) {
-    linkCandidates.push({
-      url: `/${existingArticles[0].slug}/`,
-      anchor: existingArticles[0].keywords?.[0] || 'interior styling tips'
-    });
-  }
-  if (existingArticles.length > 1) {
-    linkCandidates.push({
-      url: `/${existingArticles[1].slug}/`,
-      anchor: existingArticles[1].keywords?.[0] || 'furniture layout ideas'
-    });
-  } else {
-    // Fallback to active category to guarantee 0 dead links
-    linkCandidates.push({
-      url: `/category/${targetCategory || 'bedroom'}/`,
-      anchor: `${targetCategory || 'bedroom'} design ideas`
-    });
-  }
-
-  // Inject natural internal links if not already present
-  if (!article.content.includes(linkCandidates[0].url)) {
-    article.content = article.content.replace(
-      /<\/p>/,
-      ` Review helpful tips in our guide to <a href="${linkCandidates[0].url}">${linkCandidates[0].anchor}</a>.</p>`
-    );
-  }
-  if (!article.content.includes(linkCandidates[1].url)) {
-    const pMatches = [...article.content.matchAll(/<\/p>/g)];
-    if (pMatches.length >= 3) {
-      const thirdPIndex = pMatches[2].index;
-      const before = article.content.slice(0, thirdPIndex);
-      const after = article.content.slice(thirdPIndex);
-      article.content = before + ` Explore related concepts in our <a href="${linkCandidates[1].url}">${linkCandidates[1].anchor}</a> guide.` + after;
-    }
-  }
-
-  // Ensure 1 authoritative external reference if none present using a rotating pool
-  if (!article.content.includes('http://') && !article.content.includes('https://')) {
-    const domainPool = [
-      { name: "Sleep Foundation", url: "https://www.sleepfoundation.org" },
-      { name: "Architectural Digest", url: "https://www.architecturaldigest.com" },
-      { name: "American Society of Interior Designers", url: "https://www.asid.org" },
-      { name: "Consumer Reports", url: "https://www.consumerreports.org" },
-      { name: "Dwell Design", url: "https://www.dwell.com" },
-      { name: "Elle Decor", url: "https://www.elledecor.com" },
-      { name: "House Beautiful", url: "https://www.housebeautiful.com" }
-    ];
-
-    const chosenDomain = domainPool[existingArticles.length % domainPool.length];
-    if (article.content.includes('</p>')) {
-      article.content = article.content.replace(
-        /<\/p>/,
-        ` Consult recommended design standards from <a href="${chosenDomain.url}" target="_blank" rel="noopener noreferrer">${chosenDomain.name}</a>.</p>`
-      );
-    }
-  }
-
-  // Step 3: Save article
+  // Step 2: Save and enforce locked article standards (links, table, word count, 0 banned words)
   saveArticle(article);
 
   console.log(` Article saved successfully: ${article.slug}`);
