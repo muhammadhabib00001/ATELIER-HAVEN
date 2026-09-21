@@ -36,21 +36,31 @@ These rules are permanently locked for all current and future articles across At
 
 ---
 
-## 2. Word Count, Hierarchy & Layout
+## 2. Word Count, Hierarchy & Layout Blueprint
 * **Strict Word Count**: **1,000 to 1,200 words** total for the article body content. Never under 1,000 words; never over 1,200 words.
+* **Title & SEO Title**: Strictly **55 to 60 characters** in length. Never under 55, never over 60.
 * **Heading Hierarchy**:
   * `H1`: Page title (rendered by the Astro layout).
-  * `H2`: Core thematic sections.
+  * `H2`: Core thematic sections (NEVER contain hyphens or dashes).
   * `H3`: Subsections nested logically under H2.
   * `H4` & `H5`: Tactical details nested logically under H3.
-  * Never skip heading levels.
+  * Never skip heading levels. Never include hyphens or dashes in any heading or TOC title.
+* **Lead Paragraph Hook**:
+  * Every article must open with an immersive, narrative scene setting the tone, wrapped in: `<p class="lead-paragraph">...</p>`.
 * **Featured Snippet Target**:
-  * Directly below the first relevant H2 (e.g. "The Quick Formula to..."), include a 40–60 word direct, definitive answer targeting Google's Featured Snippet box.
+  * The very first H2 MUST be: `<h2 id="the-quick-formula-to-...">The Quick Formula to [Action / Outcome]</h2>`.
+  * Directly below it, include a 40–60 word direct, definitive answer targeting Google's Featured Snippet box.
+* **Editorial Quote Block**:
+  * Every article must contain at least one editorial blockquote:
+    `<div class="editorial-quote"><blockquote>...</blockquote><cite>Author Name, Title</cite></div>`.
 * **Structured Reference Matrix Table**:
-  * Every article must contain at least one high-utility specification / comparison table.
+  * Every article must contain at least one high-utility specification / comparison table, preceded by an introductory sentence.
   * Must be wrapped in: `<div class="table-container"><table class="editorial-table">...</table></div>`.
-* **FAQ Section**:
-  * Include an FAQ section with exactly 3 targeted questions using `<h3>` and direct, bolded `<p>` answers addressing high-intent queries.
+* **FAQ Accordion Section**:
+  * Include an FAQ section with exactly 3 targeted questions wrapped in:
+    `<div class="faq-accordion"><div class="faq-item"><h3>Question?</h3><p><strong>Direct Bold Answer.</strong> Detailed explanation...</p></div>...</div>`.
+* **Concluding Checklist**:
+  * The final section must be an actionable checklist: `<h2 id="your-[slug]-checklist">Your [Topic] Checklist</h2>`.
 
 ---
 

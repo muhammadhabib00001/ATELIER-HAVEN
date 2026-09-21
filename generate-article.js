@@ -686,7 +686,22 @@ export function enforceArticleStandards(article, existingArticles = []) {
     article.content = article.content.replace(/<p>/i, '<p class="lead-paragraph">');
   }
 
-  // 6B. Ensure Editorial Quote Block is present
+  // 6B. Ensure First H2 is 'The Quick Formula to...' with a 40-60 word Featured Snippet answer
+  const hasFormulaH2 = /<h2[^>]*id=["'][^"']*quick-formula[^"']*["'][^>]*>/i.test(article.content) || /<h2[^>]*>The Quick Formula/i.test(article.content);
+  if (!hasFormulaH2) {
+    const formulaId = `the-quick-formula-to-master-${article.slug.replace(/[^a-z0-9]+/g, '-')}`;
+    const formulaH2 = `\n<h2 id="${formulaId}">The Quick Formula to Master ${shortTitle}</h2>\n<p>To succeed with ${primaryKeyword}, balance primary dimensions, allow generous walkway clearances, and select durable materials with low-sheen finishes. Layer complementary textures across functional zones, eliminate clutter from visible surfaces, and coordinate warm 2700K lighting to establish immediate visual depth and lasting everyday comfort.</p>\n`;
+    
+    // Insert right after the lead paragraph (first </p>)
+    const firstPEnd = article.content.indexOf('</p>');
+    if (firstPEnd !== -1) {
+      article.content = article.content.slice(0, firstPEnd + 4) + '\n' + formulaH2 + article.content.slice(firstPEnd + 4);
+    } else {
+      article.content = formulaH2 + article.content;
+    }
+  }
+
+  // 6C. Ensure Editorial Quote Block is present
   if (!article.content.includes('editorial-quote')) {
     const quoteHtml = `\n<div class="editorial-quote">\n  <blockquote>A successful master plan balances tactile material layers with calm room proportions and soft ambient lighting.</blockquote>\n  <cite>Elena Vance, Senior Interior Editor</cite>\n</div>\n`;
     const pMatches = [...article.content.matchAll(/<\/p>/g)];
@@ -696,7 +711,7 @@ export function enforceArticleStandards(article, existingArticles = []) {
     }
   }
 
-  // 6C. Ensure Editorial Table is present
+  // 6D. Ensure Editorial Table is present
   const hasTable = article.content.includes('<table') && article.content.includes('editorial-table') && article.content.includes('table-container');
   if (!hasTable) {
     const tableHtml = `\n<div class="table-container">\n  <table class="editorial-table">\n    <thead>\n      <tr>\n        <th>Design Element</th>\n        <th>Recommended Specification</th>\n        <th>Practical Application</th>\n      </tr>\n    </thead>\n    <tbody>\n      <tr>\n        <td><strong>Clearance Spacing</strong></td>\n        <td>36 inches clear perimeter</td>\n        <td>Maintain comfortable walking paths around all furniture.</td>\n      </tr>\n      <tr>\n        <td><strong>Surface Material</strong></td>\n        <td>Satin or low-sheen finish</td>\n        <td>Provides durable protection with easy maintenance.</td>\n      </tr>\n      <tr>\n        <td><strong>Lighting Warmth</strong></td>\n        <td>2700K to 3000K warm LED</td>\n        <td>Accentuates natural tones without glare.</td>\n      </tr>\n      <tr>\n        <td><strong>Room Proportion</strong></td>\n        <td>60-30-10 distribution rule</td>\n        <td>Balances dominant tones with secondary accents.</td>\n      </tr>\n    </tbody>\n  </table>\n</div>\n`;
@@ -714,32 +729,63 @@ export function enforceArticleStandards(article, existingArticles = []) {
     }
   }
 
-  // 6D. Ensure FAQ Accordion wrappers are applied
-  if (article.content.includes('frequently asked') || article.content.includes('faq')) {
-    if (!article.content.includes('faq-accordion')) {
-      article.content = article.content.replace(/(<h2[^>]*>(?:[^<]*frequently\s+asked[^<]*|[^<]*faq[^<]*)<\/h2>)([\s\S]*?)(?=<h2|$)/i, (match, h2, body) => {
-        let items = '';
-        const itemRegex = /<h3>([\s\S]*?)<\/h3>\s*<p>([\s\S]*?)<\/p>/gi;
-        let m;
-        while ((m = itemRegex.exec(body)) !== null) {
-          let ans = m[2].trim();
-          if (!ans.startsWith('<strong>')) {
-            const firstDot = ans.indexOf('.');
-            if (firstDot !== -1 && firstDot < 120) {
-              ans = `<strong>${ans.slice(0, firstDot + 1)}</strong> ${ans.slice(firstDot + 1).trim()}`;
-            }
+  // 6E. Ensure FAQ Accordion with exactly 3 items
+  const defaultFaqs = [
+    {
+      q: `What is the most important factor when planning ${shortTitle.toLowerCase()}?`,
+      a: `<strong>Maintaining balanced proportions and clear transit clearances is the primary priority.</strong> Preserving open walking buffers ensures that beautiful finishes and fine materials remain functional and comfortable for everyday use.`
+    },
+    {
+      q: `How do you ensure long-term durability for ${shortTitle.toLowerCase()}?`,
+      a: `<strong>Select high-density natural materials and clean with pH-neutral solutions.</strong> Avoiding harsh abrasive chemical sprays protects factory protective coatings and preserves natural surface patinas over decades.`
+    },
+    {
+      q: `What lighting warmth best complements ${shortTitle.toLowerCase()}?`,
+      a: `<strong>Warm LED illumination between 2700K and 3000K yields the best results.</strong> Soft, warm light flatters natural wood grains and textured textiles without producing harsh glare or unflattering shadows.`
+    }
+  ];
+
+  if (!article.content.includes('faq-accordion')) {
+    const faqH2Regex = /<h2[^>]*>(?:[^<]*frequently\s+asked[^<]*|[^<]*faq[^<]*)<\/h2>([\s\S]*?)(?=<h2|$)/i;
+    const faqMatch = article.content.match(faqH2Regex);
+    let items = '';
+
+    if (faqMatch) {
+      const itemRegex = /<h3>([\s\S]*?)<\/h3>\s*<p>([\s\S]*?)<\/p>/gi;
+      let m;
+      let count = 0;
+      while ((m = itemRegex.exec(faqMatch[1])) !== null && count < 3) {
+        let ans = m[2].trim();
+        if (!ans.startsWith('<strong>')) {
+          const firstDot = ans.indexOf('.');
+          if (firstDot !== -1 && firstDot < 120) {
+            ans = `<strong>${ans.slice(0, firstDot + 1)}</strong> ${ans.slice(firstDot + 1).trim()}`;
+          } else {
+            ans = `<strong>${ans.slice(0, 50)}...</strong> ${ans}`;
           }
-          items += `  <div class="faq-item">\n    <h3>${m[1].trim()}</h3>\n    <p>${ans}</p>\n  </div>\n`;
         }
-        if (items) {
-          return `${h2}\n<div class="faq-accordion">\n${items}</div>\n`;
-        }
-        return match;
-      });
+        items += `  <div class="faq-item">\n    <h3>${m[1].trim()}</h3>\n    <p>${ans}</p>\n  </div>\n`;
+        count++;
+      }
+      for (let i = count; i < 3; i++) {
+        items += `  <div class="faq-item">\n    <h3>${defaultFaqs[i].q}</h3>\n    <p>${defaultFaqs[i].a}</p>\n  </div>\n`;
+      }
+      article.content = article.content.replace(faqH2Regex, `<h2 id="${uniqueFaqId}">${uniqueFaqHeading}</h2>\n<div class="faq-accordion">\n${items}</div>\n`);
+    } else {
+      for (let i = 0; i < 3; i++) {
+        items += `  <div class="faq-item">\n    <h3>${defaultFaqs[i].q}</h3>\n    <p>${defaultFaqs[i].a}</p>\n  </div>\n`;
+      }
+      const faqSection = `\n<h2 id="${uniqueFaqId}">${uniqueFaqHeading}</h2>\n<div class="faq-accordion">\n${items}</div>\n`;
+      const checklistIdx = article.content.search(/<h2[^>]*id=["'][^"']*checklist[^"']*["'][^>]*>/i);
+      if (checklistIdx !== -1) {
+        article.content = article.content.slice(0, checklistIdx) + faqSection + article.content.slice(checklistIdx);
+      } else {
+        article.content += faqSection;
+      }
     }
   }
 
-  // 6E. Ensure Final Section is an Actionable Checklist
+  // 6F. Ensure Final Section is an Actionable Checklist
   const allH2Matches = [...article.content.matchAll(/<h2([^>]*)>([\s\S]*?)<\/h2>/gi)];
   const lastH2Match = allH2Matches[allH2Matches.length - 1];
   if (lastH2Match && !lastH2Match[2].toLowerCase().includes('checklist')) {
@@ -905,6 +951,17 @@ export function enforceArticleStandards(article, existingArticles = []) {
   article.seoTitle = purgeBanned(cleanEmDashes(article.seoTitle));
   article.subtitle = purgeBanned(cleanEmDashes(article.subtitle));
   article.seoDescription = purgeBanned(cleanEmDashes(article.seoDescription));
+
+  // Re-sync Table of Contents with all actual H2 headings in the content
+  const finalH2Matches = [...article.content.matchAll(/<h2[^>]*id=["']([^"']+)["'][^>]*>([\s\S]*?)<\/h2>/gi)];
+  if (finalH2Matches.length > 0) {
+    article.toc = finalH2Matches.map(m => {
+      const id = m[1];
+      let h2Title = m[2].replace(/<[^>]+>/g, '').replace(/-/g, ' ').replace(/\s+/g, ' ').trim();
+      h2Title = purgeBanned(cleanEmDashes(h2Title));
+      return { id, title: h2Title };
+    });
+  }
 
   return article;
 }

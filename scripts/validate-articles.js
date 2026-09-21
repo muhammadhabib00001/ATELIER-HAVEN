@@ -118,6 +118,69 @@ articles.forEach((article, index) => {
   } else {
     console.log(`✅ Heading Hierarchy: Structured H2/H3 hierarchy confirmed.`);
   }
+
+  // 8. Lead Paragraph Check
+  if (!content.includes('class="lead-paragraph"')) {
+    console.error(`❌ Lead Paragraph VIOLATION: Missing <p class="lead-paragraph"> opening hook.`);
+    hasErrors = true;
+  } else {
+    console.log(`✅ Lead Paragraph: <p class="lead-paragraph"> opening hook confirmed.`);
+  }
+
+  // 9. Quick Formula Featured Snippet Check
+  const hasFormulaH2 = /<h2[^>]*id=["'][^"']*quick-formula[^"']*["'][^>]*>/i.test(content) || /<h2[^>]*>The Quick Formula/i.test(content);
+  if (!hasFormulaH2) {
+    console.error(`❌ Quick Formula VIOLATION: Missing first H2 'The Quick Formula to...' targeting Featured Snippet.`);
+    hasErrors = true;
+  } else {
+    console.log(`✅ Featured Snippet Formula: 'The Quick Formula to...' H2 confirmed.`);
+  }
+
+  // 10. Editorial Quote Check
+  if (!content.includes('editorial-quote')) {
+    console.error(`❌ Editorial Quote VIOLATION: Missing <div class="editorial-quote"> block.`);
+    hasErrors = true;
+  } else {
+    console.log(`✅ Editorial Quote: <div class="editorial-quote"> block confirmed.`);
+  }
+
+  // 11. FAQ Accordion Check (Exactly 3 items)
+  const hasFaqAccordion = content.includes('faq-accordion') && content.includes('faq-item');
+  const faqItemCount = (content.match(/class=["']faq-item["']/g) || []).length;
+  if (!hasFaqAccordion || faqItemCount !== 3) {
+    console.error(`❌ FAQ Accordion VIOLATION: Must contain <div class="faq-accordion"> with exactly 3 <div class="faq-item"> blocks (Found: ${faqItemCount}).`);
+    hasErrors = true;
+  } else {
+    console.log(`✅ FAQ Accordion: Exactly 3 FAQ items wrapped in faq-accordion confirmed.`);
+  }
+
+  // 12. Concluding Checklist Check
+  const hasChecklist = /<h2[^>]*id=["'][^"']*checklist[^"']*["'][^>]*>/i.test(content) || /<h2[^>]*>[^<]*Checklist<\/h2>/i.test(content);
+  if (!hasChecklist) {
+    console.error(`❌ Checklist VIOLATION: Missing concluding <h2 id="your-...-checklist"> section.`);
+    hasErrors = true;
+  } else {
+    console.log(`✅ Concluding Checklist: Actionable checklist H2 confirmed.`);
+  }
+
+  // 13. Title Length Check (Strictly 55 to 60 characters)
+  const titleLen = (article.title || '').length;
+  if (titleLen < 55 || titleLen > 60) {
+    console.error(`❌ Title Length VIOLATION: Title is ${titleLen} characters (Requirement: strictly 55 to 60 characters).`);
+    hasErrors = true;
+  } else {
+    console.log(`✅ Title Length: ${titleLen} characters (within 55 - 60 range).`);
+  }
+
+  // 14. Heading Dash Check (0 dashes or hyphens)
+  const headingMatches = [...content.matchAll(/<h([1-6])[^>]*>([\s\S]*?)<\/h\1>/gi)];
+  const dashHeadings = headingMatches.filter(m => m[2].includes('-') || m[2].includes('—'));
+  if (dashHeadings.length > 0) {
+    console.error(`❌ Heading Dash VIOLATION: Found hyphens/dashes in heading text: ${dashHeadings.map(m => m[2]).join(', ')}`);
+    hasErrors = true;
+  } else {
+    console.log(`✅ Heading Text: 0 hyphens or dashes found.`);
+  }
 });
 
 console.log(`------------------------------------------------------------\n`);
