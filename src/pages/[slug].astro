@@ -3,6 +3,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 import Breadcrumbs from '../components/Breadcrumbs.astro';
 import SocialShare from '../components/SocialShare.astro';
 import Newsletter from '../components/Newsletter.astro';
+import ArticleCard from '../components/ArticleCard.astro';
 import siteData from '../data/site.json';
 import articles from '../data/articles.json';
 
@@ -18,18 +19,22 @@ const { article } = Astro.props;
 const author = siteData.authors.find(a => a.slug === article.author) || siteData.authors[0];
 const category = siteData.categories.find(c => c.slug === article.category) || { name: article.category, slug: article.category };
 
-// 1. Related Articles: Prioritize same category, then shared author or keyword tags, then other guides (guaranteed minimum 3 cards)
-const categoryRelated = articles.filter(a => a.slug !== article.slug && a.category === article.category);
-const otherRelated = articles.filter(a => a.slug !== article.slug && a.category !== article.category);
-const relatedArticles = [...categoryRelated, ...otherRelated].slice(0, 3);
+// Sidebar Articles: Same category preferred, then recent
+const categoryArticles = articles.filter(a => a.slug !== article.slug && a.category === article.category);
+const otherArticles = articles.filter(a => a.slug !== article.slug && a.category !== article.category);
+const sidebarArticles = [...categoryArticles, ...otherArticles].slice(0, 4);
 
-// 2. Latest Architectural Articles: Most recently published articles on the platform (excluding current article)
+// Bottom Related Articles: 3 cards
+const relatedArticles = [...categoryArticles, ...otherArticles].slice(0, 3);
+
+// Latest Articles: 4 cards
 const latestArticles = articles
   .filter(a => a.slug !== article.slug)
   .sort((a, b) => new Date(b.publishedAt).getTime() - new Date(a.publishedAt).getTime())
   .slice(0, 4);
 
 const breadcrumbItems = [
+  { name: 'Home', url: '/' },
   { name: category.name, url: `/category/${category.slug}/` },
   { name: article.title }
 ];
@@ -66,224 +71,310 @@ const pageTitle = article.seoTitle
 >
   <Breadcrumbs items={breadcrumbItems} />
 
-  <!-- Article Hero Header -->
-  <article class="article-detail-container">
+  <article class="article-page">
+    <!-- Top Header Area -->
     <header class="article-header">
-      <div class="container article-container">
-        <div class="article-kicker-row">
-          <a href={`/category/${category.slug}/`} class="badge-category">
-            {category.name}
-          </a>
-          <span class="read-duration">{article.readTime}</span>
-        </div>
-
-        <h1 class="article-headline">{article.title}</h1>
-        <p class="article-subheadline">{article.subtitle}</p>
-
-        <!-- Byline & E-E-A-T Badges -->
-        <div class="article-byline-bar">
-          <div class="author-block">
-            <img src={author.avatar} alt={author.name} width="46" height="46" class="author-portrait" crossorigin="anonymous" referrerpolicy="no-referrer-when-downgrade" />
-            <div class="author-text">
-              <a href={`/author/${author.slug}/`} class="author-byline-name">{author.name}</a>
-              <span class="author-credentials">{author.credentials}</span>
-            </div>
+      <div class="container">
+        <div class="header-inner">
+          <div class="article-kicker-row">
+            <a href={`/category/${category.slug}/`} class="article-category-badge">
+              {category.name}
+            </a>
+            <span class="kicker-sep">&bull;</span>
+            <span class="read-duration">{article.readTime}</span>
           </div>
 
-          <div class="date-block">
-            <div class="date-item">
-              <span class="date-label">Published:</span>
-              <time datetime={article.publishedAt}>{formattedPublishedDate}</time>
-            </div>
-            {formattedUpdatedDate && (
-              <div class="date-item updated">
-                <span class="date-label">Fact-Checked & Updated:</span>
-                <time datetime={article.updatedAt}>{formattedUpdatedDate}</time>
+          <h1 class="article-headline">{article.title}</h1>
+          <p class="article-subheadline">{article.subtitle}</p>
+
+          <!-- Byline & Social Bar -->
+          <div class="article-byline-bar">
+            <div class="author-block">
+              <img
+                src={author.avatar}
+                alt={author.name}
+                width="44"
+                height="44"
+                class="author-portrait"
+                crossorigin="anonymous"
+                referrerpolicy="no-referrer-when-downgrade"
+              />
+              <div class="author-meta">
+                <span class="byline-name">
+                  By <a href={`/author/${author.slug}/`}>{author.name}</a>
+                </span>
+                <span class="byline-date">
+                  Updated {formattedUpdatedDate || formattedPublishedDate}
+                </span>
               </div>
-            )}
-          </div>
+            </div>
 
-          <div class="byline-share-wrapper">
-            <SocialShare url={Astro.url.href} title={article.title} description={article.subtitle} />
+            <div class="header-social-share">
+              <SocialShare url={Astro.url.href} title={article.title} description={article.subtitle} />
+            </div>
           </div>
         </div>
       </div>
     </header>
 
-    <!-- Full-Width Hero Cover Visual -->
-    <div class="article-cover-section">
-      <div class="container article-container">
-        <figure class="cover-figure">
-          <img 
-            src={article.coverImage} 
-            alt={article.coverAlt || article.title} 
+    <!-- Main Content & Sidebar Grid (Spruce 2-Column Layout) -->
+    <div class="container article-layout-grid">
+      <!-- Main Content Column -->
+      <div class="article-main-col">
+        <!-- Hero Cover Image -->
+        <div class="article-cover-wrap">
+          <img
+            src={article.coverImage}
+            alt={article.coverAlt || article.title}
             loading="eager"
             fetchpriority="high"
             decoding="async"
-            width="1200" 
-            height="700" 
-            class="cover-image" crossorigin="anonymous" referrerpolicy="no-referrer-when-downgrade" 
+            width="1200"
+            height="700"
+            class="cover-image"
+            crossorigin="anonymous"
+            referrerpolicy="no-referrer-when-downgrade"
           />
-          <figcaption class="cover-caption">
-            <h4 class="cover-image-heading">{article.coverAlt || article.title}</h4>
-          </figcaption>
-        </figure>
-      </div>
-    </div>
-
-    <!-- Editorial Body & Sidebar -->
-    <div class="container article-container">
-      <div class="article-body-wrapper">
-
-
-        <!-- Long-Form Editorial Content -->
-        <div class="article-body">
-          <!-- Key Takeaways Callout -->
-          {article.keyTakeaways && article.keyTakeaways.length > 0 && (
-            <div class="key-takeaways-card">
-              <div class="takeaways-header">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                  <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
-                  <polyline points="22 4 12 14.01 9 11.01"></polyline>
-                </svg>
-                <span>Architectural Takeaways & Key Specs</span>
-              </div>
-              <ul class="takeaways-list">
-                {article.keyTakeaways.map((point: string) => (
-                  <li>{point}</li>
-                ))}
-              </ul>
-            </div>
+          {article.coverAlt && (
+            <figcaption class="cover-caption">{article.coverAlt}</figcaption>
           )}
-
-          <!-- Main Article HTML Body -->
-          <div class="prose-content" set:html={article.content} />
-
-          <!-- Editorial Fact-Checking Disclaimer -->
-          <div class="fact-check-box">
-            <div class="fact-icon">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <circle cx="12" cy="12" r="10"></circle>
-                <line x1="12" y1="16" x2="12" y2="12"></line>
-                <line x1="12" y1="8" x2="12.01" y2="8"></line>
-              </svg>
-            </div>
-            <div class="fact-text">
-              <h4>Editorial Integrity & Peer Review</h4>
-              <p>
-                This publication adheres to strict non-sponsored editorial ethics. When architectural products or construction adhesives are referenced, recommendations reflect independent field testing and national building code tolerances. Read our <a href="/editorial-policy">Editorial Policy</a>.
-              </p>
-            </div>
-          </div>
-
-          <!-- Bottom Social Bar -->
-          <div class="bottom-share-row">
-            <SocialShare url={Astro.url.href} title={article.title} description={article.subtitle} />
-          </div>
-
-          <!-- Author Bio Box -->
-          <section class="author-bio-section" aria-labelledby="author-bio-title">
-            <div class="author-bio-card">
-              <img src={author.avatar} alt={author.name} width="84" height="84" class="author-bio-avatar" crossorigin="anonymous" referrerpolicy="no-referrer-when-downgrade" />
-              <div class="author-bio-details">
-                <span class="bio-written-by">Written by</span>
-                <h3 id="author-bio-title" class="author-bio-name">
-                  <a href={`/author/${author.slug}/`}>{author.name}</a>
-                </h3>
-                <span class="author-bio-role">{author.role}</span>
-                <p class="author-bio-text">{author.bio}</p>
-                <div class="author-bio-footer">
-                  <a href={`/author/${author.slug}/`} class="bio-link">Explore Author's Full Portfolio &rarr;</a>
-                </div>
-              </div>
-            </div>
-          </section>
         </div>
+
+        <!-- Key Takeaways Box -->
+        {article.keyTakeaways && article.keyTakeaways.length > 0 && (
+          <div class="key-takeaways-card">
+            <div class="takeaways-header">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                <polyline points="20 6 9 17 4 12"></polyline>
+              </svg>
+              <span>Key Takeaways</span>
+            </div>
+            <ul class="takeaways-list">
+              {article.keyTakeaways.map((point: string) => (
+                <li>{point}</li>
+              ))}
+            </ul>
+          </div>
+        )}
+
+        <!-- Mobile In-Line Table of Contents -->
+        {article.toc && article.toc.length > 0 && (
+          <div class="mobile-toc-card">
+            <div class="mobile-toc-header">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <line x1="8" y1="6" x2="21" y2="6"></line>
+                <line x1="8" y1="12" x2="21" y2="12"></line>
+                <line x1="8" y1="18" x2="21" y2="18"></line>
+                <line x1="3" y1="6" x2="3.01" y2="6"></line>
+                <line x1="3" y1="12" x2="3.01" y2="12"></line>
+                <line x1="3" y1="18" x2="3.01" y2="18"></line>
+              </svg>
+              <span>In This Article</span>
+            </div>
+            <ul class="mobile-toc-list">
+              {article.toc.map((item: { id: string; title: string }) => (
+                <li>
+                  <a href={`#${item.id}`}>{item.title}</a>
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
+
+        <!-- Article Prose HTML Content -->
+        <div class="prose-content" set:html={article.content} />
+
+        <!-- Editorial Trust & Integrity Box -->
+        <div class="fact-check-box">
+          <div class="fact-icon">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+            </svg>
+          </div>
+          <div class="fact-text">
+            <h4>Editorial Quality & Review Process</h4>
+            <p>
+              Atrium Livings articles are authored and reviewed by certified architects, structural designers, and interior planning specialists. We test dimensions and specifications against national residential codes. Read our <a href="/editorial-policy/">Editorial Policy</a>.
+            </p>
+          </div>
+        </div>
+
+        <!-- Bottom Social Share -->
+        <div class="bottom-share-row">
+          <span class="bottom-share-label">Share this guide:</span>
+          <SocialShare url={Astro.url.href} title={article.title} description={article.subtitle} />
+        </div>
+
+        <!-- Author Bio Card -->
+        <section class="author-bio-card" aria-labelledby="author-bio-title">
+          <img
+            src={author.avatar}
+            alt={author.name}
+            width="72"
+            height="72"
+            class="author-bio-avatar"
+            crossorigin="anonymous"
+            referrerpolicy="no-referrer-when-downgrade"
+          />
+          <div class="author-bio-details">
+            <span class="bio-eyebrow">About the Author</span>
+            <h3 id="author-bio-title" class="author-bio-name">
+              <a href={`/author/${author.slug}/`}>{author.name}</a>
+            </h3>
+            <span class="author-bio-role">{author.role}</span>
+            <p class="author-bio-text">{author.bio}</p>
+            <a href={`/author/${author.slug}/`} class="author-folio-link">View all articles by {author.name} &rarr;</a>
+          </div>
+        </section>
       </div>
+
+      <!-- Right Rail Sidebar (The Spruce Magazine Layout) -->
+      <aside class="article-sidebar">
+        <!-- Sticky Widget: Table of Contents -->
+        {article.toc && article.toc.length > 0 && (
+          <div class="sidebar-widget toc-widget">
+            <div class="widget-header">
+              <span class="widget-title">In This Article</span>
+            </div>
+            <nav class="sidebar-toc-nav" aria-label="Table of contents">
+              <ol class="sidebar-toc-list">
+                {article.toc.map((item: { id: string; title: string }, idx: number) => (
+                  <li>
+                    <a href={`#${item.id}`} class="sidebar-toc-link">
+                      <span class="toc-step">{idx + 1}.</span>
+                      <span class="toc-name">{item.title}</span>
+                    </a>
+                  </li>
+                ))}
+              </ol>
+            </nav>
+          </div>
+        )}
+
+        <!-- More in Category Widget -->
+        <div class="sidebar-widget">
+          <div class="widget-header">
+            <span class="widget-title">More in {category.name}</span>
+          </div>
+          <div class="sidebar-articles-list">
+            {sidebarArticles.map(art => (
+              <a href={`/${art.slug}/`} class="sidebar-card-link">
+                <div class="sidebar-card-img-wrap">
+                  <img
+                    src={art.coverImage}
+                    alt={art.title}
+                    width="90"
+                    height="60"
+                    loading="lazy"
+                    class="sidebar-card-img"
+                    crossorigin="anonymous"
+                    referrerpolicy="no-referrer-when-downgrade"
+                  />
+                </div>
+                <div class="sidebar-card-text">
+                  <h4 class="sidebar-card-title">{art.title}</h4>
+                  <span class="sidebar-card-time">{art.readTime}</span>
+                </div>
+              </a>
+            ))}
+          </div>
+        </div>
+
+        <!-- Mini Newsletter Widget -->
+        <div class="sidebar-widget nl-widget">
+          <span class="nl-eyebrow">Newsletter</span>
+          <h4 class="nl-widget-title">Get Expert Design Tips</h4>
+          <p class="nl-widget-desc">Weekly architectural guidance delivered straight to your inbox.</p>
+          <form class="sidebar-nl-form" onsubmit="event.preventDefault(); alert('Thank you for subscribing!');">
+            <input type="email" placeholder="Your email address" required aria-label="Email address" class="sidebar-nl-input" />
+            <button type="submit" class="sidebar-nl-btn">Sign Up</button>
+          </form>
+        </div>
+      </aside>
     </div>
   </article>
 
-  <!-- Related Articles Grid -->
+  <!-- Related Articles Grid (Below Article) -->
   {relatedArticles.length > 0 && (
-    <section class="related-section">
+    <section class="bottom-related-section">
       <div class="container">
-        <div class="related-header">
-          <span class="related-kicker">Recommended Reading</span>
-          <h2 class="related-title">Related Architecture & Design Guides</h2>
+        <div class="section-bar">
+          <span class="section-bar-label">Related Guides</span>
+          <div class="section-bar-line"></div>
         </div>
-        <div class="related-grid">
+        <div class="bottom-cards-grid three-col">
           {relatedArticles.map(art => (
-            <div class="related-card-item">
-              <a href={`/${art.slug}/`} class="related-img-link">
-                <img src={art.coverImage} alt={art.title} loading="lazy" width="400" height="250" class="related-img" crossorigin="anonymous" referrerpolicy="no-referrer-when-downgrade" />
-              </a>
-              <a href={`/category/${art.category}/`} class="related-cat">{art.category}</a>
-              <h3 class="related-card-title">
-                <a href={`/${art.slug}/`}>{art.title}</a>
-              </h3>
-              <p class="related-card-desc">{art.subtitle}</p>
-            </div>
+            <ArticleCard article={art} variant="standard" />
           ))}
         </div>
       </div>
     </section>
   )}
 
-  <!-- Latest Articles Section -->
+  <!-- Latest Guides Section -->
   {latestArticles.length > 0 && (
-    <section class="latest-guides-section">
+    <section class="bottom-latest-section">
       <div class="container">
-        <div class="related-header">
-          <span class="related-kicker">Fresh Off The Press</span>
-          <h2 class="related-title">Latest Architectural Guides & Dispatches</h2>
+        <div class="section-bar">
+          <span class="section-bar-label">Latest from Atrium Livings</span>
+          <div class="section-bar-line"></div>
         </div>
-        <div class="latest-guides-grid">
+        <div class="bottom-cards-grid four-col">
           {latestArticles.map(art => (
-            <div class="latest-card-item">
-              <a href={`/${art.slug}/`} class="latest-img-link">
-                <img src={art.coverImage} alt={art.title} loading="lazy" width="350" height="220" class="latest-img" crossorigin="anonymous" referrerpolicy="no-referrer-when-downgrade" />
-              </a>
-              <div class="latest-card-content">
-                <div class="latest-meta-row">
-                  <a href={`/category/${art.category}/`} class="related-cat">{art.category}</a>
-                  <span class="latest-read-time">{art.readTime}</span>
-                </div>
-                <h3 class="latest-card-title">
-                  <a href={`/${art.slug}/`}>{art.title}</a>
-                </h3>
-              </div>
-            </div>
+            <ArticleCard article={art} variant="standard" />
           ))}
         </div>
       </div>
     </section>
   )}
 
-  <!-- Newsletter -->
-  <div class="container">
-    <Newsletter />
-  </div>
+  <!-- Full Width Newsletter -->
+  <Newsletter />
 </BaseLayout>
 
 <style>
+  /* ===== Header Area ===== */
   .article-header {
-    padding: 2.5rem 0 1.75rem;
+    padding: 2rem 0 1.5rem;
+    background: #ffffff;
     border-bottom: 1px solid var(--color-border);
     margin-bottom: 2rem;
+  }
+
+  .header-inner {
+    max-width: 900px;
   }
 
   .article-kicker-row {
     display: flex;
     align-items: center;
-    gap: 1rem;
-    margin-bottom: 1rem;
+    gap: 0.6rem;
+    margin-bottom: 0.85rem;
+  }
+
+  .article-category-badge {
+    font-size: 0.6875rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--color-accent);
+    text-decoration: none;
+  }
+
+  .article-category-badge:hover {
+    text-decoration: underline;
+  }
+
+  .kicker-sep {
+    color: var(--color-border-dark);
+    font-size: 0.75rem;
   }
 
   .read-duration {
     font-size: 0.6875rem;
     font-weight: 600;
     color: var(--color-text-light);
-    letter-spacing: 0.06em;
+    letter-spacing: 0.04em;
     text-transform: uppercase;
   }
 
@@ -293,16 +384,16 @@ const pageTitle = article.seoTitle
     font-weight: 700;
     line-height: 1.2;
     color: var(--color-text-main);
-    margin-bottom: 1rem;
+    margin-bottom: 0.85rem;
     letter-spacing: -0.01em;
   }
 
   .article-subheadline {
+    font-family: var(--font-sans);
     font-size: 1.1rem;
     color: var(--color-text-muted);
     line-height: 1.6;
-    margin-bottom: 1.75rem;
-    font-family: var(--font-sans);
+    margin-bottom: 1.5rem;
     font-weight: 400;
   }
 
@@ -311,8 +402,7 @@ const pageTitle = article.seoTitle
     justify-content: space-between;
     align-items: center;
     border-top: 1px solid var(--color-border);
-    border-bottom: 1px solid var(--color-border);
-    padding: 1rem 0;
+    padding-top: 1rem;
     flex-wrap: wrap;
     gap: 1rem;
   }
@@ -320,143 +410,166 @@ const pageTitle = article.seoTitle
   .author-block {
     display: flex;
     align-items: center;
-    gap: 0.85rem;
+    gap: 0.75rem;
   }
 
   .author-portrait {
-    width: 46px;
-    height: 46px;
+    width: 44px;
+    height: 44px;
     border-radius: 50%;
     object-fit: cover;
   }
 
-  .author-text {
+  .author-meta {
     display: flex;
     flex-direction: column;
+    gap: 0.15rem;
   }
 
-  .author-byline-name {
-    font-weight: 700;
-    font-size: 0.9375rem;
+  .byline-name {
+    font-size: 0.875rem;
+    font-weight: 600;
     color: var(--color-text-main);
   }
 
-  .author-byline-name:hover {
-    color: var(--color-accent);
+  .byline-name a {
+    color: inherit;
+    text-decoration: none;
   }
 
-  .author-credentials {
+  .byline-name a:hover {
+    color: var(--color-accent);
+    text-decoration: underline;
+  }
+
+  .byline-date {
     font-size: 0.75rem;
     color: var(--color-text-light);
   }
 
-  .date-block {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-end;
-    font-size: 0.75rem;
-    color: var(--color-text-muted);
+  /* ===== Spruce 2-Column Article Layout ===== */
+  .article-layout-grid {
+    display: grid;
+    grid-template-columns: 1fr 320px;
+    gap: 3.5rem;
+    align-items: start;
+    padding-bottom: 3rem;
   }
 
-  .date-item {
-    display: flex;
-    gap: 0.35rem;
+  .article-main-col {
+    min-width: 0;
+    max-width: 820px;
   }
 
-  .date-label {
-    font-weight: 600;
-    color: var(--color-text-light);
-  }
-
-  .date-item.updated {
-    color: var(--color-accent);
-    font-weight: 600;
-  }
-
-  .article-cover-section {
-    margin-bottom: 3.5rem;
-  }
-
-  .cover-figure {
-    margin: 0;
+  /* Cover Image */
+  .article-cover-wrap {
+    margin-bottom: 2rem;
   }
 
   .cover-image {
     width: 100%;
-    aspect-ratio: 16 / 9;
+    aspect-ratio: 16 / 10;
     object-fit: cover;
     display: block;
+    background: #f0f0f0;
   }
 
   .cover-caption {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-top: 0.85rem;
-    flex-wrap: wrap;
-    gap: 0.5rem;
-  }
-
-  .cover-image-heading {
-    font-family: var(--font-sans);
-    font-size: 0.8125rem;
-    font-weight: 500;
-    letter-spacing: 0.02em;
-    color: var(--color-text-muted);
-    margin: 0;
+    font-size: 0.75rem;
+    color: var(--color-text-light);
     line-height: 1.45;
-  }
-
-  .photo-credit {
+    margin-top: 0.5rem;
     font-style: italic;
   }
 
-  .article-body-wrapper {
-    position: relative;
-  }
-
-  .byline-share-wrapper {
-    display: flex;
-    align-items: center;
-  }
-
+  /* Key Takeaways */
   .key-takeaways-card {
-    background-color: var(--color-surface-subtle);
-    border: 1px solid var(--color-border);
+    background-color: var(--color-accent-light);
     border-left: 4px solid var(--color-accent);
-    border-radius: 4px;
-    padding: 1.75rem;
+    padding: 1.5rem 1.75rem;
     margin-bottom: 2.5rem;
   }
 
   .takeaways-header {
     display: flex;
     align-items: center;
-    gap: 0.6rem;
+    gap: 0.5rem;
     font-size: 0.8125rem;
     font-weight: 700;
     text-transform: uppercase;
     letter-spacing: 0.1em;
     color: var(--color-accent);
-    margin-bottom: 1rem;
+    margin-bottom: 0.85rem;
   }
 
   .takeaways-list {
-    list-style: square;
-    padding-left: 1.25rem;
+    list-style: none;
+    padding: 0;
+    margin: 0;
     display: flex;
     flex-direction: column;
     gap: 0.65rem;
-    font-size: 0.9375rem;
-    color: var(--color-text-main);
-    line-height: 1.5;
   }
 
-  /* Prose Editorial Styling */
+  .takeaways-list li {
+    font-size: 0.9375rem;
+    line-height: 1.55;
+    color: var(--color-text-main);
+    position: relative;
+    padding-left: 1.35rem;
+  }
+
+  .takeaways-list li::before {
+    content: "✓";
+    position: absolute;
+    left: 0;
+    color: var(--color-accent);
+    font-weight: 700;
+  }
+
+  /* Mobile Inline TOC */
+  .mobile-toc-card {
+    display: none;
+    background: var(--color-surface-subtle);
+    border: 1px solid var(--color-border);
+    padding: 1.25rem 1.5rem;
+    margin-bottom: 2rem;
+  }
+
+  .mobile-toc-header {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--color-text-main);
+    margin-bottom: 0.75rem;
+  }
+
+  .mobile-toc-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .mobile-toc-list a {
+    font-size: 0.875rem;
+    color: var(--color-accent);
+    text-decoration: underline;
+    text-underline-offset: 2px;
+  }
+
+  /* ===== Prose Styling (The Spruce Magazine Typography) ===== */
   .prose-content {
+    font-family: var(--font-sans);
     font-size: 1.0625rem;
     line-height: 1.8;
-    color: #222222;
+    color: #1a1a1a;
   }
 
   .prose-content :global(p) {
@@ -464,35 +577,45 @@ const pageTitle = article.seoTitle
   }
 
   .prose-content :global(p.lead-paragraph) {
-    font-size: 1.25rem;
-    line-height: 1.65;
-    color: var(--color-text-main);
+    font-size: 1.2rem;
+    line-height: 1.7;
+    color: #222222;
     font-weight: 400;
+    margin-bottom: 2rem;
   }
 
   .prose-content :global(h2) {
     font-family: var(--font-serif);
-    font-size: 1.85rem;
+    font-size: 1.75rem;
     font-weight: 700;
     color: var(--color-text-main);
-    margin-top: 3rem;
-    margin-bottom: 1.25rem;
-    line-height: 1.25;
-    scroll-margin-top: 100px;
+    margin-top: 2.75rem;
+    margin-bottom: 1rem;
+    line-height: 1.3;
+    scroll-margin-top: 120px;
+    padding-bottom: 0.35rem;
+    border-bottom: 1px solid var(--color-border);
   }
 
   .prose-content :global(h3) {
     font-family: var(--font-serif);
-    font-size: 1.35rem;
+    font-size: 1.25rem;
     font-weight: 700;
     color: var(--color-text-main);
     margin-top: 2rem;
     margin-bottom: 0.75rem;
+    line-height: 1.35;
   }
 
-  .prose-content :global(ul), .prose-content :global(ol) {
+  .prose-content :global(ul),
+  .prose-content :global(ol) {
     margin-bottom: 1.5rem;
     padding-left: 1.5rem;
+  }
+
+  .prose-content :global(li) {
+    margin-bottom: 0.5rem;
+    line-height: 1.65;
   }
 
   .prose-content :global(a) {
@@ -501,21 +624,11 @@ const pageTitle = article.seoTitle
     text-decoration: underline;
     text-underline-offset: 3px;
     text-decoration-thickness: 1.5px;
-    transition: color 0.15s ease, text-decoration-color 0.15s ease;
+    transition: color 0.15s ease;
   }
 
   .prose-content :global(a:hover) {
     color: var(--color-accent-hover);
-    text-decoration-color: var(--color-accent-hover);
-  }
-
-  .prose-content :global(a[target="_blank"])::after {
-    content: " ↗";
-    font-size: 0.75em;
-    font-weight: bold;
-    display: inline-block;
-    vertical-align: super;
-    line-height: 0;
   }
 
   .prose-content :global(strong),
@@ -524,13 +637,10 @@ const pageTitle = article.seoTitle
     color: var(--color-text-main);
   }
 
-  .prose-content :global(li) {
-    margin-bottom: 0.5rem;
-  }
-
+  /* Pull Quotes (The Spruce Style) */
   .prose-content :global(.editorial-quote) {
-    margin: 3rem 0;
-    padding: 2rem 2.5rem;
+    margin: 2.5rem 0;
+    padding: 1.75rem 2rem;
     border-top: 2px solid var(--color-accent);
     border-bottom: 2px solid var(--color-accent);
     background-color: var(--color-surface-subtle);
@@ -539,15 +649,15 @@ const pageTitle = article.seoTitle
 
   .prose-content :global(.editorial-quote blockquote) {
     font-family: var(--font-serif);
-    font-size: 1.45rem;
+    font-size: 1.35rem;
     font-style: italic;
     color: var(--color-text-main);
-    line-height: 1.5;
-    margin-bottom: 1rem;
+    line-height: 1.55;
+    margin-bottom: 0.75rem;
   }
 
   .prose-content :global(.editorial-quote cite) {
-    font-size: 0.8125rem;
+    font-size: 0.75rem;
     font-style: normal;
     font-weight: 700;
     text-transform: uppercase;
@@ -555,148 +665,138 @@ const pageTitle = article.seoTitle
     color: var(--color-accent);
   }
 
+  /* Specification Card */
   .prose-content :global(.spec-card) {
-    background-color: #FFFFFF;
+    background-color: #ffffff;
     border: 1px solid var(--color-border);
-    border-radius: 6px;
-    padding: 1.5rem;
+    border-top: 3px solid var(--color-accent);
+    padding: 1.5rem 1.75rem;
     margin: 2.5rem 0;
   }
 
   .prose-content :global(.spec-card h4) {
-    font-size: 0.8125rem;
+    font-size: 0.75rem;
     font-weight: 700;
     text-transform: uppercase;
     letter-spacing: 0.12em;
     color: var(--color-accent);
-    margin-bottom: 0.75rem;
+    margin-bottom: 0.85rem;
   }
 
-  .prose-content :global(.editorial-table) {
-    width: 100%;
-    border-collapse: collapse;
-    margin: 2.5rem 0;
+  .prose-content :global(.spec-card ul) {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+  }
+
+  .prose-content :global(.spec-card li) {
     font-size: 0.875rem;
+    line-height: 1.5;
+    border-bottom: 1px solid #f0f0f0;
+    padding-bottom: 0.5rem;
+    margin: 0;
   }
 
-  .prose-content :global(.editorial-table th),
-  .prose-content :global(.editorial-table td) {
-    padding: 0.85rem 1rem;
-    text-align: left;
-    border-bottom: 1px solid var(--color-border);
+  .prose-content :global(.spec-card li:last-child) {
+    border-bottom: none;
+    padding-bottom: 0;
   }
 
-  .prose-content :global(.editorial-table th) {
-    background-color: var(--color-surface-subtle);
-    font-weight: 700;
-    color: var(--color-text-main);
-  }
-
+  /* FAQ Accordion */
   .prose-content :global(.faq-accordion) {
     margin: 2.5rem 0;
     display: flex;
     flex-direction: column;
-    gap: 1.25rem;
+    gap: 1rem;
   }
 
   .prose-content :global(.faq-item) {
-    background-color: #FFFFFF;
+    background-color: #ffffff;
     border: 1px solid var(--color-border);
     border-left: 3px solid var(--color-accent);
-    border-radius: 6px;
-    padding: 1.5rem 1.75rem;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.02);
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
-  }
-
-  .prose-content :global(.faq-item:hover) {
-    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.05);
-    border-color: var(--color-accent);
+    padding: 1.25rem 1.5rem;
   }
 
   .prose-content :global(.faq-item h3) {
-    font-family: var(--font-serif);
-    font-size: 1.15rem;
+    font-family: var(--font-sans);
+    font-size: 1.05rem;
     font-weight: 700;
     color: var(--color-text-main);
-    margin-top: 0;
-    margin-bottom: 0.65rem;
-    line-height: 1.35;
+    margin: 0 0 0.5rem;
+    line-height: 1.4;
   }
 
   .prose-content :global(.faq-item p) {
     font-size: 0.9375rem;
-    line-height: 1.65;
+    line-height: 1.6;
     color: var(--color-text-muted);
     margin: 0;
   }
 
   .prose-content :global(.faq-item p strong) {
     color: var(--color-text-main);
-    font-weight: 700;
   }
 
-  /* In-Article Editorial Figures */
+  /* Editorial Figures */
   .prose-content :global(.editorial-figure) {
-    margin: 3.5rem 0;
+    margin: 2.75rem 0;
     padding: 0;
-    border-radius: 8px;
-    overflow: hidden;
-    background-color: var(--color-surface-subtle);
+    background-color: #f7f7f7;
     border: 1px solid var(--color-border);
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
   }
 
   .prose-content :global(.editorial-figure img) {
     width: 100%;
     height: auto;
-    max-height: 520px;
+    max-height: 500px;
     object-fit: cover;
     display: block;
   }
 
   .prose-content :global(.editorial-figure figcaption) {
-    padding: 1rem 1.25rem;
-    font-size: 0.85rem;
+    padding: 0.85rem 1.15rem;
+    font-size: 0.8125rem;
     color: var(--color-text-muted);
-    background-color: #FFFFFF;
+    background-color: #ffffff;
     border-top: 1px solid var(--color-border);
-    font-style: italic;
     line-height: 1.5;
   }
 
   .prose-content :global(.editorial-figure figcaption strong) {
-    font-style: normal;
     color: var(--color-text-main);
     text-transform: uppercase;
-    letter-spacing: 0.05em;
-    font-size: 0.78rem;
+    letter-spacing: 0.04em;
+    font-size: 0.75rem;
     display: inline-block;
-    margin-right: 0.4rem;
+    margin-right: 0.35rem;
   }
 
+  /* Fact Check Box */
   .fact-check-box {
     display: flex;
     gap: 1rem;
     background-color: var(--color-surface-subtle);
     border: 1px solid var(--color-border);
-    border-radius: 6px;
-    padding: 1.5rem;
-    margin: 3.5rem 0 2rem;
+    padding: 1.25rem 1.5rem;
+    margin: 3rem 0 2rem;
   }
 
   .fact-icon {
     color: var(--color-accent);
     flex-shrink: 0;
+    padding-top: 0.15rem;
   }
 
   .fact-text h4 {
     font-size: 0.8125rem;
     font-weight: 700;
     text-transform: uppercase;
-    letter-spacing: 0.1em;
+    letter-spacing: 0.08em;
     color: var(--color-text-main);
-    margin-bottom: 0.35rem;
+    margin-bottom: 0.3rem;
   }
 
   .fact-text p {
@@ -707,20 +807,31 @@ const pageTitle = article.seoTitle
   }
 
   .bottom-share-row {
-    padding: 1.5rem 0;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1.25rem 0;
     border-top: 1px solid var(--color-border);
     border-bottom: 1px solid var(--color-border);
-    margin-bottom: 3.5rem;
+    margin-bottom: 3rem;
+  }
+
+  .bottom-share-label {
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--color-text-light);
   }
 
   /* Author Bio Section */
   .author-bio-card {
     display: flex;
-    gap: 2rem;
-    background-color: var(--color-surface);
+    gap: 1.5rem;
+    background-color: #ffffff;
     border: 1px solid var(--color-border);
-    border-radius: 6px;
-    padding: 2.25rem;
+    padding: 2rem;
+    margin-bottom: 2rem;
   }
 
   .author-bio-avatar {
@@ -729,106 +840,191 @@ const pageTitle = article.seoTitle
     flex-shrink: 0;
   }
 
-  .bio-written-by {
+  .bio-eyebrow {
     font-size: 0.6875rem;
     font-weight: 700;
     text-transform: uppercase;
-    letter-spacing: 0.12em;
+    letter-spacing: 0.1em;
     color: var(--color-text-light);
     display: block;
-    margin-bottom: 0.25rem;
+    margin-bottom: 0.2rem;
   }
 
   .author-bio-name {
     font-family: var(--font-serif);
-    font-size: 1.45rem;
+    font-size: 1.25rem;
     font-weight: 700;
-    margin-bottom: 0.25rem;
+    margin-bottom: 0.2rem;
+  }
+
+  .author-bio-name a {
+    color: inherit;
+    text-decoration: none;
+  }
+
+  .author-bio-name a:hover {
+    color: var(--color-accent);
   }
 
   .author-bio-role {
-    font-size: 0.8125rem;
+    font-size: 0.75rem;
     color: var(--color-accent);
     font-weight: 600;
     display: block;
-    margin-bottom: 0.75rem;
+    margin-bottom: 0.65rem;
   }
 
   .author-bio-text {
     font-size: 0.875rem;
     color: var(--color-text-muted);
     line-height: 1.6;
-    margin-bottom: 1.25rem;
+    margin-bottom: 0.85rem;
   }
 
-  .bio-link {
+  .author-folio-link {
     font-size: 0.75rem;
     font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 0.08em;
-    color: var(--color-dark);
+    color: var(--color-text-main);
+    text-decoration: none;
   }
 
-  .bio-link:hover {
+  .author-folio-link:hover {
     color: var(--color-accent);
   }
 
-  /* Related section */
-  .related-section {
-    background-color: var(--color-surface-subtle);
-    border-top: 1px solid var(--color-border);
-    border-bottom: 1px solid var(--color-border);
-    padding: 3rem 0;
-    margin-top: 3rem;
-  }
-
-  .related-header {
-    margin-bottom: 2rem;
+  /* ===== Right Rail Sidebar (Spruce Style) ===== */
+  .article-sidebar {
     display: flex;
-    align-items: center;
-    gap: 1rem;
-  }
-
-  .related-kicker {
-    font-size: 0.75rem;
-    font-weight: 700;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    color: var(--color-text-main);
-    white-space: nowrap;
-    padding-bottom: 0.4rem;
-    border-bottom: 2px solid var(--color-text-main);
-  }
-
-  .related-title {
-    display: none;
-  }
-
-  .related-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
+    flex-direction: column;
     gap: 2rem;
   }
 
-  .related-img-link {
-    display: block;
-    aspect-ratio: 3 / 2;
-    overflow: hidden;
-    margin-bottom: 0.75rem;
+  .sidebar-widget {
+    background: #ffffff;
+    border: 1px solid var(--color-border);
+    padding: 1.25rem;
   }
 
-  .related-img {
+  .widget-header {
+    border-bottom: 2px solid var(--color-text-main);
+    padding-bottom: 0.5rem;
+    margin-bottom: 1rem;
+  }
+
+  .widget-title {
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--color-text-main);
+  }
+
+  /* Sticky TOC in Sidebar */
+  .toc-widget {
+    position: sticky;
+    top: 1.5rem;
+    background: #ffffff;
+  }
+
+  .sidebar-toc-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .sidebar-toc-link {
+    display: flex;
+    align-items: baseline;
+    gap: 0.4rem;
+    font-size: 0.8125rem;
+    color: var(--color-text-muted);
+    line-height: 1.4;
+    text-decoration: none;
+    transition: color 0.15s ease;
+  }
+
+  .sidebar-toc-link:hover {
+    color: var(--color-accent);
+  }
+
+  .toc-step {
+    font-size: 0.6875rem;
+    font-weight: 700;
+    color: var(--color-accent);
+    flex-shrink: 0;
+  }
+
+  .toc-name {
+    flex: 1;
+  }
+
+  /* Sidebar Articles */
+  .sidebar-articles-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.85rem;
+  }
+
+  .sidebar-card-link {
+    display: grid;
+    grid-template-columns: 85px 1fr;
+    gap: 0.75rem;
+    text-decoration: none;
+    align-items: start;
+    padding-bottom: 0.85rem;
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  .sidebar-card-link:last-child {
+    border-bottom: none;
+    padding-bottom: 0;
+  }
+
+  .sidebar-card-img-wrap {
+    aspect-ratio: 3 / 2;
+    overflow: hidden;
+    background: #f0f0f0;
+  }
+
+  .sidebar-card-img {
     width: 100%;
     height: 100%;
     object-fit: cover;
-    transition: opacity 0.2s ease;
+    display: block;
+    transition: opacity 0.15s ease;
   }
 
-  .related-card-item:hover .related-img {
-    opacity: 0.9;
+  .sidebar-card-link:hover .sidebar-card-img {
+    opacity: 0.85;
   }
 
-  .related-cat {
+  .sidebar-card-title {
+    font-family: var(--font-sans);
+    font-size: 0.8125rem;
+    font-weight: 600;
+    color: var(--color-text-main);
+    line-height: 1.35;
+    margin-bottom: 0.25rem;
+  }
+
+  .sidebar-card-link:hover .sidebar-card-title {
+    color: var(--color-accent);
+  }
+
+  .sidebar-card-time {
+    font-size: 0.6875rem;
+    color: var(--color-text-light);
+  }
+
+  /* Mini Newsletter */
+  .nl-widget {
+    background-color: var(--color-surface-subtle);
+  }
+
+  .nl-eyebrow {
     font-size: 0.625rem;
     font-weight: 700;
     text-transform: uppercase;
@@ -838,124 +1034,137 @@ const pageTitle = article.seoTitle
     margin-bottom: 0.35rem;
   }
 
-  .related-card-title {
+  .nl-widget-title {
     font-family: var(--font-serif);
     font-size: 1.05rem;
     font-weight: 700;
-    line-height: 1.35;
-  }
-
-  .related-card-desc {
-    font-size: 0.8125rem;
-    color: var(--color-text-muted);
-    line-height: 1.5;
-    margin-top: 0.5rem;
-    display: -webkit-box;
-    -webkit-line-clamp: 2;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-  }
-
-  /* Latest Guides Section */
-  .latest-guides-section {
-    background-color: var(--color-surface);
-    border-bottom: 1px solid var(--color-border);
-    padding: 4.5rem 0;
-  }
-
-  .latest-guides-grid {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 1.75rem;
-  }
-
-  .latest-card-item {
-    background: #FFFFFF;
-    border: 1px solid var(--color-border);
-    border-radius: 6px;
-    overflow: hidden;
-    display: flex;
-    flex-direction: column;
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
-  }
-
-  .latest-card-item:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.05);
-    border-color: var(--color-accent);
-  }
-
-  .latest-img-link {
-    display: block;
-    aspect-ratio: 16 / 10;
-    overflow: hidden;
-  }
-
-  .latest-img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    transition: transform 0.3s ease;
-  }
-
-  .latest-card-item:hover .latest-img {
-    transform: scale(1.05);
-  }
-
-  .latest-card-content {
-    padding: 1.15rem;
-    display: flex;
-    flex-direction: column;
-    flex: 1;
-  }
-
-  .latest-meta-row {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+    color: var(--color-text-main);
     margin-bottom: 0.4rem;
   }
 
-  .latest-read-time {
-    font-size: 0.6875rem;
-    color: var(--color-text-light);
-    font-weight: 500;
+  .nl-widget-desc {
+    font-size: 0.8125rem;
+    color: var(--color-text-muted);
+    line-height: 1.5;
+    margin-bottom: 0.85rem;
   }
 
-  .latest-card-title {
-    font-family: var(--font-serif);
-    font-size: 0.95rem;
-    font-weight: 700;
-    line-height: 1.35;
-    margin: 0;
+  .sidebar-nl-form {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
   }
 
-  .latest-card-title a {
+  .sidebar-nl-input {
+    padding: 0.55rem 0.75rem;
+    font-size: 0.8125rem;
+    border: 1px solid var(--color-border);
+    outline: none;
+    background: #ffffff;
     color: var(--color-text-main);
   }
 
-  .latest-card-title a:hover {
-    color: var(--color-accent);
+  .sidebar-nl-btn {
+    padding: 0.55rem;
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    background-color: var(--color-accent);
+    color: #ffffff;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.15s ease;
   }
 
+  .sidebar-nl-btn:hover {
+    background-color: var(--color-accent-hover);
+  }
+
+  /* ===== Bottom Sections ===== */
+  .bottom-related-section,
+  .bottom-latest-section {
+    padding: 2.5rem 0 1rem;
+    border-top: 1px solid var(--color-border);
+  }
+
+  .section-bar {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .section-bar-label {
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--color-text-main);
+    white-space: nowrap;
+    border-bottom: 2px solid var(--color-text-main);
+    padding-bottom: 0.4rem;
+  }
+
+  .section-bar-line {
+    flex: 1;
+    height: 1px;
+    background: var(--color-border);
+  }
+
+  .bottom-cards-grid {
+    display: grid;
+    gap: 2rem;
+  }
+
+  .bottom-cards-grid.three-col {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  .bottom-cards-grid.four-col {
+    grid-template-columns: repeat(4, 1fr);
+  }
+
+  /* ===== Responsive Breakpoints ===== */
   @media (max-width: 1024px) {
-    .latest-guides-grid {
+    .article-layout-grid {
+      grid-template-columns: 1fr 280px;
+      gap: 2rem;
+    }
+    .bottom-cards-grid.four-col {
       grid-template-columns: repeat(2, 1fr);
     }
   }
 
-  @media (max-width: 900px) {
+  @media (max-width: 860px) {
+    .article-layout-grid {
+      grid-template-columns: 1fr;
+    }
     .article-headline {
-      font-size: 2.15rem;
+      font-size: 2rem;
+    }
+    .mobile-toc-card {
+      display: block;
+    }
+    .toc-widget {
+      display: none;
+    }
+    .bottom-cards-grid.three-col {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  @media (max-width: 600px) {
+    .article-headline {
+      font-size: 1.65rem;
     }
     .author-bio-card {
       flex-direction: column;
-      gap: 1.25rem;
+      gap: 1rem;
+      padding: 1.25rem;
     }
-    .related-grid {
-      grid-template-columns: 1fr;
-    }
-    .latest-guides-grid {
+    .bottom-cards-grid.three-col,
+    .bottom-cards-grid.four-col {
       grid-template-columns: 1fr;
     }
   }
