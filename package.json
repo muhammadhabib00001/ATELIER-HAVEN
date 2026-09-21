@@ -8,6 +8,7 @@
     "start": "astro dev",
     "build": "astro build",
     "preview": "astro preview",
+    "validate": "node scripts/validate-articles.js",
     "generate": "node generate-article.js"
   },
   "keywords": [],
