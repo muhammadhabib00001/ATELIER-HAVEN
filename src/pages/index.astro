@@ -136,17 +136,30 @@ const categories = siteData.categories;
 
           <!-- First article: horizontal layout -->
           {latestArticles.slice(0, 1).map(art => (
-            <div class="stream-featured-item">
+            <div class="stream-featured-item latest-article-card">
               <ArticleCard article={art} variant="hero" />
             </div>
           ))}
 
-          <!-- Rest as 2-col grid -->
+          <!-- Rest as 2-col grid (first 9 shown to total exactly 10 initial articles) -->
           {latestArticles.slice(1).length > 0 && (
-            <div class="stream-two-col">
-              {latestArticles.slice(1).map(art => (
-                <ArticleCard article={art} variant="standard" />
+            <div class="stream-two-col" id="latestStreamGrid">
+              {latestArticles.slice(1).map((art, idx) => (
+                <div class={`latest-article-card ${idx >= 9 ? 'latest-card-hidden' : ''}`}>
+                  <ArticleCard article={art} variant="standard" />
+                </div>
               ))}
+            </div>
+          )}
+
+          {latestArticles.length > 10 && (
+            <div class="load-more-wrap" id="loadMoreWrap">
+              <button id="loadMoreBtn" class="btn-load-more" type="button">
+                <span>Load More Articles</span>
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                  <polyline points="6 9 12 15 18 9"></polyline>
+                </svg>
+              </button>
             </div>
           )}
         </div>
@@ -191,6 +204,24 @@ const categories = siteData.categories;
     </section>
   )}
 
+  <script>
+    const loadMoreBtn = document.getElementById('loadMoreBtn');
+    const loadMoreWrap = document.getElementById('loadMoreWrap');
+
+    loadMoreBtn?.addEventListener('click', () => {
+      const hiddenCards = document.querySelectorAll('.latest-article-card.latest-card-hidden');
+      const BATCH_SIZE = 10;
+      const countToReveal = Math.min(BATCH_SIZE, hiddenCards.length);
+
+      for (let i = 0; i < countToReveal; i++) {
+        hiddenCards[i].classList.remove('latest-card-hidden');
+      }
+
+      if (document.querySelectorAll('.latest-article-card.latest-card-hidden').length === 0) {
+        if (loadMoreWrap) loadMoreWrap.style.display = 'none';
+      }
+    });
+  </script>
 </BaseLayout>
 
 <style>
@@ -469,6 +500,41 @@ const categories = siteData.categories;
     display: grid;
     grid-template-columns: repeat(2, 1fr);
     gap: 2rem 1.75rem;
+  }
+
+  /* ===== Load More ===== */
+  .latest-card-hidden {
+    display: none !important;
+  }
+
+  .load-more-wrap {
+    text-align: center;
+    margin-top: 2.5rem;
+    padding-top: 2rem;
+    border-top: 1px solid var(--color-border);
+  }
+
+  .btn-load-more {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.6rem;
+    padding: 0.85rem 2.5rem;
+    font-size: 0.8125rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--color-text-main);
+    background: #ffffff;
+    border: 1.5px solid var(--color-border-dark);
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+
+  .btn-load-more:hover {
+    border-color: var(--color-accent);
+    color: var(--color-accent);
+    background: var(--color-surface-subtle);
   }
 
   /* ===== Sidebar ===== */
