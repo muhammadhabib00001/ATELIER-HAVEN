@@ -18,7 +18,7 @@ export default defineConfig({
     "/architectural-guide-specifying-exterior-wall-tiles": "/",
     "/modern-slabs-for-garden-spaces": "/",
     "/where-to-buy-mattress-architectural-guide": "/",
-    "/curated-courtyard-garden-landscape-design-guide": "/",
+    "/curated-courtyard-garden-landscape-design-guide": "/how-to-organize-courtyard/",
     "/designing-with-lamp-shades-and-architectural-lighting": "/",
     "/finding-exceptional-furniture-shops-close-to-me": "/",
     "/art-and-craft-for-students-studio-design": "/",
