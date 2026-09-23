@@ -139,7 +139,7 @@ NEVER use any of the following words or phrases in any heading, quote, table, or
 - in today's world
 
 ZERO EM DASHES (0 TOLERANCE):
-NEVER use em dashes (—) or double hyphens (--). Use commas, colons, parentheses, or separate sentences instead.
+NEVER use em dashes (â€”) or double hyphens (--). Use commas, colons, parentheses, or separate sentences instead.
 
 CRITICAL EDITORIAL STRUCTURE BLUEPRINT (MANDATORY FOR EVERY ARTICLE):
 Every article MUST follow this exact structural architecture modeled after our benchmark guide:
@@ -149,7 +149,7 @@ Every article MUST follow this exact structural architecture modeled after our b
 4. Editorial Quote Block: Include at least one high-authority editorial quote block:
    <div class="editorial-quote">
      <blockquote>A compelling interior installation balances tactile material layers with calm room proportions and soft ambient lighting.</blockquote>
-     <cite>Elena Vance, Senior Interior Editor</cite>
+     <cite>Sarah Mitchell, Senior Interior Editor</cite>
    </div>
 5. Structured Reference Matrix Table: Include at least one high-utility specification or clearance matrix table, preceded by an introductory sentence, wrapped in:
    <div class="table-container">
@@ -354,7 +354,7 @@ export async function fetchUnsplashImage(keywords, category, existingArticles = 
   try {
     const primaryKw = (keywords?.[0] || "").trim();
     let enrichedTerm = primaryKw;
-    if (primaryKw.toLowerCase().includes('baño') || primaryKw.toLowerCase().includes('bano')) {
+    if (primaryKw.toLowerCase().includes('baÃ±o') || primaryKw.toLowerCase().includes('bano')) {
       enrichedTerm = 'modern luxury bathroom architecture';
     }
 
@@ -414,8 +414,8 @@ export async function fetchArticleBodyImages(keywords, category, count = 2, exis
     if (results.length >= count) break;
     try {
       let cleanQuery = query;
-      if (cleanQuery.toLowerCase().includes('baño') || cleanQuery.toLowerCase().includes('bano')) {
-        cleanQuery = cleanQuery.replace(/baño/gi, 'bathroom').replace(/bano/gi, 'bathroom');
+      if (cleanQuery.toLowerCase().includes('baÃ±o') || cleanQuery.toLowerCase().includes('bano')) {
+        cleanQuery = cleanQuery.replace(/baÃ±o/gi, 'bathroom').replace(/bano/gi, 'bathroom');
       }
 
       const url = `https://api.unsplash.com/search/photos?query=${encodeURIComponent(cleanQuery)}&per_page=15&orientation=landscape&content_filter=high`;
@@ -533,7 +533,7 @@ export function enforceArticleStandards(article, existingArticles = []) {
   const cleanEmDashes = (str) => {
     if (!str || typeof str !== 'string') return str;
     return str
-      .replace(/—/g, ', ')
+      .replace(/â€”/g, ', ')
       .replace(/&mdash;/g, ', ')
       .replace(/\s+--\s+/g, ', ')
       .replace(/--/g, '-');
@@ -733,7 +733,7 @@ export function enforceArticleStandards(article, existingArticles = []) {
 
   // 6C. Ensure Editorial Quote Block is present
   if (!article.content.includes('editorial-quote')) {
-    const quoteHtml = `\n<div class="editorial-quote">\n  <blockquote>A successful master plan balances tactile material layers with calm room proportions and soft ambient lighting.</blockquote>\n  <cite>Elena Vance, Senior Interior Editor</cite>\n</div>\n`;
+    const quoteHtml = `\n<div class="editorial-quote">\n  <blockquote>A successful master plan balances tactile material layers with calm room proportions and soft ambient lighting.</blockquote>\n  <cite>Sarah Mitchell, Senior Interior Editor</cite>\n</div>\n`;
     const pMatches = [...article.content.matchAll(/<\/p>/g)];
     if (pMatches.length >= 4) {
       const insertAt = pMatches[3].index;
@@ -1033,3 +1033,4 @@ if (executedFilePath === currentFilePath) {
     });
   }
 }
+

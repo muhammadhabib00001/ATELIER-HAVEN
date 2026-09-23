@@ -53,7 +53,13 @@ export default defineConfig({
     "/architectural-master-planning-king-bed-set": "/",
     "/how-to-style-a-luxury-king-bed-set": "/",
     "/how-to-style-a-luxury-king-bed-set-master-bedroom-guide": "/",
-    "/luxury-king-bed-set-guide": "/"
+    "/luxury-king-bed-set-guide": "/",
+    "/author/elena-vance": "/author/sarah-mitchell/",
+    "/author/elena-vance/": "/author/sarah-mitchell/",
+    "/author/marcus-reid": "/author/james-harper/",
+    "/author/marcus-reid/": "/author/james-harper/",
+    "/author/charlotte-dupuis": "/author/olivia-bennett/",
+    "/author/charlotte-dupuis/": "/author/olivia-bennett/"
 },
   integrations: [],
   server: {
@@ -61,3 +67,4 @@ export default defineConfig({
     host: true
   }
 });
+

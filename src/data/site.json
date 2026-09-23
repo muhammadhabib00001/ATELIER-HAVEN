@@ -122,39 +122,39 @@
   ],
   "authors": [
     {
-      "slug": "elena-vance",
-      "name": "Elena Vance",
+      "slug": "sarah-mitchell",
+      "name": "Sarah Mitchell",
       "role": "Editor-in-Chief & Interior Stylist",
-      "bio": "Elena is an interior stylist and home decor editor with over 16 years of experience in residential decoration, home staging, and modern interior styling across San Francisco and Milan.",
+      "bio": "Sarah is an interior stylist and home decor editor with over 16 years of experience in residential decoration, home staging, and modern interior styling across New York and London.",
       "credentials": "Senior Interior Stylist & Decor Specialist",
-      "avatar": "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=400&q=80",
+      "avatar": "https://images.unsplash.com/photo-1508214751196-bcfd4ca60f91?auto=format&fit=crop&w=400&q=80",
       "social": {
-        "twitter": "https://twitter.com/elenavance_style",
-        "linkedin": "https://linkedin.com/in/elenavance-style"
+        "twitter": "https://twitter.com/sarahmitchell_style",
+        "linkedin": "https://linkedin.com/in/sarahmitchell-style"
       }
     },
     {
-      "slug": "marcus-reid",
-      "name": "Marcus Reid",
+      "slug": "james-harper",
+      "name": "James Harper",
       "role": "Senior DIY & Home Improvement Editor",
-      "bio": "Marcus specializes in hands-on DIY projects, woodworking, furniture flips, and practical home improvements. He shares clear, accessible guides for homeowners tackling their own renovations.",
+      "bio": "James specializes in hands-on DIY projects, woodworking, furniture builds, and practical home improvements. He shares clear, accessible guides for homeowners tackling their own renovations.",
       "credentials": "DIY Maker & Woodworking Craftsman",
-      "avatar": "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=400&q=80",
+      "avatar": "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=400&q=80",
       "social": {
-        "twitter": "https://twitter.com/marcusreid_diy",
-        "linkedin": "https://linkedin.com/in/marcusreid-diy"
+        "twitter": "https://twitter.com/jamesharper_diy",
+        "linkedin": "https://linkedin.com/in/jamesharper-diy"
       }
     },
     {
-      "slug": "charlotte-dupuis",
-      "name": "Charlotte Dupuis",
+      "slug": "olivia-bennett",
+      "name": "Olivia Bennett",
       "role": "Style Director & Decor Curator",
-      "bio": "Based between Paris and New York, Charlotte curates decorative objects, vintage flea market finds, textile styling, and contemporary home accents.",
+      "bio": "Based between Chicago and Paris, Olivia curates decorative objects, vintage flea market finds, textile styling, and contemporary home accents for high-end residences.",
       "credentials": "Decor Stylist & Contributing Home Decor Critic",
-      "avatar": "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=400&q=80",
+      "avatar": "https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?auto=format&fit=crop&w=400&q=80",
       "social": {
-        "instagram": "https://instagram.com/charlottedupuis_curates",
-        "pinterest": "https://pinterest.com/charlottedupuis"
+        "instagram": "https://instagram.com/oliviabennett_curates",
+        "pinterest": "https://pinterest.com/oliviabennett"
       }
     }
   ]
