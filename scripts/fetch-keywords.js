@@ -6,6 +6,13 @@
 
 import * as XLSX from 'xlsx';
 
+// Official 12 site category slugs permanently locked across Atrium Livings
+export const LOCKED_CATEGORIES = [
+  "kitchen", "bathroom", "living-room", "bedroom", "home-decor",
+  "furniture", "lighting", "renovation", "diy", "garden-outdoor",
+  "small-spaces", "design-trends"
+];
+
 // Normalizes any category string into one of the 12 official site category slugs
 export function normalizeCategory(cat) {
   if (!cat) return null;
@@ -14,139 +21,166 @@ export function normalizeCategory(cat) {
   const categoryMap = {
     'kitchen': 'kitchen',
     'kitchens': 'kitchen',
+    'culinary': 'kitchen',
+    'cook': 'kitchen',
+    'cooking': 'kitchen',
+    'appliance': 'kitchen',
+    'appliances': 'kitchen',
     'bathroom': 'bathroom',
     'bathrooms': 'bathroom',
     'bath': 'bathroom',
+    'restroom': 'bathroom',
+    'powder-room': 'bathroom',
     'living-room': 'living-room',
     'living-rooms': 'living-room',
     'living': 'living-room',
     'livingroom': 'living-room',
+    'lounge': 'living-room',
     'bedroom': 'bedroom',
     'bedrooms': 'bedroom',
+    'bedding': 'bedroom',
     'home-decor': 'home-decor',
     'decor': 'home-decor',
     'homedecor': 'home-decor',
+    'decoration': 'home-decor',
+    'textiles': 'home-decor',
     'furniture': 'furniture',
     'furnishings': 'furniture',
+    'joinery': 'furniture',
     'lighting': 'lighting',
     'lights': 'lighting',
+    'illumination': 'lighting',
+    'lamps': 'lighting',
     'renovation': 'renovation',
     'renovations': 'renovation',
     'remodel': 'renovation',
+    'remodeling': 'renovation',
+    'cost': 'renovation',
+    'budget': 'renovation',
     'diy': 'diy',
+    'craft': 'diy',
+    'crafts': 'diy',
     'garden-outdoor': 'garden-outdoor',
     'outdoor': 'garden-outdoor',
-    'garden': 'garden-outdoor',
     'outdoors': 'garden-outdoor',
+    'garden': 'garden-outdoor',
+    'gardening': 'garden-outdoor',
+    'patio': 'garden-outdoor',
+    'courtyard': 'garden-outdoor',
+    'landscape': 'garden-outdoor',
     'small-spaces': 'small-spaces',
     'small-space': 'small-spaces',
     'smallspaces': 'small-spaces',
+    'compact': 'small-spaces',
+    'micro': 'small-spaces',
+    'studio': 'small-spaces',
     'design-trends': 'design-trends',
     'trends': 'design-trends',
     'designtrends': 'design-trends',
-    'trend': 'design-trends'
+    'trend': 'design-trends',
+    'aesthetic': 'design-trends'
   };
 
-  return categoryMap[c] || null;
+  return categoryMap[c] || (LOCKED_CATEGORIES.includes(c) ? c : null);
 }
 
-// Intelligent keyword-to-category matcher
+// Category vocabulary definition for high-precision semantic matching
+const CATEGORY_VOCABULARY = {
+  'kitchen': [
+    'kitchen', 'air fryer', 'airfryer', 'fryer', 'pantry', 'scullery', 'cabinet', 'countertop',
+    'cooktop', 'culinary', 'island', 'range', 'oven', 'stove', 'microwave', 'dishwasher',
+    'refrigerator', 'fridge', 'freezer', 'cookware', 'bakeware', 'skillet', 'pot', 'pan',
+    'knife', 'cutlery', 'cutting board', 'blender', 'toaster', 'food processor', 'baking',
+    'cooking', 'recipe', 'roast', 'saute', 'sous vide', 'induction', 'backsplash', 'coffee maker',
+    'espresso', 'foil', 'aluminum foil', 'parchment'
+  ],
+  'bathroom': [
+    'bathroom', 'bath', 'shower', 'tub', 'bathtub', 'soaking tub', 'vanity', 'powder room',
+    'toilet', 'faucet', 'tile', 'soaking', 'baño', 'bano', 'baños', 'banos', 'bidet',
+    'wet room', 'curbless', 'towel bar', 'linear drain', 'medicine cabinet', 'grout'
+  ],
+  'bedroom': [
+    'bedroom', 'bed', 'headboard', 'mattress', 'nightstand', 'wardrobe', 'master suite',
+    'bedding', 'duvet', 'sheets', 'pillow', 'comforter', 'footboard', 'canopy bed',
+    'sleeping', 'king bed', 'queen bed', 'twin bed', 'bedroom pic'
+  ],
+  'garden-outdoor': [
+    'garden', 'outdoor', 'courtyard', 'patio', 'terrace', 'pergola', 'landscape', 'balcony',
+    'deck', 'gazebo', 'planter', 'lawn', 'flagstone', 'paving', 'fire pit', 'outdoor kitchen',
+    'outdoor dining', 'porch', 'veranda', 'trellis', 'botanical', 'horticulture', 'soil'
+  ],
+  'renovation': [
+    'renovation', 'remodel', 'remodeling', 'budget', 'contractor', 'cost', 'pricing',
+    'estimate', 'square foot', 'drywall', 'framing', 'subfloor', 'load bearing',
+    'exterior painting', 'painting cost', 'siding', 'roof', 'roofing', 'permits',
+    'hvac', 'plumbing rough', 'electrical rewiring', 'foundation', 'overhaul', 'labor rate'
+  ],
+  'diy': [
+    'diy', 'limewash', 'plaster', 'venetian plaster', 'microcement', 'craft', 'upcycle',
+    'woodworking', 'carpentry', 'how to make', 'how to build', 'handmade', 'handcrafted',
+    'tutorial', 'chalk paint', 'refurbish', 'furniture flip'
+  ],
+  'furniture': [
+    'furniture', 'chair', 'table', 'desk', 'joinery', 'woodcraft', 'credenza', 'timber',
+    'sofa', 'couch', 'armchair', 'sectional', 'coffee table', 'sideboard', 'buffet',
+    'bookcase', 'bookshelf', 'bed frame', 'dining table', 'dining chair', 'ottoman', 'bench'
+  ],
+  'lighting': [
+    'lighting', 'light', 'sconce', 'pendant', 'chandelier', 'lamp', 'lampshade', 'cove',
+    'led', 'illumination', 'luminaire', 'kelvin', 'downlight', 'recessed', 'dimmer',
+    'ceiling light', 'flush mount'
+  ],
+  'small-spaces': [
+    'small space', 'small spaces', 'small apartment', 'studio', 'tiny', 'compact', 'micro',
+    'pocket door', 'murphy bed', 'space saving', 'storage hacks', 'micro living'
+  ],
+  'home-decor': [
+    'home decor', 'decor', 'vase', 'vessel', 'rug', 'textile', 'art', 'wall art', 'gallery wall',
+    'cushion', 'throw pillow', 'drapes', 'curtains', 'mirror', 'candle', 'sculpture'
+  ],
+  'design-trends': [
+    'trend', 'trends', 'biophilic', 'forecast', 'aesthetic', 'quiet luxury', 'japandi',
+    'minimalism', 'maximalism', 'color palette', 'mood board', 'wabi sabi'
+  ],
+  'living-room': [
+    'living room', 'living', 'hearth', 'fireplace', 'mantel', 'seating area',
+    'conversational seating', 'media console', 'tv wall'
+  ]
+};
+
+// Intelligent keyword-to-category matcher with comprehensive scoring
 export function detectCategoryFromKeyword(keyword) {
-  const kw = (keyword || "").toLowerCase();
+  const kw = (keyword || "").toLowerCase().trim();
+  if (!kw) return 'home-decor';
 
-  // 1. Bathroom
-  if (
-    kw.includes('bathroom') || kw.includes('bath') || kw.includes('shower') ||
-    kw.includes('tub') || kw.includes('vanity') || kw.includes('powder room') ||
-    kw.includes('toilet') || kw.includes('faucet') || kw.includes('tile') ||
-    kw.includes('soaking') || kw.includes('baño') || kw.includes('bano') || kw.includes('baños') || kw.includes('banos')
-  ) {
-    return 'bathroom';
+  // 1. Direct priority matching by phrase/word length
+  let bestCategory = null;
+  let highestScore = 0;
+
+  for (const [category, terms] of Object.entries(CATEGORY_VOCABULARY)) {
+    let score = 0;
+    for (const term of terms) {
+      if (kw.includes(term)) {
+        // Longer matching phrases carry much higher confidence
+        const termScore = term.includes(' ') ? 10 : (term.length >= 6 ? 5 : 3);
+        score += termScore;
+      }
+    }
+    if (score > highestScore) {
+      highestScore = score;
+      bestCategory = category;
+    }
   }
 
-  // 2. Kitchen
-  if (
-    kw.includes('kitchen') || kw.includes('pantry') || kw.includes('scullery') ||
-    kw.includes('cabinet') || kw.includes('countertop') || kw.includes('cooktop') ||
-    kw.includes('culinary') || kw.includes('island') || kw.includes('range')
-  ) {
-    return 'kitchen';
+  if (bestCategory && highestScore > 0) {
+    return bestCategory;
   }
 
-  // 3. Bedroom
-  if (
-    kw.includes('bedroom') || kw.includes('bed') || kw.includes('headboard') ||
-    kw.includes('mattress') || kw.includes('nightstand') || kw.includes('wardrobe') ||
-    kw.includes('master suite')
-  ) {
-    return 'bedroom';
-  }
+  // 2. Fallback heuristic based on generic context
+  if (kw.includes('wall') || kw.includes('paint') || kw.includes('floor')) return 'renovation';
+  if (kw.includes('room') || kw.includes('house') || kw.includes('home')) return 'home-decor';
 
-  // 4. Living Room
-  if (
-    kw.includes('living room') || kw.includes('living') || kw.includes('sofa') ||
-    kw.includes('couch') || kw.includes('hearth') || kw.includes('fireplace') ||
-    kw.includes('seating') || kw.includes('lounge') || kw.includes('coffee table')
-  ) {
-    return 'living-room';
-  }
-
-  // 5. Lighting
-  if (
-    kw.includes('lighting') || kw.includes('light') || kw.includes('sconce') ||
-    kw.includes('pendant') || kw.includes('chandelier') || kw.includes('lamp') ||
-    kw.includes('cove') || kw.includes('led') || kw.includes('illumination')
-  ) {
-    return 'lighting';
-  }
-
-  // 6. Garden & Outdoor
-  if (
-    kw.includes('garden') || kw.includes('outdoor') || kw.includes('courtyard') ||
-    kw.includes('patio') || kw.includes('terrace') || kw.includes('pergola') ||
-    kw.includes('landscape') || kw.includes('balcony')
-  ) {
-    return 'garden-outdoor';
-  }
-
-  // 7. Small Spaces
-  if (
-    kw.includes('small space') || kw.includes('small apartment') || kw.includes('studio') ||
-    kw.includes('tiny') || kw.includes('compact') || kw.includes('micro') ||
-    kw.includes('pocket door')
-  ) {
-    return 'small-spaces';
-  }
-
-  // 8. Furniture
-  if (
-    kw.includes('furniture') || kw.includes('chair') || kw.includes('table') ||
-    kw.includes('desk') || kw.includes('joinery') || kw.includes('woodcraft') ||
-    kw.includes('credenza') || kw.includes('timber')
-  ) {
-    return 'furniture';
-  }
-
-  // 9. Renovation & DIY
-  if (kw.includes('renovation') || kw.includes('remodel') || kw.includes('budget') || kw.includes('contractor')) {
-    return 'renovation';
-  }
-  if (kw.includes('diy') || kw.includes('limewash') || kw.includes('plaster') || kw.includes('paint')) {
-    return 'diy';
-  }
-
-  // 10. Design Trends
-  if (kw.includes('trend') || kw.includes('biophilic') || kw.includes('forecast') || kw.includes('aesthetic') || kw.includes('quiet luxury')) {
-    return 'design-trends';
-  }
-
-  // 11. Home Decor
-  if (kw.includes('decor') || kw.includes('vase') || kw.includes('vessel') || kw.includes('rug') || kw.includes('textile') || kw.includes('art')) {
-    return 'home-decor';
-  }
-
-  // Default fallback
-  return 'living-room';
+  return 'home-decor';
 }
 
 export async function fetchKeywordsFromDrive(accessToken) {

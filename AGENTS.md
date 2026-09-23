@@ -91,3 +91,22 @@ These rules are permanently locked for all current and future articles across At
    ```
    All checks (word count, banned words, em dashes, links, tables) must pass.
 3. **Build & Deploy**: Run `npm run build`, commit to git, and push to GitHub `origin/main`.
+
+---
+
+## 6. Locked Category Taxonomy & Semantic Accuracy Standards
+* **The 12 Official Categories**: Every article must strictly belong to one of the 12 official category slugs:
+  1. `kitchen` (Culinary spaces, cooking appliances, countertop gadgets, pantry storage)
+  2. `bathroom` (Hydro-spatial planning, wet rooms, vanities, tiles, fixtures)
+  3. `living-room` (Social gathering envelopes, hearths, fireplaces, conversational seating)
+  4. `bedroom` (Restorative suites, bedding, mattresses, sleeping sanctuaries)
+  5. `home-decor` (Vases, ceramics, textiles, rugs, cushions, wall art, display vignettes)
+  6. `furniture` (Tectonic woodcraft, sofas, dining tables, bed frames, credenzas, chairs)
+  7. `lighting` (Photometric layering, pendants, sconces, chandeliers, lamps, kelvin formulas)
+  8. `renovation` (Structural overhauls, exterior painting, contractor costs, budgeting, siding)
+  9. `diy` (Hands-on crafts, artisanal plaster, lime wash, furniture flipping, woodworking)
+  10. `garden-outdoor` (Courtyard gardens, patios, outdoor living rooms, pergolas, landscaping)
+  11. `small-spaces` (Micro apartments, pocket doors, multifunctional joinery, vertical storage)
+  12. `design-trends` (Interior design forecasts, quiet luxury, biophilia, color palettes)
+* **Zero Category Mismatch Policy**: An article's category MUST strictly align with its primary topic and search intent. Kitchen appliances (such as air fryers, ovens, or cooktops) must NEVER be categorized under `living-room` or any other non-culinary section.
+* **Internal Category Links**: Any internal link pointing to `/category/[slug]/` must link to an existing valid category and reflect the thematic relevance of the article.

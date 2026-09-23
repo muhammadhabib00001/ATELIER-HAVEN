@@ -3,6 +3,7 @@ import "dotenv/config";
 import fs from "fs";
 import path from "path";
 import { fileURLToPath } from "url";
+import { LOCKED_CATEGORIES, normalizeCategory, detectCategoryFromKeyword } from "./scripts/fetch-keywords.js";
 
 // Initialize Multi-Key AI Client Pool:
 // Collects GEMINI_API_KEY, GEMINI_API_KEY_2, GEMINI_API_KEY_3, GEMINI_API_KEY_4, GEMINI_API_KEY_5, etc.
@@ -53,7 +54,15 @@ const articleSchema = {
     title: { type: Type.STRING, description: "Engaging, SEO-optimized title STRICTLY between 55 and 60 characters in total length, featuring the primary target keyword naturally. Never duplicate existing titles." },
     subtitle: { type: Type.STRING, description: "Engaging editorial summary (under 160 characters) that STRICTLY features the primary target keyword explicitly and naturally. Must focus entirely on the keyword topic." },
     slug: { type: Type.STRING, description: "URL friendly slug in kebab-case" },
-    category: { type: Type.STRING, description: "Category name e.g. living-room, kitchen, bathroom, bedroom, garden-outdoor, lighting, furniture" },
+    category: {
+      type: Type.STRING,
+      description: "Must strictly be one of the 12 official category slugs: kitchen, bathroom, living-room, bedroom, home-decor, furniture, lighting, renovation, diy, garden-outdoor, small-spaces, design-trends",
+      enum: [
+        "kitchen", "bathroom", "living-room", "bedroom", "home-decor",
+        "furniture", "lighting", "renovation", "diy", "garden-outdoor",
+        "small-spaces", "design-trends"
+      ]
+    },
     author: { type: Type.STRING, description: "Author slug, e.g., elena-vance, marcus-reid, sophia-chen" },
     readTime: { type: Type.STRING, description: "Estimated read time, e.g. '8 min read'" },
     coverAlt: { type: Type.STRING, description: "Image description and heading caption STRICTLY matching the article title." },
@@ -492,6 +501,27 @@ async function tryGenerateImage(prompt, slug, keywords = [], category = "interio
 }
 
 export function enforceArticleStandards(article, existingArticles = []) {
+  // 0. Ensure Category is Strictly One of 12 Locked Categories and Semantically Aligned
+  let assignedCat = normalizeCategory(article.category);
+  const detectedCat = detectCategoryFromKeyword((article.title || '') + ' ' + (article.keywords || []).join(' '));
+
+  if (!assignedCat || !LOCKED_CATEGORIES.includes(assignedCat)) {
+    assignedCat = detectedCat || 'home-decor';
+  } else if (detectedCat && assignedCat !== detectedCat) {
+    const kwText = ((article.title || '') + ' ' + (article.keywords || []).join(' ')).toLowerCase();
+    const isSpecializedTopic = kwText.includes('kitchen') || kwText.includes('air fryer') || kwText.includes('fryer') || kwText.includes('cook') ||
+      kwText.includes('bathroom') || kwText.includes('shower') || kwText.includes('toilet') ||
+      kwText.includes('bed') || kwText.includes('mattress') || kwText.includes('patio') ||
+      kwText.includes('courtyard') || kwText.includes('garden') || kwText.includes('painting cost') ||
+      kwText.includes('renovation') || kwText.includes('lighting') || kwText.includes('chandelier');
+
+    if (isSpecializedTopic && assignedCat !== detectedCat) {
+      console.log(` Correcting mismatched category "${assignedCat}" -> "${detectedCat}" for topic "${article.title}"`);
+      assignedCat = detectedCat;
+    }
+  }
+  article.category = assignedCat;
+
   const existingHeadingTexts = new Set();
   existingArticles.forEach(a => {
     if (a.slug === article.slug) return;

@@ -1,9 +1,14 @@
 import fs from 'fs';
 import path from 'path';
+import { detectCategoryFromKeyword } from './fetch-keywords.js';
 
 const articlesPath = path.resolve('src/data/articles.json');
 const rawData = fs.readFileSync(articlesPath, 'utf8');
 const articles = JSON.parse(rawData);
+
+const siteDataPath = path.resolve('src/data/site.json');
+const siteData = JSON.parse(fs.readFileSync(siteDataPath, 'utf8'));
+const VALID_CATEGORIES = siteData.categories.map(c => c.slug);
 
 const BANNED_WORDS = [
   'delve',
@@ -180,6 +185,41 @@ articles.forEach((article, index) => {
     hasErrors = true;
   } else {
     console.log(`✅ Heading Text: 0 hyphens or dashes found.`);
+  }
+
+  // 15. Category Taxonomy Validity Check
+  const category = article.category || '';
+  if (!VALID_CATEGORIES.includes(category)) {
+    console.error(`❌ Category Taxonomy VIOLATION: Category "${category}" is not in the 12 official categories (${VALID_CATEGORIES.join(', ')}).`);
+    hasErrors = true;
+  } else {
+    console.log(`✅ Category Taxonomy: "${category}" is a valid official site category.`);
+  }
+
+  // 16. Category Semantic Alignment Check
+  const detectedCat = detectCategoryFromKeyword((article.title || '') + ' ' + (article.keywords || []).join(' '));
+  const kwText = ((article.title || '') + ' ' + (article.keywords || []).join(' ')).toLowerCase();
+  const isSpecializedTopic = kwText.includes('kitchen') || kwText.includes('air fryer') || kwText.includes('fryer') || kwText.includes('cook') ||
+    kwText.includes('bathroom') || kwText.includes('shower') || kwText.includes('toilet') ||
+    kwText.includes('bed') || kwText.includes('mattress') || kwText.includes('patio') ||
+    kwText.includes('courtyard') || kwText.includes('garden') || kwText.includes('painting cost') ||
+    kwText.includes('renovation') || kwText.includes('lighting') || kwText.includes('chandelier');
+
+  if (isSpecializedTopic && detectedCat && category !== detectedCat) {
+    console.error(`❌ Category Semantic VIOLATION: Article topic "${article.title}" belongs in "${detectedCat}", but is categorized under "${category}".`);
+    hasErrors = true;
+  } else {
+    console.log(`✅ Category Semantic Alignment: Topic accurately categorized under "${category}".`);
+  }
+
+  // 17. Internal Category Links Check
+  const catLinkMatches = [...content.matchAll(/href=["']\/category\/([^"'/]+)\/?["']/gi)];
+  for (const m of catLinkMatches) {
+    const linkedCat = m[1];
+    if (!VALID_CATEGORIES.includes(linkedCat)) {
+      console.error(`❌ Category Link VIOLATION: Internal link points to non-existent category "/category/${linkedCat}/".`);
+      hasErrors = true;
+    }
   }
 });
 

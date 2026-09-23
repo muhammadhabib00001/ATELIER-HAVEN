@@ -146,12 +146,18 @@ async function generateSingleArticle(customTopic, customCategory) {
     targetCategory = chosen.category;
   }
 
-  // Ensure category is a valid site category slug
-  targetCategory = normalizeCategory(targetCategory) || targetCategory || 'living-room';
+  // Ensure category is a valid site category slug and semantically aligned with the topic
+  targetCategory = normalizeCategory(targetCategory) || detectCategoryFromKeyword(targetTopic);
+  if (!SITE_CATEGORIES.includes(targetCategory)) {
+    targetCategory = detectCategoryFromKeyword(targetTopic);
+    if (!SITE_CATEGORIES.includes(targetCategory)) {
+      targetCategory = 'home-decor';
+    }
+  }
 
   console.log(`\n Starting Automated Generation Pipeline:`);
   console.log(` Topic: "${targetTopic}"`);
-  console.log(` Category: "${targetCategory || 'living-room'}"`);
+  console.log(` Category: "${targetCategory}"`);
 
   // Step 1: Generate article via Gemini / Vertex AI
   const article = await generateArticle(targetTopic, { category: targetCategory });
