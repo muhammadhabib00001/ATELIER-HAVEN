@@ -149,14 +149,23 @@ articles.forEach((article, index) => {
     console.log(`✅ Editorial Quote: <div class="editorial-quote"> block confirmed.`);
   }
 
-  // 11. FAQ Accordion Check (Exactly 3 items)
+  // 11. FAQ Accordion Check (Exactly 3 complete items with question and answer)
   const hasFaqAccordion = content.includes('faq-accordion') && content.includes('faq-item');
-  const faqItemCount = (content.match(/class=["']faq-item["']/g) || []).length;
-  if (!hasFaqAccordion || faqItemCount !== 3) {
-    console.error(`❌ FAQ Accordion VIOLATION: Must contain <div class="faq-accordion"> with exactly 3 <div class="faq-item"> blocks (Found: ${faqItemCount}).`);
+  const faqItemMatches = [...content.matchAll(/<div class=["']faq-item["']>([\s\S]*?)<\/div>/gi)];
+  const faqItemCount = faqItemMatches.length;
+  let missingFaqAnswers = 0;
+  for (const m of faqItemMatches) {
+    const inner = m[1];
+    const hasH3 = /<h3>[\s\S]+?<\/h3>/i.test(inner);
+    const hasP = /<p>[\s\S]+?<\/p>/i.test(inner);
+    if (!hasH3 || !hasP) missingFaqAnswers++;
+  }
+
+  if (!hasFaqAccordion || faqItemCount !== 3 || missingFaqAnswers > 0) {
+    console.error(`❌ FAQ Accordion VIOLATION: Must contain <div class="faq-accordion"> with exactly 3 complete <div class="faq-item"> blocks with questions and answers (Found: ${faqItemCount} items, ${missingFaqAnswers} missing answers).`);
     hasErrors = true;
   } else {
-    console.log(`✅ FAQ Accordion: Exactly 3 FAQ items wrapped in faq-accordion confirmed.`);
+    console.log(`✅ FAQ Accordion: Exactly 3 complete FAQ items with questions and answers confirmed.`);
   }
 
   // 12. Concluding Checklist Check

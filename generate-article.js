@@ -801,7 +801,6 @@ export function enforceArticleStandards(article, existingArticles = []) {
         items += `  <div class="faq-item">\n    <h3>${defaultFaqs[i].q}</h3>\n    <p>${defaultFaqs[i].a}</p>\n  </div>\n`;
       }
       article.content = article.content.replace(faqH2Regex, `<h2 id="${uniqueFaqId}">${uniqueFaqHeading}</h2>\n<div class="faq-accordion">\n${items}</div>\n`);
-    } else {
       for (let i = 0; i < 3; i++) {
         items += `  <div class="faq-item">\n    <h3>${defaultFaqs[i].q}</h3>\n    <p>${defaultFaqs[i].a}</p>\n  </div>\n`;
       }
@@ -814,6 +813,17 @@ export function enforceArticleStandards(article, existingArticles = []) {
       }
     }
   }
+
+  // Ensure every existing faq-item contains both an h3 and a valid non-empty answer paragraph
+  article.content = article.content.replace(/<div class=["']faq-item["']>([\s\S]*?)<\/div>/gi, (itemHtml, inner) => {
+    if (!inner.includes('<p>') || /<p>\s*<\/p>/.test(inner)) {
+      const qMatch = inner.match(/<h3>([\s\S]*?)<\/h3>/i);
+      const qText = qMatch ? qMatch[1].trim() : `Planning ${shortTitle}`;
+      const defaultAns = `<strong>Careful dimension planning and high-density material selection are recommended.</strong> Prioritizing clear walkway clearances ensures that daily routines remain comfortable and visually cohesive.`;
+      return `<div class="faq-item">\n    <h3>${qText}</h3>\n    <p>${defaultAns}</p>\n  </div>`;
+    }
+    return itemHtml;
+  });
 
   // 6F. Ensure Final Section is an Actionable Checklist
   const allH2Matches = [...article.content.matchAll(/<h2([^>]*)>([\s\S]*?)<\/h2>/gi)];
