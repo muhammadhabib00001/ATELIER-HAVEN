@@ -1,9 +1,9 @@
 name: Automated Article Publishing & Google Drive Backup
 
 on:
-  # Schedule paused (uncomment when ready to resume auto publishing):
-  # schedule:
-  #   - cron: '0 */12 * * *'
+  # Runs once every 24 hours (00:00 UTC = exactly 1 article per 24 hours)
+  schedule:
+    - cron: '0 0 * * *'
   # Allows manual triggering with optional custom keyword and count (1-6 articles)
   workflow_dispatch:
     inputs:
