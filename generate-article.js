@@ -529,54 +529,47 @@ export function enforceArticleStandards(article, existingArticles = []) {
     matches.forEach(m => existingHeadingTexts.add(m[2].replace(/<[^>]+>/g, '').trim().toLowerCase()));
   });
 
-  // Helper: Remove all em dashes and double hyphens
+  // Helper: Remove all em dashes, en dashes, and double hyphens
   const cleanEmDashes = (str) => {
     if (!str || typeof str !== 'string') return str;
     return str
+      .replace(/[\u2014\u2013—–]/g, ', ')
       .replace(/â€”/g, ', ')
       .replace(/&mdash;/g, ', ')
+      .replace(/&ndash;/g, ', ')
       .replace(/\s+--\s+/g, ', ')
       .replace(/--/g, '-');
   };
 
-  // Helper: Replace all banned AI words
+  // Helper: Replace all banned AI words and inflections
   const BANNED_MAP = [
-    { regex: /\barchitectural\b/gi, replaceWith: 'structural' },
-    { regex: /\belevate\b/gi, replaceWith: 'enhance' },
-    { regex: /\belevates\b/gi, replaceWith: 'enhances' },
-    { regex: /\belevated\b/gi, replaceWith: 'refined' },
-    { regex: /\belevating\b/gi, replaceWith: 'enhancing' },
-    { regex: /\brealm\b/gi, replaceWith: 'space' },
-    { regex: /\bmeticulous\b/gi, replaceWith: 'thorough' },
-    { regex: /\bmeticulously\b/gi, replaceWith: 'carefully' },
-    { regex: /\bcrucial\b/gi, replaceWith: 'important' },
-    { regex: /\bessential\b/gi, replaceWith: 'recommended' },
-    { regex: /\bseamless\b/gi, replaceWith: 'smooth' },
-    { regex: /\bseamlessly\b/gi, replaceWith: 'smoothly' },
-    { regex: /\bnestled\b/gi, replaceWith: 'positioned' },
-    { regex: /\bgame-changer\b/gi, replaceWith: 'major breakthrough' },
-    { regex: /\bgame changer\b/gi, replaceWith: 'major breakthrough' },
-    { regex: /\btestament\b/gi, replaceWith: 'proof' },
-    { regex: /\bdelve\b/gi, replaceWith: 'explore' },
-    { regex: /\bdelves\b/gi, replaceWith: 'explores' },
-    { regex: /\bdelving\b/gi, replaceWith: 'exploring' },
-    { regex: /\btapestry\b/gi, replaceWith: 'blend' },
+    { regex: /\barchitectural(?:ly)?\b/gi, replaceWith: 'structural' },
+    { regex: /\belevat(?:e|es|ed|ing|ion)\b/gi, replaceWith: 'enhance' },
+    { regex: /\brealms?\b/gi, replaceWith: 'space' },
+    { regex: /\bmeticulous(?:ly|ness)?\b/gi, replaceWith: 'thorough' },
+    { regex: /\bcrucial(?:ly)?\b/gi, replaceWith: 'important' },
+    { regex: /\bessential(?:ly|s)?\b/gi, replaceWith: 'recommended' },
+    { regex: /\bseamless(?:ly|ness)?\b/gi, replaceWith: 'smooth' },
+    { regex: /\bnestl(?:e|es|ed|ing)\b/gi, replaceWith: 'positioned' },
+    { regex: /\bgame[- ]?changers?\b/gi, replaceWith: 'major breakthrough' },
+    { regex: /\btestaments?\b/gi, replaceWith: 'proof' },
+    { regex: /\bdelv(?:e|es|ed|ing)\b/gi, replaceWith: 'explore' },
+    { regex: /\btapestr(?:y|ies)\b/gi, replaceWith: 'blend' },
     { regex: /\bmore than just\b/gi, replaceWith: 'beyond' },
     { regex: /\bin conclusion\b/gi, replaceWith: 'in summary' },
     { regex: /\bfurthermore\b/gi, replaceWith: 'in addition' },
     { regex: /\bwhispers of\b/gi, replaceWith: 'hints of' },
-    { regex: /\bsymphony\b/gi, replaceWith: 'combination' },
+    { regex: /\bsymphon(?:y|ies)\b/gi, replaceWith: 'combination' },
     { regex: /\bdance of\b/gi, replaceWith: 'balance of' },
     { regex: /\blook no further\b/gi, replaceWith: 'consider this' },
     { regex: /\blet's explore\b/gi, replaceWith: 'we examine' },
     { regex: /\bin today's world\b/gi, replaceWith: 'today' },
-    { regex: /\bbeacon\b/gi, replaceWith: 'benchmark' },
-    { regex: /\bembark\b/gi, replaceWith: 'begin' }
+    { regex: /\bbeacons?\b/gi, replaceWith: 'benchmark' },
+    { regex: /\bembark(?:s|ed|ing)?\b/gi, replaceWith: 'begin' }
   ];
 
   const purgeBanned = (str) => {
     if (!str || typeof str !== 'string') return str;
-    // Protect publication name Architectural Digest by converting to Elle Decor
     let res = str.replace(/Architectural\s+Digest/gi, 'Elle Decor');
     for (const item of BANNED_MAP) {
       res = res.replace(item.regex, item.replaceWith);
@@ -584,108 +577,61 @@ export function enforceArticleStandards(article, existingArticles = []) {
     return res;
   };
 
-  // 1. Strict title length: 55-60 characters, no banned words
-  let title = purgeBanned(cleanEmDashes((article.title || '').replace(/-/g, ' ').replace(/\s+/g, ' ').trim()));
-  if (title.length < 55) {
-    const padSuffixes = [
-      ': Master Guide',
-      ': Complete Guide',
-      ': Editorial Guide',
-      ' for Luxury Homes',
-      ': Designer Guide',
-      ' for Modern Homes',
-      ': Master Plan',
-      ': Design Guide'
-    ];
-    let padded = false;
-    for (const s of padSuffixes) {
-      if (!title.includes(s) && (title + s).length <= 60 && (title + s).length >= 55) {
-        title = title + s;
-        padded = true;
-        break;
-      }
-    }
-    if (!padded) {
-      const padWords = ['Master', 'Design', 'Guide', 'Blueprint', 'Manual', 'Plan'];
-      for (const w of padWords) {
-        if (!title.includes(w) && (title + ' ' + w).length <= 60) {
-          title = title + ' ' + w;
-        }
-        if (title.length >= 55) break;
-      }
-      while (title.length < 55) {
-        title = title + ' Plan';
-      }
-    }
-    if (title.length > 60) {
-      title = title.slice(0, 60);
-    }
-  } else if (title.length > 60) {
-    title = title.slice(0, 60);
-    const lastSpace = title.lastIndexOf(' ');
-    if (lastSpace >= 50) {
-      title = title.slice(0, lastSpace);
-    }
-    while (title.length < 55) {
-      title = title + ' Guide';
-    }
-    if (title.length > 60) {
-      title = title.slice(0, 60);
-    }
-  }
-  article.title = title;
-  article.seoTitle = title;
-  article.coverAlt = title;
+  // Helper to format title strictly between 55 and 60 characters
+  const formatTitle = (rawTitle) => {
+    let t = purgeBanned(cleanEmDashes(rawTitle || ''))
+      .replace(/[-—–]/g, ' ')
+      .replace(/\s+/g, ' ')
+      .trim();
 
-  // 2. Clean em dashes and banned words across content and metadata
+    if (t.length >= 55 && t.length <= 60) return t;
+
+    if (t.length > 60) {
+      const words = t.split(' ');
+      let candidate = '';
+      for (const w of words) {
+        const next = candidate ? candidate + ' ' + w : w;
+        if (next.length <= 60) candidate = next;
+        else break;
+      }
+      t = candidate || t.slice(0, 60).trim();
+    }
+
+    if (t.length < 55) {
+      const padOptions = [
+        ' Master Guide', ' Complete Guide', ' Practical Guide',
+        ' Design Guide', ' Editorial Plan', ' Master Plan',
+        ' Home Guide', ' Guide', ' Plan'
+      ];
+      for (const pad of padOptions) {
+        if (!t.toLowerCase().includes(pad.trim().toLowerCase()) && (t + pad).length >= 55 && (t + pad).length <= 60) {
+          t = t + pad;
+          break;
+        }
+      }
+      while (t.length < 55) {
+        if ((t + ' Guide').length <= 60) t += ' Guide';
+        else if ((t + ' Plan').length <= 60) t += ' Plan';
+        else if ((t + ' Home').length <= 60) t += ' Home';
+        else t += '.';
+      }
+      if (t.length > 60) {
+        t = t.slice(0, 60).trim();
+        while (t.length < 55) t += '.';
+      }
+    }
+    return t;
+  };
+
+  article.title = formatTitle(article.title);
+  article.seoTitle = article.title;
+  article.coverAlt = article.title;
+
   article.content = purgeBanned(cleanEmDashes(article.content));
   article.subtitle = purgeBanned(cleanEmDashes(article.subtitle || ''));
   article.seoDescription = purgeBanned(cleanEmDashes(article.seoDescription || ''));
 
-  // 3. Remove all hyphens/dashes from all headings
-  article.content = article.content.replace(/<h([1-6])([^>]*)>([\s\S]*?)<\/h\1>/gi, (match, level, attrs, text) => {
-    let cleanText = text.replace(/-/g, ' ').replace(/\s+/g, ' ').trim();
-    cleanText = purgeBanned(cleanEmDashes(cleanText));
-    return `<h${level}${attrs}>${cleanText}</h${level}>`;
-  });
-
-  if (article.toc && Array.isArray(article.toc)) {
-    article.toc.forEach(item => {
-      if (item.title) {
-        item.title = purgeBanned(cleanEmDashes(item.title.replace(/-/g, ' ').replace(/\s+/g, ' ').trim()));
-      }
-    });
-  }
-
-  // 4. Ensure FAQ and Specification headings are unique
-  const shortTitle = article.title.split(':')[0].trim();
-  const uniqueFaqId = `faq-${article.slug}`;
-  const uniqueFaqHeading = `${shortTitle} Frequently Asked Questions`;
-
-  if (article.toc && Array.isArray(article.toc)) {
-    const faqItem = article.toc.find(item => item.id === 'faq' || item.title.toLowerCase().includes('frequently asked'));
-    if (faqItem) {
-      faqItem.id = uniqueFaqId;
-      faqItem.title = uniqueFaqHeading;
-    }
-  }
-
-  article.content = article.content.replace(/<h2 id=["']faq["']>Frequently Asked Questions<\/h2>/gi, `<h2 id="${uniqueFaqId}">${uniqueFaqHeading}</h2>`);
-  article.content = article.content.replace(/<h4>Architectural Specifications<\/h4>/gi, `<h4>${shortTitle} Specifications</h4>`);
-  article.content = article.content.replace(/<h4>Architectural & Material Specifications<\/h4>/gi, `<h4>${shortTitle} Material Specifications</h4>`);
-
-  // Ensure no other heading duplicates any existing heading
-  article.content = article.content.replace(/<h([1-6])([^>]*)>([\s\S]*?)<\/h\1>/gi, (match, level, attrs, text) => {
-    const raw = text.replace(/<[^>]+>/g, '').trim();
-    const lower = raw.toLowerCase();
-    if (existingHeadingTexts.has(lower)) {
-      const distinctText = `${raw} for ${shortTitle}`;
-      return `<h${level}${attrs}>${distinctText}</h${level}>`;
-    }
-    return match;
-  });
-
-  // 5. Ensure Subtitle & SEO Description feature the primary keyword
+  const shortTitle = article.title.split(':')[0].replace(/[-—–]/g, ' ').trim();
   const primaryKeyword = (article.keywords && article.keywords[0]) ? article.keywords[0].trim() : shortTitle;
   const primaryKwLower = primaryKeyword.toLowerCase();
 
@@ -722,7 +668,6 @@ export function enforceArticleStandards(article, existingArticles = []) {
     const formulaId = `the-quick-formula-to-master-${article.slug.replace(/[^a-z0-9]+/g, '-')}`;
     const formulaH2 = `\n<h2 id="${formulaId}">The Quick Formula to Master ${shortTitle}</h2>\n<p>To succeed with ${primaryKeyword}, balance primary dimensions, allow generous walkway clearances, and select durable materials with low-sheen finishes. Layer complementary textures across functional zones, eliminate clutter from visible surfaces, and coordinate warm 2700K lighting to establish immediate visual depth and lasting everyday comfort.</p>\n`;
     
-    // Insert right after the lead paragraph (first </p>)
     const firstPEnd = article.content.indexOf('</p>');
     if (firstPEnd !== -1) {
       article.content = article.content.slice(0, firstPEnd + 4) + '\n' + formulaH2 + article.content.slice(firstPEnd + 4);
@@ -759,15 +704,17 @@ export function enforceArticleStandards(article, existingArticles = []) {
     }
   }
 
-  // 6E. Ensure FAQ Accordion with exactly 3 items
+  // 6E. Ensure FAQ Accordion with exactly 3 complete items
+  const uniqueFaqId = `faq-${article.slug}`;
+  const uniqueFaqHeading = `${shortTitle} Frequently Asked Questions`.replace(/[-—–]/g, ' ');
   const defaultFaqs = [
     {
       q: `What is the most important factor when planning ${shortTitle.toLowerCase()}?`,
       a: `<strong>Maintaining balanced proportions and clear transit clearances is the primary priority.</strong> Preserving open walking buffers ensures that beautiful finishes and fine materials remain functional and comfortable for everyday use.`
     },
     {
-      q: `How do you ensure long-term durability for ${shortTitle.toLowerCase()}?`,
-      a: `<strong>Select high-density natural materials and clean with pH-neutral solutions.</strong> Avoiding harsh abrasive chemical sprays protects factory protective coatings and preserves natural surface patinas over decades.`
+      q: `How do you ensure long term durability for ${shortTitle.toLowerCase()}?`,
+      a: `<strong>Select high density natural materials and clean with pH neutral solutions.</strong> Avoiding harsh abrasive chemical sprays protects factory protective coatings and preserves natural surface patinas over decades.`
     },
     {
       q: `What lighting warmth best complements ${shortTitle.toLowerCase()}?`,
@@ -776,68 +723,63 @@ export function enforceArticleStandards(article, existingArticles = []) {
   ];
 
   if (!article.content.includes('faq-accordion')) {
-    const faqH2Regex = /<h2[^>]*>(?:[^<]*frequently\s+asked[^<]*|[^<]*faq[^<]*)<\/h2>([\s\S]*?)(?=<h2|$)/i;
-    const faqMatch = article.content.match(faqH2Regex);
     let items = '';
-
-    if (faqMatch) {
-      const itemRegex = /<h3>([\s\S]*?)<\/h3>\s*<p>([\s\S]*?)<\/p>/gi;
-      let m;
-      let count = 0;
-      while ((m = itemRegex.exec(faqMatch[1])) !== null && count < 3) {
-        let ans = m[2].trim();
-        if (!ans.startsWith('<strong>')) {
-          const firstDot = ans.indexOf('.');
-          if (firstDot !== -1 && firstDot < 120) {
-            ans = `<strong>${ans.slice(0, firstDot + 1)}</strong> ${ans.slice(firstDot + 1).trim()}`;
-          } else {
-            ans = `<strong>${ans.slice(0, 50)}...</strong> ${ans}`;
-          }
-        }
-        items += `  <div class="faq-item">\n    <h3>${m[1].trim()}</h3>\n    <p>${ans}</p>\n  </div>\n`;
-        count++;
-      }
-      for (let i = count; i < 3; i++) {
-        items += `  <div class="faq-item">\n    <h3>${defaultFaqs[i].q}</h3>\n    <p>${defaultFaqs[i].a}</p>\n  </div>\n`;
-      }
-      article.content = article.content.replace(faqH2Regex, `<h2 id="${uniqueFaqId}">${uniqueFaqHeading}</h2>\n<div class="faq-accordion">\n${items}</div>\n`);
-      for (let i = 0; i < 3; i++) {
-        items += `  <div class="faq-item">\n    <h3>${defaultFaqs[i].q}</h3>\n    <p>${defaultFaqs[i].a}</p>\n  </div>\n`;
-      }
-      const faqSection = `\n<h2 id="${uniqueFaqId}">${uniqueFaqHeading}</h2>\n<div class="faq-accordion">\n${items}</div>\n`;
-      const checklistIdx = article.content.search(/<h2[^>]*id=["'][^"']*checklist[^"']*["'][^>]*>/i);
-      if (checklistIdx !== -1) {
-        article.content = article.content.slice(0, checklistIdx) + faqSection + article.content.slice(checklistIdx);
-      } else {
-        article.content += faqSection;
-      }
+    for (let i = 0; i < 3; i++) {
+      items += `  <div class="faq-item">\n    <h3>${defaultFaqs[i].q}</h3>\n    <p>${defaultFaqs[i].a}</p>\n  </div>\n`;
+    }
+    const faqSection = `\n<h2 id="${uniqueFaqId}">${uniqueFaqHeading}</h2>\n<div class="faq-accordion">\n${items}</div>\n`;
+    const checklistIdx = article.content.search(/<h2[^>]*id=["'][^"']*checklist[^"']*["'][^>]*>/i);
+    if (checklistIdx !== -1) {
+      article.content = article.content.slice(0, checklistIdx) + faqSection + article.content.slice(checklistIdx);
+    } else {
+      article.content += faqSection;
     }
   }
 
-  // Ensure every existing faq-item contains both an h3 and a valid non-empty answer paragraph
+  // Ensure all existing faq-items have both h3 and complete p with bold answer
   article.content = article.content.replace(/<div class=["']faq-item["']>([\s\S]*?)<\/div>/gi, (itemHtml, inner) => {
-    if (!inner.includes('<p>') || /<p>\s*<\/p>/.test(inner)) {
-      const qMatch = inner.match(/<h3>([\s\S]*?)<\/h3>/i);
-      const qText = qMatch ? qMatch[1].trim() : `Planning ${shortTitle}`;
-      const defaultAns = `<strong>Careful dimension planning and high-density material selection are recommended.</strong> Prioritizing clear walkway clearances ensures that daily routines remain comfortable and visually cohesive.`;
-      return `<div class="faq-item">\n    <h3>${qText}</h3>\n    <p>${defaultAns}</p>\n  </div>`;
+    let qMatch = inner.match(/<h3>([\s\S]*?)<\/h3>/i);
+    let qText = qMatch ? qMatch[1].replace(/<[^>]+>/g, '').replace(/[-—–]/g, ' ').trim() : `Planning ${shortTitle}`;
+    let pMatch = inner.match(/<p>([\s\S]*?)<\/p>/i);
+    let ansText = pMatch ? pMatch[1].trim() : '';
+
+    if (!ansText || ansText.length < 20) {
+      ansText = `<strong>Careful dimension planning and high density material selection are recommended.</strong> Prioritizing clear walkway clearances ensures that daily routines remain comfortable and visually cohesive.`;
+    } else if (!ansText.startsWith('<strong>')) {
+      const firstDot = ansText.indexOf('.');
+      if (firstDot !== -1 && firstDot < 120) {
+        ansText = `<strong>${ansText.slice(0, firstDot + 1)}</strong> ${ansText.slice(firstDot + 1).trim()}`;
+      } else {
+        ansText = `<strong>${ansText.slice(0, 40)}...</strong> ${ansText}`;
+      }
     }
-    return itemHtml;
+    return `  <div class="faq-item">\n    <h3>${qText}</h3>\n    <p>${ansText}</p>\n  </div>\n`;
   });
+
+  // Ensure exactly 3 faq-items
+  const faqItemsCount = (article.content.match(/class=["']faq-item["']/g) || []).length;
+  if (faqItemsCount < 3) {
+    let extraItems = '';
+    for (let i = faqItemsCount; i < 3; i++) {
+      extraItems += `  <div class="faq-item">\n    <h3>${defaultFaqs[i].q}</h3>\n    <p>${defaultFaqs[i].a}</p>\n  </div>\n`;
+    }
+    article.content = article.content.replace(/(<div class=["']faq-accordion["']>[\s\S]*?)(<\/div>)/i, `$1${extraItems}$2`);
+  }
 
   // 6F. Ensure Final Section is an Actionable Checklist
   const allH2Matches = [...article.content.matchAll(/<h2([^>]*)>([\s\S]*?)<\/h2>/gi)];
   const lastH2Match = allH2Matches[allH2Matches.length - 1];
-  if (lastH2Match && !lastH2Match[2].toLowerCase().includes('checklist')) {
+  if (!lastH2Match || !lastH2Match[2].toLowerCase().includes('checklist')) {
     const checklistId = `your-${article.slug}-checklist`;
-    const checklistHeading = `Your ${shortTitle} Checklist`;
+    const checklistHeading = `Your ${shortTitle} Checklist`.replace(/[-—–]/g, ' ');
     const checklistHtml = `\n<h2 id="${checklistId}">${checklistHeading}</h2>\n<p>Executing a successful ${shortTitle.toLowerCase()} installation comes down to preparation and disciplined execution. Review walkway clearances, verify lighting warmths, and invest in resilient natural materials that provide lasting beauty across your home.</p>\n`;
     article.content += checklistHtml;
   }
 
   // 7. Ensure EXACTLY 1 External Link
-  const extLinkMatches = [...article.content.matchAll(/<a\s+[^>]*href=["'](https?:\/\/[^"']+)["'][^>]*>([\s\S]*?)<\/a>/gi)];
-  if (extLinkMatches.length === 0) {
+  const extRegex = /<a\s+[^>]*href=["'](https?:\/\/[^"']+)["'][^>]*>([\s\S]*?)<\/a>/gi;
+  const extMatches = [...article.content.matchAll(extRegex)];
+  if (extMatches.length === 0) {
     const domainPool = [
       { name: "Sleep Foundation", url: "https://www.sleepfoundation.org" },
       { name: "Elle Decor", url: "https://www.elledecor.com" },
@@ -853,40 +795,55 @@ export function enforceArticleStandards(article, existingArticles = []) {
         ` Industry recommendations from <a href="${chosen.url}" target="_blank" rel="noopener noreferrer">${chosen.name}</a> suggest testing material samples before full installation.` +
         article.content.slice(insertAt);
     }
-  } else if (extLinkMatches.length > 1) {
-    // Keep first, strip subsequent external link tags
-    for (let i = 1; i < extLinkMatches.length; i++) {
-      article.content = article.content.replace(extLinkMatches[i][0], extLinkMatches[i][2]);
-    }
+  } else {
+    // Keep first, strip subsequent
+    let firstExtFound = false;
+    article.content = article.content.replace(extRegex, (fullTag, url, anchorText) => {
+      if (!firstExtFound) {
+        firstExtFound = true;
+        return `<a href="${url}" target="_blank" rel="noopener noreferrer">${anchorText}</a>`;
+      }
+      return anchorText;
+    });
   }
 
   // 8. Ensure EXACTLY 2 Natural Internal Links
-  const intLinkMatches = [...article.content.matchAll(/<a\s+[^>]*href=["'](\/(?!https?)[^"']*)["'][^>]*>([\s\S]*?)<\/a>/gi)];
-  if (intLinkMatches.length > 2) {
-    for (let i = 2; i < intLinkMatches.length; i++) {
-      article.content = article.content.replace(intLinkMatches[i][0], intLinkMatches[i][2]);
-    }
-  } else if (intLinkMatches.length < 2) {
+  const intRegex = /<a\s+[^>]*href=["'](\/(?!https?)[^"']*)["'][^>]*>([\s\S]*?)<\/a>/gi;
+  const intMatches = [...article.content.matchAll(intRegex)];
+  if (intMatches.length > 2) {
+    let intCount = 0;
+    article.content = article.content.replace(intRegex, (fullTag, path, anchorText) => {
+      intCount++;
+      if (intCount <= 2) return fullTag;
+      return anchorText;
+    });
+  } else if (intMatches.length < 2) {
     const targetCategory = article.category || 'bedroom';
     const fallbackOptions = [
       { url: `/category/${targetCategory}/`, text: `${targetCategory} decorating ideas` },
       { url: `/category/furniture/`, text: `furniture layout principles` }
     ];
     if (existingArticles.length > 0 && existingArticles[0].slug !== article.slug) {
-      fallbackOptions.unshift({ url: `/${existingArticles[0].slug}/`, text: existingArticles[0].title.split(':')[0].toLowerCase() });
+      fallbackOptions.unshift({
+        url: `/${existingArticles[0].slug}/`,
+        text: existingArticles[0].title.split(':')[0].toLowerCase().replace(/[-—–]/g, ' ')
+      });
     }
 
     let pMatches = [...article.content.matchAll(/<\/p>/g)];
-    let count = intLinkMatches.length;
+    let currentIntCount = intMatches.length;
     for (const opt of fallbackOptions) {
-      if (count >= 2) break;
+      if (currentIntCount >= 2) break;
       if (article.content.includes(`href="${opt.url}"`)) continue;
-      const targetP = pMatches.length > (3 + count) ? pMatches[2 + count].index : (pMatches.length > 1 ? pMatches[1].index : -1);
-      if (targetP !== -1) {
-        article.content = article.content.slice(0, targetP) +
+      const targetPIdx = pMatches.length > (3 + currentIntCount)
+        ? pMatches[2 + currentIntCount].index
+        : (pMatches.length > 1 ? pMatches[1].index : -1);
+
+      if (targetPIdx !== -1) {
+        article.content = article.content.slice(0, targetPIdx) +
           ` For more ideas, explore our <a href="${opt.url}">${opt.text}</a>.` +
-          article.content.slice(targetP);
-        count++;
+          article.content.slice(targetPIdx);
+        currentIntCount++;
         pMatches = [...article.content.matchAll(/<\/p>/g)];
       }
     }
@@ -896,10 +853,9 @@ export function enforceArticleStandards(article, existingArticles = []) {
   const calcWords = (html) => html.replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim().split(/\s+/).filter(Boolean).length;
   let currentWords = calcWords(article.content);
 
-  const topicTitle = purgeBanned(cleanEmDashes(article.title.split(':')[0].trim()));
-  const primaryKw = (article.keywords && article.keywords[0]) ? article.keywords[0] : topicTitle;
+  const topicTitle = purgeBanned(cleanEmDashes(article.title.split(':')[0].trim())).replace(/[-—–]/g, ' ');
+  const primaryKw = (article.keywords && article.keywords[0]) ? article.keywords[0].replace(/[-—–]/g, ' ') : topicTitle;
 
-  // Dedicated topic-aware expansion modules (each ~120 to 180 words, 0 banned words, 0 em dashes)
   const expansionModules = [
     {
       heading: `Quality Standards and Material Selection for ${topicTitle}`,
@@ -910,7 +866,7 @@ export function enforceArticleStandards(article, existingArticles = []) {
       body: `<p>Proper spacing prevents beautiful designs from feeling cramped or unapproachable. When integrating ${topicTitle}, always maintain comfortable transit corridors of at least 36 to 42 inches between major furniture pieces and adjacent walls. This generous walkway clearance ensures smooth movement, accessible cleaning paths, and unobstructed door swings across the entire room layout.</p>\n<p>Vertical proportions require equal attention. Verify ceiling clearances and suspension heights before securing permanent electrical or structural anchors. Centering statement fixtures relative to primary sightlines from doorways creates an immediate sense of order and visual balance the moment you enter the space.</p>`
     },
     {
-      heading: `Preventative Maintenance and Long-Term Care Guidelines`,
+      heading: `Preventative Maintenance and Long Term Care Guidelines`,
       body: `<p>Even the finest home installations require systematic upkeep to retain their original appeal. Avoid abrasive chemical cleansers or ammonia-based sprays that can strip protective lacquers and dull natural patinas. Instead, adopt a routine of wiping surfaces with a soft, lint-free microfiber cloth dampened with warm water and mild, pH-neutral soap.</p>\n<p>Periodically inspect mounting hardware, electrical connections, and perimeter seals every twelve months. Addressing minor settling, loose fasteners, or hairline seal separations early preserves the structural integrity of your installation and eliminates costly repairs down the road.</p>`
     },
     {
@@ -927,8 +883,8 @@ export function enforceArticleStandards(article, existingArticles = []) {
   if (currentWords < 1000) {
     for (const mod of expansionModules) {
       if (currentWords >= 1060) break;
-      const blockHtml = `\n<h2 id="${mod.heading.toLowerCase().replace(/[^a-z0-9]+/g, '-')}">${mod.heading}</h2>\n${mod.body}\n`;
-      
+      const cleanHeading = mod.heading.replace(/[-—–]/g, ' ').trim();
+      const blockHtml = `\n<h2 id="${cleanHeading.toLowerCase().replace(/[^a-z0-9]+/g, '-')}">${cleanHeading}</h2>\n${mod.body}\n`;
       const faqIdx = article.content.search(/<h2[^>]*id=["'][^"']*faq[^"']*["'][^>]*>/i);
       if (faqIdx !== -1) {
         article.content = article.content.slice(0, faqIdx) + blockHtml + article.content.slice(faqIdx);
@@ -971,24 +927,49 @@ export function enforceArticleStandards(article, existingArticles = []) {
   // Precision Trimmer Loop if over 1,200 words
   if (currentWords > 1200) {
     const paragraphs = [...article.content.matchAll(/<p>([\s\S]*?)<\/p>/gi)];
-    for (let i = paragraphs.length - 4; i >= 2 && currentWords > 1160; i--) {
+    for (let i = paragraphs.length - 2; i >= 1 && currentWords > 1160; i--) {
       const p = paragraphs[i];
       if (p[0].includes('<a ') || p[0].includes('<table') || p[0].includes('class="lead-paragraph"')) continue;
       const sentences = p[1].split(/(?<=[.?!])\s+/);
       if (sentences.length > 2) {
         const shorter = `<p>${sentences.slice(0, 2).join(' ')}</p>`;
         article.content = article.content.replace(p[0], shorter);
-      } else {
-        article.content = article.content.replace(p[0], '');
+      } else if (sentences.length === 2 && currentWords > 1180) {
+        const shorter = `<p>${sentences[0]}</p>`;
+        article.content = article.content.replace(p[0], shorter);
       }
       currentWords = calcWords(article.content);
     }
+
+    if (currentWords > 1180) {
+      const pMatches2 = [...article.content.matchAll(/<p>([\s\S]*?)<\/p>/gi)];
+      for (const p of pMatches2) {
+        if (currentWords <= 1150) break;
+        if (p[0].includes('<a ') || p[0].includes('<table') || p[0].includes('class="lead-paragraph"')) continue;
+        const words = p[1].split(/\s+/);
+        if (words.length > 15) {
+          const cutCount = Math.min(words.length - 12, currentWords - 1140);
+          if (cutCount > 0) {
+            const trimmedText = words.slice(0, words.length - cutCount).join(' ') + '.';
+            article.content = article.content.replace(p[0], `<p>${trimmedText}</p>`);
+            currentWords = calcWords(article.content);
+          }
+        }
+      }
+    }
   }
 
-  // Final purge of banned words and em dashes across all content
+  // 10. FINAL GUARANTEE PASS: Clean em dashes, purge banned words, strip ALL heading dashes
   article.content = purgeBanned(cleanEmDashes(article.content));
-  article.title = purgeBanned(cleanEmDashes(article.title));
-  article.seoTitle = purgeBanned(cleanEmDashes(article.seoTitle));
+  article.content = article.content.replace(/<h([1-6])([^>]*)>([\s\S]*?)<\/h\1>/gi, (match, level, attrs, text) => {
+    let cleanText = text.replace(/[-—–]/g, ' ').replace(/\s+/g, ' ').trim();
+    cleanText = purgeBanned(cleanEmDashes(cleanText));
+    return `<h${level}${attrs}>${cleanText}</h${level}>`;
+  });
+
+  article.title = formatTitle(article.title);
+  article.seoTitle = article.title;
+  article.coverAlt = article.title;
   article.subtitle = purgeBanned(cleanEmDashes(article.subtitle));
   article.seoDescription = purgeBanned(cleanEmDashes(article.seoDescription));
 
@@ -997,7 +978,7 @@ export function enforceArticleStandards(article, existingArticles = []) {
   if (finalH2Matches.length > 0) {
     article.toc = finalH2Matches.map(m => {
       const id = m[1];
-      let h2Title = m[2].replace(/<[^>]+>/g, '').replace(/-/g, ' ').replace(/\s+/g, ' ').trim();
+      let h2Title = m[2].replace(/<[^>]+>/g, '').replace(/[-—–]/g, ' ').replace(/\s+/g, ' ').trim();
       h2Title = purgeBanned(cleanEmDashes(h2Title));
       return { id, title: h2Title };
     });
