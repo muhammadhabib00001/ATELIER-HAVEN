@@ -37,6 +37,8 @@ async function getBoardId(token) {
     
     // Search by slug/name match
     const matched = boards.find(b => 
+      b.name.toLowerCase().includes('home decor') ||
+      b.name.toLowerCase().includes('decor') ||
       b.name.toLowerCase().includes('atrium') || 
       b.name.toLowerCase().includes('living') ||
       b.id === TARGET_BOARD_NAME
