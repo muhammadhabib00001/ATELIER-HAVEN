@@ -18,6 +18,7 @@ import { generateArticle, saveArticle } from '../generate-article.js';
 import { uploadToGoogleDrive, getDriveAccessToken } from './backup-to-drive.js';
 import { fetchKeywordsFromDrive, normalizeCategory, detectCategoryFromKeyword } from './fetch-keywords.js';
 import { submitUrlToGoogleIndexing } from './google-index.js';
+import { postArticleToPinterest } from './post-to-pinterest.js';
 
 // Load official categories from site.json
 const siteDataPath = path.resolve("./src/data/site.json");
@@ -208,6 +209,12 @@ async function run() {
       const article = await generateSingleArticle(topicForRun, customCategory);
       if (article) {
         publishedArticles.push(article);
+        // Step 3b: Auto-post newly published article to Pinterest
+        try {
+          await postArticleToPinterest(article);
+        } catch (pinErr) {
+          console.warn("⚠️ Pinterest posting note:", pinErr.message);
+        }
       }
     } catch (err) {
       console.error(` Error generating article ${i + 1}:`, err.message);
