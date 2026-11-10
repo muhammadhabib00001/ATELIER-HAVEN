@@ -54,23 +54,40 @@ if (type === "organization" || type === "website") {
   const article = data.article;
   const author = data.author;
 
-  schema = {
-    "@context": "https://schema.org",
+  // Extract FAQs from article.content if present for Google FAQ Rich Snippets (High CTR)
+  const faqItems: Array<{ question: string; answer: string }> = [];
+  if (article && article.content) {
+    const faqBlockMatch = article.content.match(/<div class=['"]faq-accordion['"]>([\s\S]*?)<\/div>/i);
+    if (faqBlockMatch) {
+      const itemMatches = [...faqBlockMatch[1].matchAll(/<div class=['"]faq-item['"]>[\s]*<h3>([\s\S]*?)<\/h3>[\s]*<p>([\s\S]*?)<\/p>[\s]*<\/div>/gi)];
+      for (const m of itemMatches) {
+        const q = m[1].replace(/<[^>]+>/g, '').trim();
+        const a = m[2].replace(/<[^>]+>/g, '').trim();
+        if (q && a) {
+          faqItems.push({ question: q, answer: a });
+        }
+      }
+    }
+  }
+
+  const articleSchema: any = {
     "@type": "Article",
-    "mainEntityOfPage": {
+    "@id": `${siteUrl}/${article.slug}/#article`,
+    "isPartOf": {
       "@type": "WebPage",
-      "@id": `${siteUrl}/${article.slug}`
+      "@id": `${siteUrl}/${article.slug}/`
     },
     "headline": article.title,
-    "description": article.seoDescription,
+    "description": article.seoDescription || article.subtitle,
     "image": [article.coverImage],
     "datePublished": article.publishedAt,
     "dateModified": article.updatedAt || article.publishedAt,
+    "mainEntityOfPage": `${siteUrl}/${article.slug}/`,
     "author": {
       "@type": "Person",
       "name": author.name,
       "jobTitle": author.role,
-      "url": `${siteUrl}/author/${author.slug}`,
+      "url": `${siteUrl}/author/${author.slug}/`,
       "knowsAbout": author.credentials
     },
     "publisher": {
@@ -84,6 +101,28 @@ if (type === "organization" || type === "website") {
     },
     "articleSection": article.category,
     "keywords": article.keywords ? article.keywords.join(", ") : undefined
+  };
+
+  const graphElements: any[] = [articleSchema];
+
+  if (faqItems.length > 0) {
+    graphElements.push({
+      "@type": "FAQPage",
+      "@id": `${siteUrl}/${article.slug}/#faq`,
+      "mainEntity": faqItems.map(item => ({
+        "@type": "Question",
+        "name": item.question,
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": item.answer
+        }
+      }))
+    });
+  }
+
+  schema = {
+    "@context": "https://schema.org",
+    "@graph": graphElements
   };
 } else if (type === "breadcrumbs") {
   const items = data.items || [];

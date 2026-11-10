@@ -577,10 +577,16 @@ export function enforceArticleStandards(article, existingArticles = []) {
     return res;
   };
 
-  // Helper to format title strictly between 55 and 60 characters
+  // Helper to format title strictly between 55 and 60 characters with high-CTR natural hooks
   const formatTitle = (rawTitle) => {
     let t = purgeBanned(cleanEmDashes(rawTitle || ''))
       .replace(/[-—–]/g, ' ')
+      .replace(/\s+/g, ' ')
+      // Clean repetitive filler artifacts
+      .replace(/\bguide\s+for\s+.*\s+master\s+guide\b/gi, 'Master Guide')
+      .replace(/\bmaster\s+guide\s+master\s+guide\b/gi, 'Master Guide')
+      .replace(/\bguide\s+guide\b/gi, 'Guide')
+      .replace(/\bplan\s+plan\b/gi, 'Plan')
       .replace(/\s+/g, ' ')
       .trim();
 
@@ -598,10 +604,12 @@ export function enforceArticleStandards(article, existingArticles = []) {
     }
 
     if (t.length < 55) {
+      // High-CTR search-intent padding modifiers
       const padOptions = [
-        ' Master Guide', ' Complete Guide', ' Practical Guide',
-        ' Design Guide', ' Editorial Plan', ' Master Plan',
-        ' Home Guide', ' Guide', ' Plan'
+        ' Expert Guide', ' Pro Designer Guide', ' Practical Guide',
+        ' Full Buying Guide', ' Best Setup Guide', ' Design Blueprint',
+        ' Complete Guide', ' Step by Step', ' Buyer Guide',
+        ' Master Guide', ' Home Guide', ' Pro Tips', ' Guide'
       ];
       for (const pad of padOptions) {
         if (!t.toLowerCase().includes(pad.trim().toLowerCase()) && (t + pad).length >= 55 && (t + pad).length <= 60) {
@@ -610,8 +618,10 @@ export function enforceArticleStandards(article, existingArticles = []) {
         }
       }
       while (t.length < 55) {
-        if ((t + ' Guide').length <= 60) t += ' Guide';
-        else if ((t + ' Plan').length <= 60) t += ' Plan';
+        if ((t + ' Guide').length <= 60 && !t.toLowerCase().includes('guide')) t += ' Guide';
+        else if ((t + ' Tips').length <= 60 && !t.toLowerCase().includes('tips')) t += ' Tips';
+        else if ((t + ' Ideas').length <= 60 && !t.toLowerCase().includes('ideas')) t += ' Ideas';
+        else if ((t + ' Setup').length <= 60 && !t.toLowerCase().includes('setup')) t += ' Setup';
         else if ((t + ' Home').length <= 60) t += ' Home';
         else t += '.';
       }
